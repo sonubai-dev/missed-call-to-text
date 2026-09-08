@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MissCall WhatsApp Assistant</string>
+    <string name="monitoring_service_channel_name">Call Monitoring Service</string>
+    <string name="monitoring_service_channel_desc">Shows ongoing status of missed call detection</string>
+    <string name="missed_call_channel_name">Missed Call Follow-ups</string>
+    <string name="missed_call_channel_desc">Notifications for missed calls and follow-up actions</string>
+    <string name="follow_up_sent_channel_name">Follow-up History</string>
+    <string name="follow_up_sent_channel_desc">Alerts when automated follow-up messages are dispatched</string>
+    <string name="monitoring_service_running">MissCall Assistant is actively monitoring incoming calls</string>
+</resources>

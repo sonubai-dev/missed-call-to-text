@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Phone with missed call icon & chat bubble -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,24C37.43,24 24,37.43 24,54C24,59.3 25.38,64.29 27.8,68.61L25,79L35.66,76.24C39.81,78.53 44.59,79.86 49.68,79.99H54C70.57,80 84,66.57 84,50C84,33.43 70.57,24 54,24ZM54,74.57H50.35L41.87,76.81L44.17,68.42L39.88,61.42C37.89,58.17 36.83,54.43 36.83,50.6C36.83,41.11 44.51,33.43 54,33.43C63.49,33.43 71.17,41.11 71.17,50.6C71.17,60.09 63.49,67.77 54,74.57Z" />
+    <path
+        android:fillColor="#25D366"
+        android:pathData="M50,42 L58,50 M58,42 L50,50"
+        android:strokeWidth="3"
+        android:strokeColor="#25D366"
+        android:strokeLineCap="round"/>
+</vector>
