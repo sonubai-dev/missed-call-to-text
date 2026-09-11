@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { DownloadButtonWithRazorpay } from '@/components/marketing/DownloadButtonWithRazorpay';
 import { Metadata } from 'next';
 import { Download, ShieldCheck, Smartphone, Info } from 'lucide-react';
 
@@ -42,14 +42,7 @@ export default function DownloadPage() {
               </div>
             </div>
             
-            <a 
-              href="/downloads/misscall-assistant.apk" 
-              download="misscall-assistant.apk"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-full text-white bg-green-600 hover:bg-green-700 shadow-md hover:shadow-lg transition-all"
-            >
-              <Download className="mr-2 h-5 w-5" />
-              Download APK
-            </a>
+            <DownloadButtonWithRazorpay />
           </div>
 
           <div className="p-8 sm:p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
