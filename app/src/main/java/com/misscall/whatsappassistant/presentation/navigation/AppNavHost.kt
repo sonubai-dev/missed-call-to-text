@@ -58,13 +58,72 @@ fun AppNavHost(
             }
         }
     ) { innerPadding ->
-        val startDestination = if (hasCompletedOnboarding) Screen.Home.route else Screen.Onboarding.route
+        val startDestination = Screen.Splash.route
 
         NavHost(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Screen.Splash.route) {
+                com.misscall.whatsappassistant.presentation.auth.SplashScreen(
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToPaywall = {
+                        navController.navigate(Screen.Paywall.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToHome = {
+                        val dest = if (hasCompletedOnboarding) Screen.Home.route else Screen.Onboarding.route
+                        navController.navigate(dest) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            
+            composable(Screen.Login.route) {
+                com.misscall.whatsappassistant.presentation.auth.LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Screen.Splash.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToRegister = {
+                        navController.navigate(Screen.Register.route)
+                    }
+                )
+            }
+            
+            composable(Screen.Register.route) {
+                com.misscall.whatsappassistant.presentation.auth.RegisterScreen(
+                    onRegisterSuccess = {
+                        navController.navigate(Screen.Splash.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            
+            composable(Screen.Paywall.route) {
+                com.misscall.whatsappassistant.presentation.auth.PaywallScreen(
+                    onSubscribed = {
+                        navController.navigate(Screen.Splash.route) {
+                            popUpTo(Screen.Paywall.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
             // ── Onboarding ──
             composable(Screen.Onboarding.route) {
                 OnboardingScreen(

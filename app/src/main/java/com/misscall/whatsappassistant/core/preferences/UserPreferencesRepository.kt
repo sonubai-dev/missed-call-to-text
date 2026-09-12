@@ -97,6 +97,10 @@ class UserPreferencesRepository @Inject constructor(
         val CRM_WEBHOOK_URL = stringPreferencesKey("crm_webhook_url")
         val CRM_WEBHOOK_SECRET = stringPreferencesKey("crm_webhook_secret")
         val CRM_WEBHOOK_EVENTS = stringSetPreferencesKey("crm_webhook_events")
+
+        // Auth
+        val JWT_TOKEN = stringPreferencesKey("jwt_token")
+        val SUBSCRIPTION_STATUS = stringPreferencesKey("subscription_status")
     }
 
     val userPreferencesFlow: Flow<UserPreferences> = context.dataStore.data.map { preferences ->
@@ -179,8 +183,31 @@ class UserPreferencesRepository @Inject constructor(
                 "whatsapp_sent",
                 "sms_sent",
                 "followup_completed"
-            )
+            ),
+
+            jwtToken = preferences[PreferencesKeys.JWT_TOKEN] ?: "",
+            subscriptionStatus = preferences[PreferencesKeys.SUBSCRIPTION_STATUS] ?: "INACTIVE"
         )
+    }
+
+    suspend fun setAuthDetails(token: String, status: String) {
+        context.dataStore.edit {
+            it[PreferencesKeys.JWT_TOKEN] = token
+            it[PreferencesKeys.SUBSCRIPTION_STATUS] = status
+        }
+    }
+
+    suspend fun setSubscriptionStatus(status: String) {
+        context.dataStore.edit {
+            it[PreferencesKeys.SUBSCRIPTION_STATUS] = status
+        }
+    }
+
+    suspend fun clearAuth() {
+        context.dataStore.edit {
+            it.remove(PreferencesKeys.JWT_TOKEN)
+            it.remove(PreferencesKeys.SUBSCRIPTION_STATUS)
+        }
     }
 
     suspend fun setWhatsAppSendingMode(mode: WhatsAppSendingMode) {

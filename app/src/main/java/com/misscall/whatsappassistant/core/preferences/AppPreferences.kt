@@ -87,5 +87,9 @@ data class UserPreferences(
         "whatsapp_sent",
         "sms_sent",
         "followup_completed"
-    )
+    ),
+    
+    // Auth
+    val jwtToken: String = "",
+    val subscriptionStatus: String = "INACTIVE"
 )

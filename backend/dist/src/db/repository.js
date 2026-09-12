@@ -20,19 +20,37 @@ class Repository {
         const id = crypto_1.default.randomUUID();
         const now = new Date();
         if (pool) {
-            const res = await pool.query(`INSERT INTO users (id, email, password_hash, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5) RETURNING *`, [id, email, passwordHash, now, now]);
+            const res = await pool.query(`INSERT INTO users (id, email, password_hash, subscription_status, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [id, email, passwordHash, 'INACTIVE', now, now]);
             return res.rows[0];
         }
         const user = {
             id,
             email,
             password_hash: passwordHash,
+            subscription_status: 'INACTIVE',
             created_at: now,
             updated_at: now,
         };
         this.users.push(user);
         return user;
+    }
+    async updateUserSubscription(id, status, subscriptionId, customerId) {
+        const pool = (0, pool_1.getDbPool)();
+        const now = new Date();
+        if (pool) {
+            await pool.query(`UPDATE users SET subscription_status = $1, subscription_id = COALESCE($2, subscription_id), razorpay_customer_id = COALESCE($3, razorpay_customer_id), updated_at = $4 WHERE id = $5`, [status, subscriptionId || null, customerId || null, now, id]);
+            return;
+        }
+        const user = this.users.find(u => u.id === id);
+        if (user) {
+            user.subscription_status = status;
+            if (subscriptionId)
+                user.subscription_id = subscriptionId;
+            if (customerId)
+                user.razorpay_customer_id = customerId;
+            user.updated_at = now;
+        }
     }
     async findUserByEmail(email) {
         const pool = (0, pool_1.getDbPool)();

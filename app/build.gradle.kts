@@ -156,6 +156,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("androidx.browser:browser:1.8.0")
 
     // Email Dispatcher (JavaMail Android Port)
     implementation("com.sun.mail:android-mail:1.6.7")

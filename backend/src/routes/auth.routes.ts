@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { repository } from "../db/repository";
+import { authenticateJwt } from "../middleware/auth";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -70,9 +71,37 @@ export async function authRoutes(fastify: FastifyInstance) {
     const token = fastify.jwt.sign({ userId: user.id, businessId: business.id });
 
     return reply.send({
-      user: { id: user.id, email: user.email },
+      user: { 
+        id: user.id, 
+        email: user.email,
+        subscription_status: user.subscription_status
+      },
       business,
       token,
+    });
+  });
+
+  fastify.get("/me", { preValidation: [authenticateJwt] }, async (request, reply) => {
+    const userId = request.userId;
+    if (!userId) {
+      return reply.status(401).send({ error: "Unauthorized" });
+    }
+
+    const user = await repository.findUserById(userId);
+    if (!user) {
+      return reply.status(404).send({ error: "Not Found", message: "User not found" });
+    }
+
+    const business = await repository.getBusinessByUserId(userId);
+
+    return reply.send({
+      user: {
+        id: user.id,
+        email: user.email,
+        subscription_status: user.subscription_status,
+        subscription_id: user.subscription_id
+      },
+      business
     });
   });
 }

@@ -14,6 +14,7 @@ const envSchema = zod_1.z.object({
     JWT_SECRET: zod_1.z.string().default("misscall_jwt_super_secret_signing_key_2026"),
     DATABASE_URL: zod_1.z.string().optional(),
     WEBHOOK_SECRET: zod_1.z.string().default("whsec_missed_call_android_secret_key_v1"),
+    RAZORPAY_WEBHOOK_SECRET: zod_1.z.string().default("test_secret_bypass"),
     META_VERIFY_TOKEN: zod_1.z.string().default("meta_whatsapp_verify_token_secure"),
     META_APP_SECRET: zod_1.z.string().default("meta_app_secret_hex_signing_key"),
     RATE_LIMIT_MAX: zod_1.z.coerce.number().default(100),

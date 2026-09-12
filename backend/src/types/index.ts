@@ -2,6 +2,9 @@ export interface User {
   id: string;
   email: string;
   password_hash: string;
+  subscription_status: 'INACTIVE' | 'ACTIVE' | 'CANCELLED';
+  subscription_id?: string;
+  razorpay_customer_id?: string;
   created_at: Date;
   updated_at: Date;
 }

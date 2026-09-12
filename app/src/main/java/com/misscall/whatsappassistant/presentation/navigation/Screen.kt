@@ -24,6 +24,12 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     // Advanced screens accessible from Settings → Advanced
     data object Rules : Screen("rules", "Rules", Icons.Default.Settings)
     data object Activity : Screen("activity", "Activity", Icons.Default.Settings)
+    
+    // Auth & Subscription
+    data object Login : Screen("login", "Login", Icons.Default.Home)
+    data object Register : Screen("register", "Register", Icons.Default.Home)
+    data object Paywall : Screen("paywall", "Subscription", Icons.Default.Home)
+    data object Splash : Screen("splash", "Splash", Icons.Default.Home)
 
     companion object {
         val bottomNavItems = listOf(

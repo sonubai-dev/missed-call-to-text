@@ -7,6 +7,7 @@ exports.authRoutes = authRoutes;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const zod_1 = require("zod");
 const repository_1 = require("../db/repository");
+const auth_1 = require("../middleware/auth");
 const registerSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
     password: zod_1.z.string().min(6),
@@ -61,9 +62,33 @@ async function authRoutes(fastify) {
         }
         const token = fastify.jwt.sign({ userId: user.id, businessId: business.id });
         return reply.send({
-            user: { id: user.id, email: user.email },
+            user: {
+                id: user.id,
+                email: user.email,
+                subscription_status: user.subscription_status
+            },
             business,
             token,
+        });
+    });
+    fastify.get("/me", { preValidation: [auth_1.authenticateJwt] }, async (request, reply) => {
+        const userId = request.userId;
+        if (!userId) {
+            return reply.status(401).send({ error: "Unauthorized" });
+        }
+        const user = await repository_1.repository.findUserById(userId);
+        if (!user) {
+            return reply.status(404).send({ error: "Not Found", message: "User not found" });
+        }
+        const business = await repository_1.repository.getBusinessByUserId(userId);
+        return reply.send({
+            user: {
+                id: user.id,
+                email: user.email,
+                subscription_status: user.subscription_status,
+                subscription_id: user.subscription_id
+            },
+            business
         });
     });
 }
