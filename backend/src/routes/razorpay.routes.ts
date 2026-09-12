@@ -4,7 +4,7 @@ import { repository } from "../db/repository";
 import { config } from "../config/env";
 
 export async function razorpayRoutes(fastify: FastifyInstance) {
-  fastify.post("/webhook", async (request, reply) => {
+  fastify.post("/webhook", { config: { rawBody: true } }, async (request, reply) => {
     // Razorpay sends webhooks to this endpoint
     const secret = config.RAZORPAY_WEBHOOK_SECRET;
     const signature = request.headers["x-razorpay-signature"] as string;
@@ -13,7 +13,12 @@ export async function razorpayRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: "Missing signature or secret" });
     }
 
-    const payloadString = JSON.stringify(request.body);
+    const payloadString = (request as any).rawBody;
+    
+    if (!payloadString) {
+      return reply.status(400).send({ error: "Empty raw body" });
+    }
+
     const expectedSignature = crypto
       .createHmac("sha256", secret)
       .update(payloadString)

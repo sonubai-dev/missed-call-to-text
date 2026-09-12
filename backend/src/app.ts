@@ -2,6 +2,7 @@ import fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 import rateLimit from "@fastify/rate-limit";
+import rawBody from "fastify-raw-body";
 import { config } from "./config/env";
 import { registerRoutes } from "./routes";
 
@@ -49,7 +50,15 @@ export function buildApp(): FastifyInstance {
     timeWindow: config.RATE_LIMIT_WINDOW_MS,
   });
 
-  // 4. Register All API & Webhook Routes
+  // 4. Raw Body for Webhooks
+  app.register(rawBody, {
+    field: 'rawBody',
+    global: false,
+    encoding: 'utf8',
+    runFirst: true
+  });
+
+  // 5. Register All API & Webhook Routes
   app.register(registerRoutes);
 
   return app;

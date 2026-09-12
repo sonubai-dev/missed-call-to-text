@@ -8,6 +8,7 @@ const fastify_1 = __importDefault(require("fastify"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 const jwt_1 = __importDefault(require("@fastify/jwt"));
 const rate_limit_1 = __importDefault(require("@fastify/rate-limit"));
+const fastify_raw_body_1 = __importDefault(require("fastify-raw-body"));
 const env_1 = require("./config/env");
 const routes_1 = require("./routes");
 function buildApp() {
@@ -49,7 +50,14 @@ function buildApp() {
         max: env_1.config.RATE_LIMIT_MAX,
         timeWindow: env_1.config.RATE_LIMIT_WINDOW_MS,
     });
-    // 4. Register All API & Webhook Routes
+    // 4. Raw Body for Webhooks
+    app.register(fastify_raw_body_1.default, {
+        field: 'rawBody',
+        global: false,
+        encoding: 'utf8',
+        runFirst: true
+    });
+    // 5. Register All API & Webhook Routes
     app.register(routes_1.registerRoutes);
     return app;
 }
