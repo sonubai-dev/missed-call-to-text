@@ -24,7 +24,7 @@ object AuthNetworkModule {
         val contentType = "application/json".toMediaType()
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000/api/v1/")
+            .baseUrl("https://vigilant-optimism-production-98b8.up.railway.app/api/v1/")
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
             .create(AuthApi::class.java)
