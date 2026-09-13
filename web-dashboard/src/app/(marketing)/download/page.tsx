@@ -1,4 +1,4 @@
-import { DownloadButtonWithRazorpay } from '@/components/marketing/DownloadButtonWithRazorpay';
+import { DownloadButton } from '@/components/marketing/DownloadButton';
 import { Metadata } from 'next';
 import { Download, ShieldCheck, Smartphone, Info } from 'lucide-react';
 
@@ -42,7 +42,7 @@ export default function DownloadPage() {
               </div>
             </div>
             
-            <DownloadButtonWithRazorpay />
+            <DownloadButton />
           </div>
 
           <div className="p-8 sm:p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
