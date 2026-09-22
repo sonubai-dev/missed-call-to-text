@@ -316,9 +316,9 @@ fun MissedCallsScreen(
         SmsComposerDialog(
             phoneNumber = call.phoneNumber,
             initialMessage = defaultText,
-            availableSims = uiState.availableSims,
-            selectedSubId = uiState.defaultSubId,
-            onSendNativeSms = { message, subId ->
+            
+            
+            
                 viewModel.sendNativeSms(call, message, subId)
                 selectedCallForSms = null
             },

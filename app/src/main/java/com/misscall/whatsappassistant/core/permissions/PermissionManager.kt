@@ -62,7 +62,7 @@ class PermissionManager @Inject constructor(
     fun isCallLogGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.READ_CALL_LOG
+
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -111,7 +111,7 @@ class PermissionManager @Inject constructor(
 
         rationales.add(
             PermissionRationale(
-                title = "Call Log Access (READ_CALL_LOG)",
+
                 description = "Optional fallback to sync caller details from Android's system call history.",
                 isPlayStoreSafe = false,
                 isGranted = isCallLogGranted()

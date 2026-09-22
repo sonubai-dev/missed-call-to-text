@@ -26,7 +26,7 @@ class CallEventPipeline @Inject constructor(
     private val workManagerHelper: WorkManagerHelper,
     private val notificationHelper: NotificationHelper,
     private val preferencesRepository: UserPreferencesRepository,
-    private val processMissedCallSmsUseCase: com.misscall.whatsappassistant.domain.usecase.sms.ProcessMissedCallSmsUseCase,
+
     private val callEventDeduplicator: CallEventDeduplicator
 ) {
 
@@ -60,7 +60,7 @@ class CallEventPipeline @Inject constructor(
             val callEvent = callEventDeduplicator.getOrCreateCanonicalEvent(
                 rawPhoneNumber = rawPhoneNumber,
                 countryCode = prefs.defaultCountryCode,
-                timestamp = timestamp,
+
                 source = source,
                 initialStatus = CallStatus.RINGING
             ) ?: return
@@ -87,7 +87,7 @@ class CallEventPipeline @Inject constructor(
                 val callEvent = callEventDeduplicator.getOrCreateCanonicalEvent(
                     rawPhoneNumber = rawPhoneNumber,
                     countryCode = prefs.defaultCountryCode,
-                    timestamp = timestamp,
+
                     source = CallDetectionSource.TELEPHONY_CALLBACK,
                     initialStatus = CallStatus.RINGING
                 ) ?: return
@@ -149,7 +149,7 @@ class CallEventPipeline @Inject constructor(
             val callEvent = callEventDeduplicator.getOrCreateCanonicalEvent(
                 rawPhoneNumber = phoneNumber,
                 countryCode = prefs.defaultCountryCode,
-                timestamp = timestamp,
+
                 source = source,
                 initialStatus = CallStatus.MISSED,
                 callerName = callerName
@@ -233,24 +233,6 @@ class CallEventPipeline @Inject constructor(
                     callEventRepository.markProcessed(callId, true)
                     AppLogger.i(TAG, "Call #$callId ignored by rules engine (${result.reason})")
                 }
-            }
-
-            // Also process Native SIM SMS channel independently
-            try {
-                val customer = when (result) {
-                    is ProcessResult.AutoDispatched -> result.customer
-                    is ProcessResult.AutoScheduled -> result.customer
-                    is ProcessResult.NotificationOnly -> result.customer
-                    is ProcessResult.Ignored -> result.customer
-                }
-                processMissedCallSmsUseCase(
-                    callEventId = callId,
-                    customer = customer,
-                    phoneNumber = normalizedNumber,
-                    timestamp = timestamp
-                )
-            } catch (smsEx: Exception) {
-                AppLogger.e(TAG, "Error executing missed-call SMS workflow: ${smsEx.message}", smsEx)
             }
         } catch (e: Exception) {
             AppLogger.e(TAG, "Failed to process missed call #$callId", e)

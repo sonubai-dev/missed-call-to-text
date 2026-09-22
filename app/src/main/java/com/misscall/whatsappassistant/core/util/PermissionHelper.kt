@@ -12,13 +12,13 @@ object PermissionHelper {
     val REQUIRED_PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         listOf(
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_CALL_LOG,
+
             Manifest.permission.POST_NOTIFICATIONS
         )
     } else {
         listOf(
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_CALL_LOG
+
         )
     }
 

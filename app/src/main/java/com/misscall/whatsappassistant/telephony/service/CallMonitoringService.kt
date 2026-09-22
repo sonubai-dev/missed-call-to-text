@@ -6,11 +6,11 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import android.provider.CallLog
+
 import com.misscall.whatsappassistant.core.logging.AppLogger
 import com.misscall.whatsappassistant.core.util.Constants
 import com.misscall.whatsappassistant.notifications.NotificationHelper
-import com.misscall.whatsappassistant.telephony.observer.CallLogObserver
+
 import com.misscall.whatsappassistant.telephony.tracker.TelephonyCallStateManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -22,12 +22,12 @@ class CallMonitoringService : Service() {
     lateinit var notificationHelper: NotificationHelper
 
     @Inject
-    lateinit var callLogObserver: CallLogObserver
+
 
     @Inject
     lateinit var telephonyCallStateManager: TelephonyCallStateManager
 
-    private var isObserverRegistered = false
+
 
     override fun onCreate() {
         super.onCreate()
@@ -74,33 +74,10 @@ class CallMonitoringService : Service() {
     private fun startMonitoring() {
         // Start Telephony state tracking
         telephonyCallStateManager.startListening()
-
-        // Register ContentObserver for CallLog if permitted
-        if (!isObserverRegistered) {
-            try {
-                contentResolver.registerContentObserver(
-                    CallLog.Calls.CONTENT_URI,
-                    true,
-                    callLogObserver
-                )
-                isObserverRegistered = true
-                AppLogger.d(TAG, "CallLog ContentObserver registered")
-            } catch (e: SecurityException) {
-                AppLogger.w(TAG, "READ_CALL_LOG not granted for ContentObserver", e)
-            }
-        }
     }
 
     private fun stopMonitoring() {
         telephonyCallStateManager.stopListening()
-        if (isObserverRegistered) {
-            try {
-                contentResolver.unregisterContentObserver(callLogObserver)
-                isObserverRegistered = false
-            } catch (e: Exception) {
-                // Ignore
-            }
-        }
     }
 
     override fun onDestroy() {

@@ -16,8 +16,8 @@ import com.misscall.whatsappassistant.domain.repository.MessageLogRepository
 import com.misscall.whatsappassistant.domain.repository.RuleRepository
 import com.misscall.whatsappassistant.domain.repository.SmsMessageRepository
 import com.misscall.whatsappassistant.domain.repository.TemplateRepository
-import com.misscall.whatsappassistant.telephony.sms.AndroidNativeSmsSender
-import com.misscall.whatsappassistant.telephony.sms.SmsSender
+
+
 import com.misscall.whatsappassistant.whatsapp.WhatsAppIntentSender
 import com.misscall.whatsappassistant.whatsapp.WhatsAppSender
 import dagger.Binds
@@ -64,7 +64,7 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindSmsSender(impl: AndroidNativeSmsSender): SmsSender
+
 
     @Binds
     @Singleton

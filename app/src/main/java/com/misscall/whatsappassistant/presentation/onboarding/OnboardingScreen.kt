@@ -228,7 +228,7 @@ private fun Step2Permissions(onNext: () -> Unit) {
     
     var hasPhonePerms by remember { 
         mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
+
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
         )
     }
@@ -266,7 +266,7 @@ private fun Step2Permissions(onNext: () -> Unit) {
         isGranted = hasPhonePerms,
         onRequest = {
             phoneLauncher.launch(
-                arrayOf(Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE)
+
             )
         }
     )
@@ -359,15 +359,6 @@ private fun Step3WhatsApp(
     Spacer(modifier = Modifier.height(16.dp))
 
     ModeCard(
-        title = "WhatsApp Web",
-        description = "Connect via QR code for web-based sending.",
-        isSelected = selectedMode == WhatsAppSendingMode.WHATSAPP_WEB,
-        onClick = { onModeSelect(WhatsAppSendingMode.WHATSAPP_WEB) }
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    ModeCard(
         title = "Business API",
         description = "For businesses with Meta Business account. Sends automatically.",
         isSelected = selectedMode == WhatsAppSendingMode.CLOUD_API,
@@ -427,14 +418,6 @@ private fun Step4Sms(
     onToggle: (Boolean) -> Unit,
     onNext: () -> Unit
 ) {
-    val context = LocalContext.current
-    val smsLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) onToggle(true)
-        else onToggle(false)
-    }
-
     Text(
         text = "Enable SMS replies?",
         fontSize = 28.sp,
@@ -458,11 +441,7 @@ private fun Step4Sms(
             Switch(
                 checked = smsEnabled,
                 onCheckedChange = { isChecked ->
-                    if (isChecked && ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                        smsLauncher.launch(Manifest.permission.SEND_SMS)
-                    } else {
-                        onToggle(isChecked)
-                    }
+                    onToggle(isChecked)
                 },
                 colors = SwitchDefaults.colors(checkedTrackColor = SmsBlue)
             )

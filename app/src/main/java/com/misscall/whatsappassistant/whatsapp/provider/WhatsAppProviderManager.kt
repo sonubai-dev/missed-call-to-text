@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Singleton
 class WhatsAppProviderManager @Inject constructor(
     val manualProvider: ManualWhatsAppProvider,
-    val webProvider: WhatsAppWebProvider,
     val cloudApiProvider: CloudApiWhatsAppProvider,
     private val preferencesRepository: UserPreferencesRepository
 ) {
@@ -26,8 +25,8 @@ class WhatsAppProviderManager @Inject constructor(
     fun getProvider(mode: WhatsAppSendingMode): WhatsAppProvider {
         return when (mode) {
             WhatsAppSendingMode.MANUAL -> manualProvider
-            WhatsAppSendingMode.WHATSAPP_WEB -> webProvider
             WhatsAppSendingMode.CLOUD_API -> cloudApiProvider
+            else -> manualProvider // Fallback
         }
     }
 

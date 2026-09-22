@@ -2,7 +2,6 @@ package com.misscall.whatsappassistant.whatsapp.provider
 
 enum class WhatsAppSendingMode {
     MANUAL,
-    WHATSAPP_WEB,
     CLOUD_API
 }
 
