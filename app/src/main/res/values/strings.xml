@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MissCall WhatsApp Assistant</string>
+    <string name="app_name">MissCall Assistant</string>
     <string name="monitoring_service_channel_name">Call Monitoring Service</string>
     <string name="monitoring_service_channel_desc">Shows ongoing status of missed call detection</string>
     <string name="missed_call_channel_name">Missed Call Follow-ups</string>

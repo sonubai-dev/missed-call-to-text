@@ -3,8 +3,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 
 export const metadata: Metadata = {
-  title: "MissCall WhatsApp Web Dashboard",
-  description: "Browser dashboard for MissCall WhatsApp Assistant",
+  title: "MissCall Assistant Web Dashboard",
+  description: "Browser dashboard for MissCall Assistant",
 };
 
 export default function DashboardLayout({
