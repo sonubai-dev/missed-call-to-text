@@ -60,7 +60,7 @@ class CallEventPipeline @Inject constructor(
             val callEvent = callEventDeduplicator.getOrCreateCanonicalEvent(
                 rawPhoneNumber = rawPhoneNumber,
                 countryCode = prefs.defaultCountryCode,
-
+                timestamp = System.currentTimeMillis(),
                 source = source,
                 initialStatus = CallStatus.RINGING
             ) ?: return
@@ -87,7 +87,7 @@ class CallEventPipeline @Inject constructor(
                 val callEvent = callEventDeduplicator.getOrCreateCanonicalEvent(
                     rawPhoneNumber = rawPhoneNumber,
                     countryCode = prefs.defaultCountryCode,
-
+                    timestamp = timestamp,
                     source = CallDetectionSource.TELEPHONY_CALLBACK,
                     initialStatus = CallStatus.RINGING
                 ) ?: return
@@ -149,7 +149,7 @@ class CallEventPipeline @Inject constructor(
             val callEvent = callEventDeduplicator.getOrCreateCanonicalEvent(
                 rawPhoneNumber = phoneNumber,
                 countryCode = prefs.defaultCountryCode,
-
+                timestamp = timestamp,
                 source = source,
                 initialStatus = CallStatus.MISSED,
                 callerName = callerName

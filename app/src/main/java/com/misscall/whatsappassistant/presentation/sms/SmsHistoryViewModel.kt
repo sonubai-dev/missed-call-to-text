@@ -6,8 +6,6 @@ import com.misscall.whatsappassistant.automation.worker.WorkManagerHelper
 import com.misscall.whatsappassistant.domain.model.SmsMessage
 import com.misscall.whatsappassistant.domain.model.SmsMessageStatus
 import com.misscall.whatsappassistant.domain.repository.SmsMessageRepository
-import com.misscall.whatsappassistant.domain.usecase.sms.SendSmsUseCase
-import com.misscall.whatsappassistant.telephony.sms.SmsSimManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,8 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SmsHistoryViewModel @Inject constructor(
     private val smsMessageRepository: SmsMessageRepository,
-    private val sendSmsUseCase: SendSmsUseCase,
-    private val simManager: SmsSimManager,
     private val workManagerHelper: WorkManagerHelper
 ) : ViewModel() {
 
@@ -65,16 +61,8 @@ class SmsHistoryViewModel @Inject constructor(
         _selectedFilter.value = status
     }
 
-    fun retrySms(smsId: Long) {
-        viewModelScope.launch {
-            _userMessage.value = "Retrying SMS #$smsId..."
-            sendSmsUseCase(smsMessageId = smsId, isAutomatic = false)
-        }
-    }
-
     fun cancelScheduledSms(smsId: Long) {
         viewModelScope.launch {
-            workManagerHelper.cancelSms(smsId)
             smsMessageRepository.updateStatus(smsId, SmsMessageStatus.CANCELLED)
             _userMessage.value = "Scheduled SMS #$smsId cancelled."
         }

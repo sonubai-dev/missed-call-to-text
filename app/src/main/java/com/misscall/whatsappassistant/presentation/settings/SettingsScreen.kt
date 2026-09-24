@@ -103,10 +103,7 @@ fun SettingsScreen(
             item {
                 SmsSettingsSection(
                     isAutoSmsEnabled = preferences.isSmsAutoReplyEnabled,
-                    onAutoSmsToggle = { viewModel.setChannelAutomation(whatsApp = preferences.isWhatsAppAutoReplyEnabled, sms = it, fallback = preferences.isWhatsAppFallbackToSmsEnabled) },
-                    availableSims = uiState.availableSims,
-                    selectedSimId = preferences.selectedSmsSubscriptionId,
-                    onSelectSim = { viewModel.setSelectedSmsSubscriptionId(it) }
+                    onAutoSmsToggle = { viewModel.setChannelAutomation(whatsApp = preferences.isWhatsAppAutoReplyEnabled, sms = it, fallback = preferences.isWhatsAppFallbackToSmsEnabled) }
                 )
             }
 
@@ -253,7 +250,6 @@ fun MessagingSection(
             Spacer(modifier = Modifier.height(8.dp))
             val modes = listOf(
                 WhatsAppSendingMode.MANUAL to "Direct Message",
-                WhatsAppSendingMode.WHATSAPP_WEB to "WhatsApp Web",
                 WhatsAppSendingMode.CLOUD_API to "Business API"
             )
             modes.forEach { (mode, label) ->
@@ -412,10 +408,7 @@ fun LinkRow(label: String, onClick: () -> Unit) {
 @Composable
 fun SmsSettingsSection(
     isAutoSmsEnabled: Boolean,
-    onAutoSmsToggle: (Boolean) -> Unit,
-    availableSims: List<com.misscall.whatsappassistant.telephony.sms.SimInfo>,
-    selectedSimId: Int,
-    onSelectSim: (Int) -> Unit
+    onAutoSmsToggle: (Boolean) -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -432,28 +425,6 @@ fun SmsSettingsSection(
                     Text("Send SMS when missed call is detected", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                 }
                 Switch(checked = isAutoSmsEnabled, onCheckedChange = onAutoSmsToggle)
-            }
-
-            if (availableSims.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Text("SMS SIM", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                Spacer(modifier = Modifier.height(4.dp))
-                availableSims.forEach { sim ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onSelectSim(sim.subscriptionId) }
-                            .padding(vertical = 4.dp)
-                    ) {
-                        RadioButton(
-                            selected = selectedSimId == sim.subscriptionId || (selectedSimId == -1 && sim.slotIndex == 0),
-                            onClick = { onSelectSim(sim.subscriptionId) }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("SIM ${sim.slotIndex + 1}: ${sim.carrierName.ifBlank { sim.displayName }}")
-                    }
-                }
             }
         }
     }

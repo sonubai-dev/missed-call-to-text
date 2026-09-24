@@ -60,10 +60,7 @@ class PermissionManager @Inject constructor(
     }
 
     fun isCallLogGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-
-        ) == PackageManager.PERMISSION_GRANTED
+        return false
     }
 
     fun isNotificationGranted(): Boolean {
@@ -109,14 +106,7 @@ class PermissionManager @Inject constructor(
             )
         )
 
-        rationales.add(
-            PermissionRationale(
 
-                description = "Optional fallback to sync caller details from Android's system call history.",
-                isPlayStoreSafe = false,
-                isGranted = isCallLogGranted()
-            )
-        )
 
         rationales.add(
             PermissionRationale(

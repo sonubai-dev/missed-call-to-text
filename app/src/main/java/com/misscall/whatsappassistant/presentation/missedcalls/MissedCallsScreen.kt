@@ -316,12 +316,7 @@ fun MissedCallsScreen(
         SmsComposerDialog(
             phoneNumber = call.phoneNumber,
             initialMessage = defaultText,
-            
-            
-            
-                viewModel.sendNativeSms(call, message, subId)
-                selectedCallForSms = null
-            },
+            callerName = call.callerName,
             onDismiss = { selectedCallForSms = null }
         )
     }

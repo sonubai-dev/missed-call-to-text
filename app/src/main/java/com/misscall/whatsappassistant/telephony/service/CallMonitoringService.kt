@@ -22,9 +22,6 @@ class CallMonitoringService : Service() {
     lateinit var notificationHelper: NotificationHelper
 
     @Inject
-
-
-    @Inject
     lateinit var telephonyCallStateManager: TelephonyCallStateManager
 
 

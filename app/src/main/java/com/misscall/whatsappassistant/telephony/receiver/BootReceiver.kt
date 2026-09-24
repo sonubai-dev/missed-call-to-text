@@ -43,16 +43,7 @@ class BootReceiver : BroadcastReceiver() {
                     // 1. Reconcile any events interrupted by device shutdown/reboot
                     callEventPipeline.reconcileUnprocessedEvents()
 
-                    // 2. Reschedule any pending SCHEDULED SMS jobs (Never resend SENT or DELIVERED)
-                    val pendingSmsList = smsMessageRepository.getPendingScheduledSms()
-                    AppLogger.i(TAG, "Reboot recovery: found ${pendingSmsList.size} pending scheduled SMS messages to restore.")
-                    for (pendingSms in pendingSmsList) {
-                        val remainingDelayMinutes = if (pendingSms.scheduledAt != null) {
-                            val diff = pendingSms.scheduledAt - System.currentTimeMillis()
-                            (diff / (60 * 1000L)).coerceAtLeast(0).toInt()
-                        } else 0
-                        workManagerHelper.scheduleSms(pendingSms.id, remainingDelayMinutes)
-                    }
+
 
                     // 3. Restart Foreground Monitoring Service if enabled
                     val prefs = preferencesRepository.userPreferencesFlow.first()

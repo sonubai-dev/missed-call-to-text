@@ -265,9 +265,7 @@ private fun Step2Permissions(onNext: () -> Unit) {
         description = "We need this to detect when you miss a call",
         isGranted = hasPhonePerms,
         onRequest = {
-            phoneLauncher.launch(
-
-            )
+            phoneLauncher.launch(arrayOf(Manifest.permission.READ_PHONE_STATE))
         }
     )
 

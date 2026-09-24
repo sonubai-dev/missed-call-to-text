@@ -242,7 +242,6 @@ fun SmsHistoryScreen(
         SmsDetailsDialog(
             sms = sms,
             onRetry = {
-                viewModel.retrySms(sms.id)
                 selectedSmsForDetails = null
             },
             onCancelScheduled = {

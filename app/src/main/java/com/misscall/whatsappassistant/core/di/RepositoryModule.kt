@@ -64,9 +64,5 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-
-
-    @Binds
-    @Singleton
     abstract fun bindWhatsAppSender(impl: WhatsAppIntentSender): WhatsAppSender
 }

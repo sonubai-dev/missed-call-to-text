@@ -12,9 +12,6 @@ import com.misscall.whatsappassistant.domain.repository.CallEventRepository
 import com.misscall.whatsappassistant.domain.repository.SmsMessageRepository
 import com.misscall.whatsappassistant.domain.repository.TemplateRepository
 import com.misscall.whatsappassistant.domain.usecase.SendWhatsAppMessageUseCase
-import com.misscall.whatsappassistant.domain.usecase.sms.SendSmsOutcome
-import com.misscall.whatsappassistant.domain.usecase.sms.SendSmsUseCase
-import com.misscall.whatsappassistant.telephony.sms.SmsSimManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,9 +26,7 @@ class MissedCallsViewModel @Inject constructor(
     private val callEventRepository: CallEventRepository,
     private val templateRepository: TemplateRepository,
     private val sendWhatsAppMessageUseCase: SendWhatsAppMessageUseCase,
-    private val smsSimManager: SmsSimManager,
     private val smsMessageRepository: SmsMessageRepository,
-    private val sendSmsUseCase: SendSmsUseCase,
     private val preferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
@@ -60,19 +55,10 @@ class MissedCallsViewModel @Inject constructor(
             matchesFilter && matchesQuery
         }
 
-        val activeSims = smsSimManager.getActiveSimCards()
-        val defaultSub = if (prefs.selectedSmsSubscriptionId != SmsSimManager.SUBSCRIPTION_ID_DEFAULT) {
-            prefs.selectedSmsSubscriptionId
-        } else {
-            smsSimManager.getDefaultSmsSubscriptionId()
-        }
-
         MissedCallsUiState(
             calls = calls,
             filteredCalls = filtered,
             templates = templates,
-            availableSims = activeSims,
-            defaultSubId = defaultSub,
             activeFilter = filter,
             searchQuery = query,
             userMessage = _userMessage.value
@@ -124,25 +110,6 @@ class MissedCallsViewModel @Inject constructor(
         viewModelScope.launch {
             callEventRepository.clearAllCallEvents()
             _userMessage.value = "Call logs cleared"
-        }
-    }
-
-    fun sendNativeSms(callEvent: CallEvent, messageText: String, subscriptionId: Int?) {
-        viewModelScope.launch {
-            val sms = SmsMessage(
-                callEventId = callEvent.id,
-                phoneNumber = callEvent.phoneNumber,
-                message = messageText,
-                status = SmsMessageStatus.SCHEDULED,
-                subscriptionId = subscriptionId,
-                scheduledAt = System.currentTimeMillis()
-            )
-            val id = smsMessageRepository.insertSms(sms)
-            when (val outcome = sendSmsUseCase(id, isAutomatic = false)) {
-                is SendSmsOutcome.Success -> _userMessage.value = "Native SMS dispatched successfully"
-                is SendSmsOutcome.DuplicateSkipped -> _userMessage.value = "Duplicate SMS protection skipped"
-                is SendSmsOutcome.Failed -> _userMessage.value = "Failed to send SMS: ${outcome.reason}"
-            }
         }
     }
 

@@ -3,7 +3,6 @@ package com.misscall.whatsappassistant.presentation.settings
 import com.misscall.whatsappassistant.core.permissions.DetectionEngineMode
 import com.misscall.whatsappassistant.core.permissions.PermissionRationale
 import com.misscall.whatsappassistant.core.preferences.UserPreferences
-import com.misscall.whatsappassistant.telephony.sms.SimInfo
 
 data class SettingsUiState(
     val preferences: UserPreferences = UserPreferences(),
@@ -12,7 +11,6 @@ data class SettingsUiState(
     val isPhoneStatePermissionGranted: Boolean = false,
     val isNotificationPermissionGranted: Boolean = false,
     val isSendSmsPermissionGranted: Boolean = false,
-    val availableSims: List<SimInfo> = emptyList(),
     val isSimUnavailableWarning: Boolean = false,
     val isWhatsAppInstalled: Boolean = false,
     val isWhatsAppBusinessInstalled: Boolean = false,

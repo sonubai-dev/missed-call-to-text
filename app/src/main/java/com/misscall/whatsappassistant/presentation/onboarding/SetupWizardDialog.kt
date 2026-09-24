@@ -272,8 +272,7 @@ fun SetupWizardDialog(
                         )
                         listOf(
                             Triple(WhatsAppSendingMode.MANUAL, "Mode 1: Manual (Recommended)", "Opens official WhatsApp chat deep-link with pre-filled message."),
-                            Triple(WhatsAppSendingMode.WHATSAPP_WEB, "Mode 2: WhatsApp Web", "Browser-based QR linked device session helper."),
-                            Triple(WhatsAppSendingMode.CLOUD_API, "Mode 3: Official Cloud API", "Direct Meta Graph API integration with encrypted tokens.")
+                            Triple(WhatsAppSendingMode.CLOUD_API, "Mode 2: Official Cloud API", "Direct Meta Graph API integration with encrypted tokens.")
                         ).forEach { (mode, title, desc) ->
                             Card(
                                 shape = RoundedCornerShape(12.dp),

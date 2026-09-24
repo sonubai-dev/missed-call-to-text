@@ -58,41 +58,4 @@ class WorkManagerHelper @Inject constructor(
         val uniqueWorkName = "${Constants.UNIQUE_WORK_PREFIX_CALL}$callEventId"
         workManager.cancelUniqueWork(uniqueWorkName)
     }
-
-    fun scheduleSms(
-        smsMessageId: Long,
-        delayMinutes: Int
-    ) {
-        val inputData = Data.Builder()
-            .putLong(SendSmsWorker.KEY_SMS_MESSAGE_ID, smsMessageId)
-            .build()
-
-        val workRequest = OneTimeWorkRequestBuilder<SendSmsWorker>()
-            .setInputData(inputData)
-            .apply {
-                if (delayMinutes > 0) {
-                    setInitialDelay(delayMinutes.toLong(), TimeUnit.MINUTES)
-                }
-            }
-            .setBackoffCriteria(
-                BackoffPolicy.EXPONENTIAL,
-                30,
-                TimeUnit.SECONDS
-            )
-            .addTag("work_tag_sms")
-            .build()
-
-        val uniqueWorkName = "sms_work_$smsMessageId"
-
-        workManager.enqueueUniqueWork(
-            uniqueWorkName,
-            ExistingWorkPolicy.REPLACE,
-            workRequest
-        )
-    }
-
-    fun cancelSms(smsMessageId: Long) {
-        val uniqueWorkName = "sms_work_$smsMessageId"
-        workManager.cancelUniqueWork(uniqueWorkName)
-    }
 }

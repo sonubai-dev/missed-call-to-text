@@ -45,8 +45,6 @@ class SettingsViewModel @Inject constructor(
     private val messageLogDao: MessageLogDao,
     private val templateDao: MessageTemplateDao,
     private val callEventPipeline: CallEventPipeline,
-    private val smsPermissionManager: com.misscall.whatsappassistant.telephony.sms.SmsPermissionManager,
-    private val smsSimManager: com.misscall.whatsappassistant.telephony.sms.SmsSimManager,
     private val crmSyncManager: com.misscall.whatsappassistant.crm.CrmSyncManager,
     private val webhookDao: com.misscall.whatsappassistant.database.dao.WebhookDao
 ) : ViewModel() {
@@ -100,11 +98,8 @@ class SettingsViewModel @Inject constructor(
         val hasCallLog = permissionManager.isCallLogGranted()
         val hasPhoneState = permissionManager.isPhoneStateGranted()
         val hasNotification = permissionManager.isNotificationGranted()
-        val hasSendSms = smsPermissionManager.hasSendSmsPermission()
-        val activeSims = smsSimManager.getActiveSimCards()
-        val isSimWarning = if (prefs.selectedSmsSubscriptionId != -1 && activeSims.isNotEmpty()) {
-            activeSims.none { it.subscriptionId == prefs.selectedSmsSubscriptionId }
-        } else false
+        val hasSendSms = false
+        val isSimWarning = false
         val waInstalled = PermissionHelper.isWhatsAppInstalled(context)
         val waBusinessInstalled = PermissionHelper.isWhatsAppBusinessInstalled(context)
         val activeMode = permissionManager.getActiveDetectionEngineMode()
@@ -118,7 +113,6 @@ class SettingsViewModel @Inject constructor(
             isPhoneStatePermissionGranted = hasPhoneState,
             isNotificationPermissionGranted = hasNotification,
             isSendSmsPermissionGranted = hasSendSms,
-            availableSims = activeSims,
             isSimUnavailableWarning = isSimWarning,
             isWhatsAppInstalled = waInstalled,
             isWhatsAppBusinessInstalled = waBusinessInstalled,

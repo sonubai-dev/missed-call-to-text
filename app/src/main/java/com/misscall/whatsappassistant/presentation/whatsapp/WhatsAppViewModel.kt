@@ -182,20 +182,6 @@ class WhatsAppViewModel @Inject constructor(
         }
     }
 
-    fun connectWhatsAppWebSession(businessNumber: String) {
-        viewModelScope.launch {
-            providerManager.webProvider.connectSession(businessNumber)
-            _userMessage.value = "WhatsApp Web session linked to $businessNumber"
-        }
-    }
-
-    fun disconnectWhatsAppWebSession() {
-        viewModelScope.launch {
-            providerManager.webProvider.disconnect()
-            _userMessage.value = "WhatsApp Web session disconnected"
-        }
-    }
-
     fun sendFollowUp(phoneNumber: String, messageText: String, callEventId: Long? = null) {
         viewModelScope.launch {
             val success = sendWhatsAppMessageUseCase(

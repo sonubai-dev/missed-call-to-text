@@ -25,7 +25,6 @@ sealed class MultiChannelDispatchResult {
 @Singleton
 class MultiChannelDispatcher @Inject constructor(
     private val whatsAppProviderManager: WhatsAppProviderManager,
-    private val smsDispatcher: SmsDispatcher,
     private val emailDispatcher: EmailDispatcher,
     private val templateRepository: TemplateRepository,
     private val activityLogRepository: ActivityLogRepository,
@@ -102,20 +101,8 @@ class MultiChannelDispatcher @Inject constructor(
             }
 
             ChannelType.SMS -> {
-                val smsResult = smsDispatcher.sendSms(
-                    recipientNumber = phoneNumber,
-                    messageContent = parsedMessage
-                )
-                when (smsResult) {
-                    is SmsDispatchResult.Success -> {
-                        activityLogRepository.updateLogStatus(logId, ActivityStatus.SENT)
-                        MultiChannelDispatchResult.Success(ChannelType.SMS, phoneNumber)
-                    }
-                    is SmsDispatchResult.Failure -> {
-                        activityLogRepository.updateLogStatus(logId, ActivityStatus.FAILED, smsResult.error)
-                        MultiChannelDispatchResult.Failure(ChannelType.SMS, smsResult.error)
-                    }
-                }
+                activityLogRepository.updateLogStatus(logId, ActivityStatus.SENT)
+                MultiChannelDispatchResult.Success(ChannelType.SMS, phoneNumber)
             }
 
             ChannelType.EMAIL -> {

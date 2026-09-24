@@ -170,16 +170,7 @@ fun WhatsAppScreen(
                             onSelect = { viewModel.setSendingMode(WhatsAppSendingMode.MANUAL) }
                         )
 
-                        // Mode 2: WhatsApp Web
-                        ModeSelectorRow(
-                            title = "WhatsApp Web",
-                            description = "Unofficial browser session bridge via QR pairing.",
-                            selected = prefs.whatsAppSendingMode == WhatsAppSendingMode.WHATSAPP_WEB,
-                            icon = Icons.Default.QrCode,
-                            onSelect = { viewModel.setSendingMode(WhatsAppSendingMode.WHATSAPP_WEB) }
-                        )
-
-                        // Mode 3: Official Cloud API
+                        // Mode 2: Official Cloud API
                         ModeSelectorRow(
                             title = "Official Cloud API",
                             description = "Meta Graph API for headless business sending (Tokens encrypted).",
@@ -201,21 +192,6 @@ fun WhatsAppScreen(
                                 viewModel.sendFollowUp(phone, msg)
                             },
                             onEditMessage = { phone, msg ->
-                                manualMessageToEdit = Pair(phone, msg)
-                            }
-                        )
-                    }
-                }
-                WhatsAppSendingMode.WHATSAPP_WEB -> {
-                    item {
-                        WhatsAppWebDashboardCard(
-                            uiState = uiState,
-                            onConnectClick = { showWebPairDialog = true },
-                            onDisconnectClick = { viewModel.disconnectWhatsAppWebSession() },
-                            onSendFollowUp = { phone, msg, callId ->
-                                viewModel.sendFollowUp(phone, msg, callId)
-                            },
-                            onEditCustomMessage = { phone, msg ->
                                 manualMessageToEdit = Pair(phone, msg)
                             }
                         )
@@ -553,10 +529,7 @@ fun WhatsAppScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        if (businessNum.isNotBlank()) {
-                            viewModel.connectWhatsAppWebSession(businessNum)
-                            showWebPairDialog = false
-                        }
+                        showWebPairDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                 ) {
