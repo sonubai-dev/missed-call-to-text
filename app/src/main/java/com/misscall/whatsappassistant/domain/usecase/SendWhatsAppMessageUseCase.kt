@@ -34,6 +34,7 @@ class SendWhatsAppMessageUseCase @Inject constructor(
 
         val deliveryMethod = when (result.modeUsed) {
             WhatsAppSendingMode.MANUAL -> DeliveryMethod.INTENT
+            WhatsAppSendingMode.WHATSAPP_WEB -> DeliveryMethod.WHATSAPP_BUSINESS
             WhatsAppSendingMode.CLOUD_API -> DeliveryMethod.CLOUD_API
         }
 

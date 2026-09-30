@@ -24,15 +24,18 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("keystore/release.jks")
-            storePassword = "misscallpassword"
-            keyAlias = "misscall"
-            keyPassword = "misscallpassword"
-            enableV1Signing = true
-            enableV2Signing = true
-            enableV3Signing = true
-            enableV4Signing = true
+        val releaseKeystore = file("keystore/release.jks")
+        if (releaseKeystore.exists()) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = "misscallpassword"
+                keyAlias = "misscall"
+                keyPassword = "misscallpassword"
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+                enableV4Signing = true
+            }
         }
         getByName("debug") {
             enableV1Signing = true
@@ -45,7 +48,12 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            val releaseKeystore = file("keystore/release.jks")
+            if (releaseKeystore.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

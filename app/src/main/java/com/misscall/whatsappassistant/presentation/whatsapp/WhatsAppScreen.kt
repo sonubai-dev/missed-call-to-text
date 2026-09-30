@@ -206,6 +206,9 @@ fun WhatsAppScreen(
                         )
                     }
                 }
+                else -> {
+                    // Optional WhatsApp Web or fallback
+                }
             }
 
             // Auto-Reply Settings Card

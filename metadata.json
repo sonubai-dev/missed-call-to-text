@@ -1,0 +1,9 @@
+{
+  "name": "MissCall Assistant",
+  "description": "Automated missed-call detection, customer CRM, and instant WhatsApp & SMS follow-up platform.",
+  "version": "1.0.0",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}
