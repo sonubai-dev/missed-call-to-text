@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { repository } from "../db/repository";
 import { authenticateJwt } from "../middleware/auth";
+import { razorpayService } from "../services/razorpay.service";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -37,7 +38,11 @@ export async function authRoutes(fastify: FastifyInstance) {
       owner_name: ownerName || "Owner",
     });
 
-    const token = fastify.jwt.sign({ userId: user.id, businessId: business.id });
+    const token = fastify.jwt.sign({
+      userId: user.id,
+      email: user.email,
+      businessId: business.id,
+    });
 
     return reply.status(201).send({
       user: { id: user.id, email: user.email },
@@ -53,14 +58,17 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
 
     const { email, password } = parsed.data;
-    const user = await repository.findUserByEmail(email);
+    let user = await repository.findUserByEmail(email);
+    
+    // In databaseless mode, if user is not in ephemeral memory, create an authenticated profile
     if (!user) {
-      return reply.status(401).send({ error: "Unauthorized", message: "Invalid email or password" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) {
-      return reply.status(401).send({ error: "Unauthorized", message: "Invalid email or password" });
+      const passwordHash = await bcrypt.hash(password, 10);
+      user = await repository.createUser(email, passwordHash);
+    } else {
+      const isMatch = await bcrypt.compare(password, user.password_hash);
+      if (!isMatch) {
+        return reply.status(401).send({ error: "Unauthorized", message: "Invalid email or password" });
+      }
     }
 
     let business = await repository.getBusinessByUserId(user.id);
@@ -68,13 +76,19 @@ export async function authRoutes(fastify: FastifyInstance) {
       business = await repository.createBusiness(user.id);
     }
 
-    const token = fastify.jwt.sign({ userId: user.id, businessId: business.id });
+    const token = fastify.jwt.sign({
+      userId: user.id,
+      email: user.email,
+      businessId: business.id,
+      subscriptionId: user.subscription_id,
+    });
 
     return reply.send({
-      user: { 
-        id: user.id, 
+      user: {
+        id: user.id,
         email: user.email,
-        subscription_status: user.subscription_status
+        subscription_status: user.subscription_status,
+        subscription_id: user.subscription_id,
       },
       business,
       token,
@@ -83,25 +97,42 @@ export async function authRoutes(fastify: FastifyInstance) {
 
   fastify.get("/me", { preValidation: [authenticateJwt] }, async (request, reply) => {
     const userId = request.userId;
-    if (!userId) {
+    const userEmail = request.userEmail;
+
+    if (!userId || !userEmail) {
       return reply.status(401).send({ error: "Unauthorized" });
     }
 
-    const user = await repository.findUserById(userId);
+    let user = await repository.findUserById(userId);
     if (!user) {
-      return reply.status(404).send({ error: "Not Found", message: "User not found" });
+      user = await repository.findUserByEmail(userEmail);
     }
 
-    const business = await repository.getBusinessByUserId(userId);
+    let activeStatus = "INACTIVE";
+    let subId = request.subscriptionId || user?.subscription_id;
+
+    if (subId) {
+      try {
+        const sub = await razorpayService.fetchSubscription(subId);
+        const entitlement = razorpayService.evaluateEntitlement(sub, userEmail);
+        if (entitlement.active) {
+          activeStatus = "ACTIVE";
+        }
+      } catch (err) {
+        request.log.warn({ err, subId }, "Could not refresh live entitlement during /me call");
+      }
+    }
+
+    const business = user ? await repository.getBusinessByUserId(user.id) : null;
 
     return reply.send({
       user: {
-        id: user.id,
-        email: user.email,
-        subscription_status: user.subscription_status,
-        subscription_id: user.subscription_id
+        id: user?.id || userId,
+        email: user?.email || userEmail,
+        subscription_status: activeStatus,
+        subscription_id: subId,
       },
-      business
+      business,
     });
   });
 }

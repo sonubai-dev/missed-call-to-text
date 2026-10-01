@@ -8,6 +8,7 @@ import { whatsappRoutes } from "./whatsapp.routes";
 import { webhooksRoutes } from "./webhooks.routes";
 import { aiMessageRoutes } from "./ai-message.routes";
 import { razorpayRoutes } from "./razorpay.routes";
+import { subscriptionRoutes } from "./subscription.routes";
 
 export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(authRoutes, { prefix: "/api/v1/auth" });
@@ -19,8 +20,10 @@ export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(webhooksRoutes, { prefix: "/api/v1/webhooks" });
   fastify.register(aiMessageRoutes, { prefix: "/api/v1/message" });
   fastify.register(razorpayRoutes, { prefix: "/api/v1/razorpay" });
+  fastify.register(subscriptionRoutes, { prefix: "/api/v1/subscription" });
+  fastify.register(subscriptionRoutes, { prefix: "/api/subscription" }); // Conveniency alias
 
   fastify.get("/health", async () => {
-    return { status: "OK", timestamp: Date.now() };
+    return { status: "OK", timestamp: Date.now(), database: "none (databaseless)", paymentGateway: "razorpay" };
   });
 }

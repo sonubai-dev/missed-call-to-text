@@ -16,6 +16,7 @@ import { TemplatesView } from "./screens/TemplatesView";
 import { SimulatorView } from "./screens/SimulatorView";
 import { WebhooksView } from "./screens/WebhooksView";
 import { SettingsView } from "./screens/SettingsView";
+import { DownloadView } from "./screens/DownloadView";
 
 import { appStorage } from "./lib/storage";
 import {
@@ -48,8 +49,23 @@ export default function App() {
   const [user, setUser] = useState<UserAccount>(() => appStorage.getUser());
 
   // Navigation State
-  const [currentTab, setCurrentTab] = useState<NavTab>("dashboard");
+  const [currentTab, setCurrentTab] = useState<NavTab>(() => {
+    if (typeof window !== "undefined" && window.location.pathname.startsWith("/download")) {
+      return "download";
+    }
+    return "dashboard";
+  });
   const [targetPhoneForWhatsApp, setTargetPhoneForWhatsApp] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (typeof window !== "undefined" && window.location.pathname.startsWith("/download")) {
+        setCurrentTab("download");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   // Modals
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -468,6 +484,7 @@ export default function App() {
           onOpenSimulator={() => setCurrentTab("simulator")}
           onOpenPaywall={() => setIsPaywallOpen(true)}
           onResetData={handleResetData}
+          onOpenDownload={() => setCurrentTab("download")}
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#0C1317]">
@@ -577,6 +594,10 @@ export default function App() {
               settings={settings}
               onUpdateSettings={setSettings}
             />
+          )}
+
+          {currentTab === "download" && (
+            <DownloadView onBackToDashboard={() => setCurrentTab("dashboard")} />
           )}
         </main>
       </div>

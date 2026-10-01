@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   CreditCard,
   User,
-  ExternalLink,
+  Download,
 } from "lucide-react";
 import { WhatsAppConnectionStatus, UserAccount } from "../types";
 
@@ -18,6 +18,7 @@ interface HeaderProps {
   onOpenSimulator: () => void;
   onOpenPaywall: () => void;
   onResetData: () => void;
+  onOpenDownload: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSimulator,
   onOpenPaywall,
   onResetData,
+  onOpenDownload,
 }) => {
   return (
     <header className="h-16 bg-[#111B21] border-b border-[#222E35] px-6 flex items-center justify-between shrink-0 z-20">
@@ -70,6 +72,16 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right: Actions & Profile */}
       <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Download Android App Website Link */}
+        <button
+          onClick={onOpenDownload}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 text-xs font-bold transition-all shadow-sm"
+          title="Download Android App APK & Website"
+        >
+          <Download className="w-3.5 h-3.5" />
+          <span>Download App</span>
+        </button>
+
         {/* Telephony Simulator Button */}
         <button
           onClick={onOpenSimulator}
@@ -77,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
           title="Launch Telephony & Call Pipeline Simulator"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
-          <span>Call Simulator</span>
+          <span className="hidden sm:inline">Call Simulator</span>
         </button>
 
         {/* Subscription / Paywall Status */}

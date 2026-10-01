@@ -14,6 +14,7 @@ import {
   Activity,
   Play,
   RotateCw,
+  Download,
 } from "lucide-react";
 import {
   CallEvent,
@@ -69,11 +70,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
         <div className="flex items-center gap-2.5">
           <button
+            onClick={() => onNavigate("download")}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all border border-emerald-500/30"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download Android App</span>
+          </button>
+          <button
             onClick={onOpenSimulator}
             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-emerald-900/30"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
-            <span>Simulate Incoming Call</span>
+            <span>Simulate Call</span>
           </button>
           <button
             onClick={() => onNavigate("whatsapp")}
@@ -82,6 +90,53 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <Smartphone className="w-3.5 h-3.5 text-[#00A884]" />
             <span>WhatsApp Workbench</span>
           </button>
+        </div>
+      </div>
+
+      {/* Official Android App Download Section ("Previous Section") */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#111B21] to-[#182229] border border-emerald-500/30 p-5 sm:p-6 shadow-xl">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-lg shadow-emerald-500/10">
+              <Smartphone className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Official Android Application
+                </span>
+                <span className="text-xs text-slate-400 font-mono">v1.0.0 • 20.5 MB APK</span>
+                <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Ready to Install
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                MissCall Assistant for Android Phone
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                Install on your Android smartphone to capture incoming carrier calls via native <code className="text-emerald-400 font-mono">CallScreeningService</code>, dispatch automated SMS replies via Dual SIM, and sync telemetry live.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+            <a
+              href="/downloads/misscall-assistant.apk"
+              download="misscall-assistant.apk"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs sm:text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
+            >
+              <Download className="w-4 h-4" />
+              <span>Download APK</span>
+            </a>
+            <button
+              onClick={() => onNavigate("download")}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#202C33] hover:bg-[#2A3942] border border-[#222E35] text-white text-xs sm:text-sm font-semibold transition-colors"
+            >
+              <span>View Download Website</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </button>
+          </div>
         </div>
       </div>
 
