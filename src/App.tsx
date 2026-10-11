@@ -17,6 +17,7 @@ import { SimulatorView } from "./screens/SimulatorView";
 import { WebhooksView } from "./screens/WebhooksView";
 import { SettingsView } from "./screens/SettingsView";
 import { DownloadView } from "./screens/DownloadView";
+import { WebsiteView } from "./screens/WebsiteView";
 
 import { appStorage } from "./lib/storage";
 import {
@@ -50,17 +51,38 @@ export default function App() {
 
   // Navigation State
   const [currentTab, setCurrentTab] = useState<NavTab>(() => {
-    if (typeof window !== "undefined" && window.location.pathname.startsWith("/download")) {
-      return "download";
+    if (typeof window !== "undefined") {
+      const search = new URLSearchParams(window.location.search);
+      const viewParam = search.get("view") || search.get("tab");
+      if (viewParam === "dashboard") return "dashboard";
+      if (viewParam === "simulator") return "simulator";
+      if (viewParam === "calls") return "calls";
+      if (viewParam === "customers") return "customers";
+      if (viewParam === "download") return "download";
+      if (viewParam === "website") return "website";
+
+      const path = window.location.pathname;
+      if (path.startsWith("/dashboard")) return "dashboard";
+      if (path.startsWith("/simulator")) return "simulator";
+      if (path.startsWith("/calls")) return "calls";
+      if (path.startsWith("/download")) return "download";
     }
-    return "dashboard";
+    // Default: Official Android App Website & Download Page
+    return "website";
   });
   const [targetPhoneForWhatsApp, setTargetPhoneForWhatsApp] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const handlePopState = () => {
-      if (typeof window !== "undefined" && window.location.pathname.startsWith("/download")) {
-        setCurrentTab("download");
+      if (typeof window !== "undefined") {
+        const search = new URLSearchParams(window.location.search);
+        const viewParam = search.get("view") || search.get("tab");
+        if (viewParam === "dashboard") setCurrentTab("dashboard");
+        else if (viewParam === "simulator") setCurrentTab("simulator");
+        else if (viewParam === "website") setCurrentTab("website");
+        else if (window.location.pathname.startsWith("/download")) {
+          setCurrentTab("download");
+        }
       }
     };
     window.addEventListener("popstate", handlePopState);
@@ -464,6 +486,16 @@ export default function App() {
   const pendingCount = suggestions.length;
   const missedCount = calls.filter((c) => c.whatsappStatus === "PENDING").length;
 
+  if (currentTab === "website") {
+    return (
+      <WebsiteView
+        onOpenDashboard={() => setCurrentTab("dashboard")}
+        onOpenSimulator={() => setCurrentTab("simulator")}
+        onNavigateTab={(tab) => setCurrentTab(tab)}
+      />
+    );
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#0C1317] text-[#E9EDEF]">
       {/* Sidebar */}
@@ -484,7 +516,7 @@ export default function App() {
           onOpenSimulator={() => setCurrentTab("simulator")}
           onOpenPaywall={() => setIsPaywallOpen(true)}
           onResetData={handleResetData}
-          onOpenDownload={() => setCurrentTab("download")}
+          onOpenDownload={() => setCurrentTab("website")}
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#0C1317]">
@@ -597,7 +629,7 @@ export default function App() {
           )}
 
           {currentTab === "download" && (
-            <DownloadView onBackToDashboard={() => setCurrentTab("dashboard")} />
+            <DownloadView onBackToDashboard={() => setCurrentTab("website")} />
           )}
         </main>
       </div>

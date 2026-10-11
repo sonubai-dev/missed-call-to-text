@@ -13,9 +13,11 @@ import {
   Webhook,
   Settings,
   ShieldCheck,
+  Globe,
 } from "lucide-react";
 
 export type NavTab =
+  | "website"
   | "dashboard"
   | "download"
   | "calls"
@@ -46,16 +48,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     {
+      id: "website" as NavTab,
+      label: "Official Website",
+      icon: Globe,
+      badge: "Public",
+      badgeColor: "bg-[#00A884]/20 text-[#25D366] border border-[#00A884]/30",
+    },
+    {
       id: "dashboard" as NavTab,
-      label: "Dashboard",
+      label: "CRM Dashboard",
       icon: LayoutDashboard,
       badge: undefined,
     },
     {
       id: "download" as NavTab,
-      label: "Download Android App",
+      label: "Download APK",
       icon: Download,
-      badge: "Official APK",
+      badge: "v1.0.0",
       badgeColor: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
     },
     {
@@ -211,7 +220,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span>Get APK</span>
           </a>
           <button
-            onClick={() => onSelectTab("download")}
+            onClick={() => onSelectTab("website")}
             className="px-2.5 py-1.5 rounded-lg bg-[#202C33] hover:bg-[#2A3942] text-xs text-slate-300 hover:text-white font-semibold transition-colors"
           >
             Website

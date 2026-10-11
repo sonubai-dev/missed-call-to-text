@@ -76,10 +76,10 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onOpenDownload}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 text-xs font-bold transition-all shadow-sm"
-          title="Download Android App APK & Website"
+          title="Go to Official Android App Website & Download APK"
         >
           <Download className="w-3.5 h-3.5" />
-          <span>Download App</span>
+          <span>App Website</span>
         </button>
 
         {/* Telephony Simulator Button */}

@@ -1,0 +1,13 @@
+{
+  "status": "available",
+  "filename": "misscall-assistant.apk",
+  "version": "1.0.0",
+  "sizeBytes": 21495808,
+  "sizeFormatted": "20.5 MB (Universal Release)",
+  "mimeType": "application/vnd.android.package-archive",
+  "sha256": "48FF415C3CBC11CF07D37017DC88BE959BE7955AACADDEA0BAD6741C2A7BFBE8",
+  "downloadUrl": "/downloads/misscall-assistant.apk",
+  "host": "Vercel Static / Edge Network",
+  "verified": true,
+  "lastUpdated": "2026-10-10T21:09:28Z"
+}
