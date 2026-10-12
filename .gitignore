@@ -16,9 +16,12 @@ out/
 build/
 app/build/
 
-# Gradle files
-.gradle/
-build/
+# Local SDK & Tooling Binaries (avoid GitHub 100MB blob limits)
+.tools/
+*.zip
+*.tar.gz
+gradle-8.7-bin.zip
+.aistudio/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -78,4 +81,3 @@ web-dashboard/build/
 
 # Windows
 Thumbs.db
-!web-dashboard/public/downloads/*.apk

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3000",
-    "prebuild": "python3 scripts/generate_release_apk.py",
-    "build": "tsc && vite build",
+    "prebuild": "python3 scripts/build_production_release.py",
+    "build": "vite build",
     "lint": "tsc --noEmit",
     "preview": "vite preview --host 0.0.0.0 --port 3000"
   },

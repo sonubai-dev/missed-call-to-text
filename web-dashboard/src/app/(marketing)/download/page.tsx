@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default function DownloadPage() {
   const version = "1.0.0";
   const size = "20.5 MB";
-  const sha256 = "BD1D39002FF9814006756BFC5755F3BFC354D022A61B11C4C685823FB2CF2BA6";
-  const date = "September 2026";
-  const minSdk = "Android 8.0 (Oreo) and above";
+  const sha256 = "93E466DCC2673BC277E7046F2A05F7FEDC79A353EA5ECA8F457EA41F5A95525A";
+  const date = "October 2026";
+  const minSdk = "Android 8.0 (Oreo, API 26) and above";
 
   return (
     <div className="bg-slate-50 min-h-screen py-16 sm:py-24">
