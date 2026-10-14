@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function DownloadPage() {
   const version = "1.0.0";
   const size = "20.5 MB";
-  const sha256 = "93E466DCC2673BC277E7046F2A05F7FEDC79A353EA5ECA8F457EA41F5A95525A";
+  const sha256 = "4EA4DADE497925A6430525DBADE99C964DC1F71E01261029A89736C7C75BCEEA";
   const date = "October 2026";
   const minSdk = "Android 8.0 (Oreo, API 26) and above";
 

@@ -95,6 +95,53 @@ export async function authRoutes(fastify: FastifyInstance) {
     });
   });
 
+  const deviceAuthSchema = z.object({
+    deviceId: z.string().min(6),
+    phoneNumber: z.string().optional(),
+    businessName: z.string().optional(),
+  });
+
+  fastify.post("/device-auth", async (request, reply) => {
+    const parsed = deviceAuthSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.status(400).send({ error: "Validation Error", details: parsed.error.format() });
+    }
+
+    const { deviceId, phoneNumber, businessName } = parsed.data;
+    const deviceEmail = `device_${deviceId.toLowerCase().replace(/[^a-z0-9]/g, "")}@misscall.app`;
+
+    let user = await repository.findUserByEmail(deviceEmail);
+    let business;
+    if (!user) {
+      const dummyHash = await bcrypt.hash(deviceId, 6);
+      user = await repository.createUser(deviceEmail, dummyHash);
+      business = await repository.createBusiness(user.id, {
+        name: businessName || "My Store",
+        owner_name: phoneNumber || "Store Owner",
+      });
+    } else {
+      business = await repository.getBusinessByUserId(user.id);
+    }
+
+    const token = fastify.jwt.sign({
+      userId: user.id,
+      email: user.email,
+      businessId: business?.id || "biz_default",
+      subscriptionId: user.subscription_id,
+    });
+
+    return reply.status(200).send({
+      user: {
+        id: user.id,
+        email: user.email,
+        subscription_status: user.subscription_status,
+        subscription_id: user.subscription_id,
+      },
+      business,
+      token,
+    });
+  });
+
   fastify.get("/me", { preValidation: [authenticateJwt] }, async (request, reply) => {
     const userId = request.userId;
     const userEmail = request.userEmail;

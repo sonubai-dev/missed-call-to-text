@@ -6,9 +6,9 @@
   "releaseDate": "October 2026",
   "minSdk": "Android 8.0 (API 26)",
   "targetSdk": "Android 14 (API 34)",
-  "fileSize": "20.49 MB",
-  "sizeBytes": 21481927,
-  "sha256": "C5FA607C60B610EEA1E9CBE776DF047068E57DA908F10A068226C8DDF12A6700",
+  "fileSize": "20.50 MB",
+  "sizeBytes": 21498310,
+  "sha256": "EE202575AFB0848D0DE43E36F010CC75F7308335AC9A35588D10CA7C682BC26E",
   "signing": {
     "v1Scheme": true,
     "v2Scheme": true,

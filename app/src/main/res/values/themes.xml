@@ -1,6 +1,9 @@
 <resources>
     <style name="Theme.MissCallAssistant" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">#0C1317</item>
-        <item name="android:navigationBarColor">#0C1317</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">#F8FAFC</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:colorBackground">#F8FAFC</item>
     </style>
 </resources>

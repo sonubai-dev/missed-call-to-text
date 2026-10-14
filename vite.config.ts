@@ -49,7 +49,7 @@ export default defineConfig({
                 sizeBytes: stats ? stats.size : 0,
                 sizeFormatted: meta.fileSize || '20.5 MB (Release)',
                 mimeType: 'application/vnd.android.package-archive',
-                sha256: meta.sha256 || 'C5FA607C60B610EEA1E9CBE776DF047068E57DA908F10A068226C8DDF12A6700',
+                sha256: meta.sha256 || '4EA4DADE497925A6430525DBADE99C964DC1F71E01261029A89736C7C75BCEEA',
                 status: exists ? 'available' : 'missing',
                 verified: exists,
                 lastChecked: new Date().toISOString(),
