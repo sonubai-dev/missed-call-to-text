@@ -146,7 +146,7 @@ export function DownloadView({ onBackToDashboard }: DownloadViewProps) {
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = "misscall-assistant.apk";
+      link.download = "Missed-Call-Assistant.apk";
       document.body.appendChild(link);
       link.click();
       window.URL.revokeObjectURL(blobUrl);

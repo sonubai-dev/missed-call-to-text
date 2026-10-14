@@ -64,7 +64,7 @@ export default defineConfig({
               const fileData = fs.readFileSync(apkPath);
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/vnd.android.package-archive');
-              res.setHeader('Content-Disposition', 'attachment; filename="misscall-assistant.apk"');
+              res.setHeader('Content-Disposition', 'attachment; filename="Missed-Call-Assistant.apk"');
               res.setHeader('Content-Length', fileData.length.toString());
               res.setHeader('Cache-Control', 'public, max-age=3600, immutable');
               res.end(fileData);

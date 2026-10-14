@@ -7,7 +7,7 @@ export function DownloadButton() {
     <div className="flex flex-col items-center sm:items-end gap-2 w-full">
       <a
         href="/downloads/misscall-assistant.apk"
-        download
+        download="Missed-Call-Assistant.apk"
         className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-full text-white bg-green-600 hover:bg-green-700 shadow-md hover:shadow-lg transition-all"
       >
         <Download className="mr-2 h-5 w-5" />

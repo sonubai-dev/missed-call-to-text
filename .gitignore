@@ -20,6 +20,7 @@ out/
 build/
 app/build/
 dist/
+*.tsbuildinfo
 
 # Local SDK & Tooling Binaries (avoid GitHub 100MB blob limits)
 .tools/

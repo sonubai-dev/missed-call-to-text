@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/api/download',
+        destination: '/downloads/misscall-assistant.apk',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -12,7 +21,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Disposition',
-            value: 'attachment; filename="misscall-assistant.apk"',
+            value: 'attachment; filename="Missed-Call-Assistant.apk"',
           },
           {
             key: 'Cache-Control',
