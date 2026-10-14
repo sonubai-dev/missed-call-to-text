@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET() {
+export async function GET(request: Request) {
   const possiblePaths = [
     path.join(process.cwd(), 'public', 'downloads', 'misscall-assistant.apk'),
     path.join(process.cwd(), 'web-dashboard', 'public', 'downloads', 'misscall-assistant.apk'),
     path.join(process.cwd(), '..', 'web-dashboard', 'public', 'downloads', 'misscall-assistant.apk'),
+    path.join(process.cwd(), '..', 'public', 'downloads', 'misscall-assistant.apk'),
   ];
 
   let apkBuffer: Buffer | null = null;
@@ -18,10 +19,8 @@ export async function GET() {
   }
 
   if (!apkBuffer) {
-    return NextResponse.json(
-      { error: 'APK asset not found. Please contact support.' },
-      { status: 404 }
-    );
+    // Redirect to static CDN route instead of throwing 404
+    return NextResponse.redirect(new URL('/downloads/misscall-assistant.apk', request.url), 302);
   }
 
   return new NextResponse(new Uint8Array(apkBuffer), {

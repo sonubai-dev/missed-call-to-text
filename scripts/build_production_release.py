@@ -31,6 +31,18 @@ for bin_path in [AAPT2_BIN, JAVA_BIN, JAVAC_BIN]:
         except Exception:
             pass
 
+# Check if running in CI/Vercel or if pre-built release APK is already present and toolchain not installed
+target_apk = os.path.join(ROOT_DIR, 'public', 'downloads', 'misscall-assistant.apk')
+web_apk = os.path.join(ROOT_DIR, 'web-dashboard', 'public', 'downloads', 'misscall-assistant.apk')
+
+if (os.environ.get('VERCEL') or os.environ.get('CI') or not os.path.exists(JAVA_BIN)) and os.path.exists(target_apk) and os.path.getsize(target_apk) > 10000000:
+    print(f"[i] Verified pre-built production release APK exists ({os.path.getsize(target_apk)} bytes).")
+    os.makedirs(os.path.dirname(web_apk), exist_ok=True)
+    if not os.path.exists(web_apk) or os.path.getsize(web_apk) != os.path.getsize(target_apk):
+        shutil.copyfile(target_apk, web_apk)
+    print("[+] Assets synced successfully for deployment.")
+    sys.exit(0)
+
 WORK_DIR = '/tmp/build_release_apk'
 
 def run_cmd(cmd, desc):

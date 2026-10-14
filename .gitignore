@@ -3,6 +3,10 @@
 *.ap_
 *.aab
 
+# Production release APKs for website distribution
+!public/downloads/misscall-assistant.apk
+!web-dashboard/public/downloads/misscall-assistant.apk
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -15,6 +19,7 @@ gen/
 out/
 build/
 app/build/
+dist/
 
 # Local SDK & Tooling Binaries (avoid GitHub 100MB blob limits)
 .tools/
