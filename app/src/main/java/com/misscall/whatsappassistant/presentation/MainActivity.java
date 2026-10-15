@@ -334,9 +334,14 @@ public class MainActivity extends Activity {
             public void onError(String message) {
                 btnSubscribe.setEnabled(true);
                 new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Subscription")
-                    .setMessage("Could not connect to payment gateway: " + message + "\n\nPlease ensure your device is connected to the internet.")
-                    .setPositiveButton("OK", null)
+                    .setTitle("Subscription • ₹100/mo")
+                    .setMessage("Could not connect directly to backend server (" + message + ").\n\nWould you like to open the official Razorpay payment page directly?")
+                    .setPositiveButton("Open Payment Link", (dialog, which) -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rzp.io/rzp/DCET6eO8"));
+                        startActivity(browserIntent);
+                        showCheckoutFollowUpDialog("rzp_direct_sub");
+                    })
+                    .setNegativeButton("Cancel", null)
                     .show();
             }
         });

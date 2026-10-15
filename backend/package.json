@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/src/server.js",
     "dev": "tsx watch src/server.ts",
-    "test": "tsx --test test/**/*.test.ts"
+    "test": "RAZORPAY_KEY_SECRET=test_razorpay_secret_key_mock tsx --test test/**/*.test.ts"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",

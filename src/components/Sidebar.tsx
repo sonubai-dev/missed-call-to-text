@@ -29,7 +29,9 @@ export type NavTab =
   | "templates"
   | "simulator"
   | "webhooks"
-  | "settings";
+  | "settings"
+  | "admin-login"
+  | "admin-dashboard";
 
 interface SidebarProps {
   currentTab: NavTab;

@@ -18,6 +18,8 @@ import { WebhooksView } from "./screens/WebhooksView";
 import { SettingsView } from "./screens/SettingsView";
 import { DownloadView } from "./screens/DownloadView";
 import { WebsiteView } from "./screens/WebsiteView";
+import { AdminLoginView } from "./screens/AdminLoginView";
+import { AdminDashboardView } from "./screens/AdminDashboardView";
 
 import { appStorage } from "./lib/storage";
 import {
@@ -49,6 +51,8 @@ export default function App() {
   );
   const [user, setUser] = useState<UserAccount>(() => appStorage.getUser());
 
+  const [adminUser, setAdminUser] = useState<{ email: string; role: string } | null>(null);
+
   // Navigation State
   const [currentTab, setCurrentTab] = useState<NavTab>(() => {
     if (typeof window !== "undefined") {
@@ -60,8 +64,12 @@ export default function App() {
       if (viewParam === "customers") return "customers";
       if (viewParam === "download") return "download";
       if (viewParam === "website") return "website";
+      if (viewParam === "admin-login") return "admin-login";
+      if (viewParam === "admin") return "admin-dashboard";
 
       const path = window.location.pathname;
+      if (path === "/admin/login" || path.startsWith("/admin/login")) return "admin-login";
+      if (path === "/admin" || path.startsWith("/admin")) return "admin-dashboard";
       if (path.startsWith("/dashboard")) return "dashboard";
       if (path.startsWith("/simulator")) return "simulator";
       if (path.startsWith("/calls")) return "calls";
@@ -72,6 +80,18 @@ export default function App() {
   });
   const [targetPhoneForWhatsApp, setTargetPhoneForWhatsApp] = useState<string | undefined>(undefined);
 
+  // Check existing admin session on mount
+  useEffect(() => {
+    fetch('/api/admin/me', { credentials: 'include' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.authenticated && data.admin) {
+          setAdminUser(data.admin);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     const handlePopState = () => {
       if (typeof window !== "undefined") {
@@ -80,7 +100,12 @@ export default function App() {
         if (viewParam === "dashboard") setCurrentTab("dashboard");
         else if (viewParam === "simulator") setCurrentTab("simulator");
         else if (viewParam === "website") setCurrentTab("website");
-        else if (window.location.pathname.startsWith("/download")) {
+        else if (viewParam === "admin-login") setCurrentTab("admin-login");
+        else if (window.location.pathname.startsWith("/admin/login")) {
+          setCurrentTab("admin-login");
+        } else if (window.location.pathname.startsWith("/admin")) {
+          setCurrentTab("admin-dashboard");
+        } else if (window.location.pathname.startsWith("/download")) {
           setCurrentTab("download");
         }
       }
@@ -485,6 +510,37 @@ export default function App() {
 
   const pendingCount = suggestions.length;
   const missedCount = calls.filter((c) => c.whatsappStatus === "PENDING").length;
+
+  if (currentTab === "admin-login") {
+    return (
+      <AdminLoginView
+        onLoginSuccess={(admin) => {
+          setAdminUser(admin);
+          setCurrentTab("admin-dashboard");
+          window.history.pushState({}, "", "/admin");
+        }}
+        onBackToSite={() => {
+          setCurrentTab("website");
+          window.history.pushState({}, "", "/");
+        }}
+      />
+    );
+  }
+
+  if (currentTab === "admin-dashboard") {
+    return (
+      <AdminDashboardView
+        adminEmail={adminUser?.email || "ssdd747346@gmail.com"}
+        onLogout={() => {
+          setAdminUser(null);
+          setCurrentTab("admin-login");
+          window.history.pushState({}, "", "/admin/login");
+        }}
+        onOpenDashboard={() => setCurrentTab("dashboard")}
+        onOpenWebsite={() => setCurrentTab("website")}
+      />
+    );
+  }
 
   if (currentTab === "website") {
     return (

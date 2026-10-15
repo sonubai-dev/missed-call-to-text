@@ -203,8 +203,11 @@ public class SubscriptionClient {
 
                 if (code == 201 || code == 200) {
                     JSONObject json = new JSONObject(sb.toString());
-                    String subId = json.optString("subscriptionId", "");
-                    String shortUrl = json.optString("shortUrl", "");
+                    String subId = json.optString("subscriptionId", "sub_misscall_pro");
+                    String shortUrl = json.optString("shortUrl", "https://rzp.io/rzp/DCET6eO8");
+                    if (shortUrl.isEmpty()) {
+                        shortUrl = "https://rzp.io/rzp/DCET6eO8";
+                    }
                     String keyId = json.optString("keyId", "");
 
                     SubscriptionState state = new SubscriptionState(false, "PAYMENT_REQUIRED", "Subscription created. Payment pending.");

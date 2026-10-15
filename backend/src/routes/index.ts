@@ -9,6 +9,7 @@ import { webhooksRoutes } from "./webhooks.routes";
 import { aiMessageRoutes } from "./ai-message.routes";
 import { razorpayRoutes } from "./razorpay.routes";
 import { subscriptionRoutes } from "./subscription.routes";
+import { adminRoutes } from "./admin.routes";
 
 export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(authRoutes, { prefix: "/api/v1/auth" });
@@ -22,6 +23,8 @@ export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(razorpayRoutes, { prefix: "/api/v1/razorpay" });
   fastify.register(subscriptionRoutes, { prefix: "/api/v1/subscription" });
   fastify.register(subscriptionRoutes, { prefix: "/api/subscription" }); // Conveniency alias
+  fastify.register(adminRoutes, { prefix: "/api/v1/admin" });
+  fastify.register(adminRoutes, { prefix: "/api/admin" });
 
   fastify.get("/health", async () => {
     return { status: "OK", timestamp: Date.now(), database: "none (databaseless)", paymentGateway: "razorpay" };

@@ -1061,6 +1061,16 @@ export function WebsiteView({
             >
               Direct APK ({size})
             </button>
+            <span>•</span>
+            <button
+              onClick={() => {
+                if (onNavigateTab) onNavigateTab("admin-login");
+                window.history.pushState({}, "", "/admin/login");
+              }}
+              className="hover:text-emerald-400 transition-colors"
+            >
+              Admin Portal
+            </button>
           </div>
         </div>
       </footer>

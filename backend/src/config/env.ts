@@ -17,6 +17,8 @@ const envSchema = z.object({
   META_APP_SECRET: z.string().default("meta_app_secret_hex_signing_key"),
   RATE_LIMIT_MAX: z.coerce.number().default(100),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),
+  ADMIN_OWNER_EMAIL: z.string().default("ssdd747346@gmail.com"),
+  ADMIN_PASSWORD: z.string().default("admin_misscall_secret_2026"),
 });
 
 export const config = envSchema.parse(process.env);

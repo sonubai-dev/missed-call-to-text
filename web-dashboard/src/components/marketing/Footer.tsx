@@ -47,9 +47,12 @@ export function Footer() {
           <p className="text-sm text-slate-500">
             &copy; {new Date().getFullYear()} MissCall Assistant. All rights reserved.
           </p>
-          <div className="mt-4 md:mt-0 flex space-x-6">
+          <div className="mt-4 md:mt-0 flex items-center space-x-6">
             <Link href="/download" className="text-sm font-medium text-green-600 hover:text-green-700 transition-colors">
               Download App for Android
+            </Link>
+            <Link href="/admin/login" className="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors">
+              Admin Portal
             </Link>
           </div>
         </div>
