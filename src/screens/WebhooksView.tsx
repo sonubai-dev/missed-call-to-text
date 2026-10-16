@@ -26,9 +26,9 @@ export const WebhooksView: React.FC<WebhooksViewProps> = ({
   onUpdateSettings,
   onSendTestWebhook,
 }) => {
-  const [url, setUrl] = useState(settings.webhookUrl);
-  const [secret, setSecret] = useState(settings.webhookSecret);
-  const [isEnabled, setIsEnabled] = useState(settings.isWebhookEnabled);
+  const [url, setUrl] = useState(settings.webhookUrl || "");
+  const [secret, setSecret] = useState(settings.webhookSecret || "");
+  const [isEnabled, setIsEnabled] = useState(settings.isWebhookEnabled ?? true);
   const [copied, setCopied] = useState(false);
   const [selectedLog, setSelectedLog] = useState<WebhookEventLog | null>(
     webhooks.length > 0 ? webhooks[0] : null
@@ -38,14 +38,14 @@ export const WebhooksView: React.FC<WebhooksViewProps> = ({
     e.preventDefault();
     onUpdateSettings({
       ...settings,
-      webhookUrl: url.trim(),
-      webhookSecret: secret.trim(),
+      webhookUrl: (url || "").trim(),
+      webhookSecret: (secret || "").trim(),
       isWebhookEnabled: isEnabled,
     });
   };
 
   const copySecret = () => {
-    navigator.clipboard.writeText(secret);
+    navigator.clipboard.writeText(secret || "");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

@@ -2,38 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg-primary: #0C1317;
-  --bg-surface: #111B21;
-  --bg-card: #202C33;
-  --border-color: #222E35;
-  --text-primary: #E9EDEF;
-  --text-muted: #8696A0;
-  --wa-teal: #00A884;
-  --wa-green: #25D366;
-}
-
 body {
   margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: #0C1317;
   color: #E9EDEF;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #222E35;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #2A3942;
 }

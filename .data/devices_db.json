@@ -1,0 +1,32 @@
+[
+  {
+    "deviceId": "dev_test_uuid_98765",
+    "status": "trial",
+    "trialEndsAt": 1792420498608,
+    "validUntil": 1792420498608,
+    "createdAt": 1792161298608,
+    "updatedAt": 1792161298608
+  },
+  {
+    "deviceId": "dev_demo_user_456",
+    "status": "active",
+    "trialEndsAt": 1792420523145,
+    "validUntil": 1795012523145,
+    "createdAt": 1792161323145,
+    "updatedAt": 1792161358146,
+    "razorpaySubscriptionId": "sub_demo_789",
+    "lastPaymentId": "pay_demo_789"
+  },
+  {
+    "id": "e9844618-a60a-480b-87dc-5937667143cd",
+    "deviceId": "dev_railway_android_uuid_101",
+    "businessName": "Apex Dental Clinic",
+    "phone": "+91 98765 12340",
+    "fcmToken": null,
+    "status": "registered_unpaid",
+    "trialEndsAt": 1792421346382,
+    "validUntil": 1792421346382,
+    "createdAt": 1792162146382,
+    "updatedAt": 1792162146382
+  }
+]

@@ -32,7 +32,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.misscall.whatsappassistant.data.SubscriptionClient;
+import com.misscall.whatsappassistant.data.SubscriptionSyncWorker;
 import com.misscall.whatsappassistant.telephony.PendingSmsScheduler;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultWithDataListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +46,9 @@ import java.util.List;
 /**
  * Minimalist, production-ready Material 3 interface for MissCall Assistant.
  * Focused purely on business missed-call native SMS automation,
- * ₹100/month Razorpay subscription entitlement, and dual-SIM management.
+ * ₹100/month Razorpay subscription entitlement with 3-day free trial, and dual-SIM management.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements PaymentResultWithDataListener {
     private static final int PERMISSION_REQ_CODE = 2026;
 
     // Design Tokens (Light Material 3)
@@ -86,6 +92,14 @@ public class MainActivity extends Activity {
         prefs = getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
         selectedDelaySeconds = prefs.getInt("sms_delay_seconds", 5);
         selectedSimIndex = prefs.getInt("selected_sim_slot", 0);
+
+        // Preload Razorpay Checkout and schedule 6-hour WorkManager sync
+        try {
+            Checkout.preload(getApplicationContext());
+        } catch (Exception ignored) {}
+        SubscriptionSyncWorker.schedulePeriodicSync(this);
+        SubscriptionClient.authenticateDevice(this, null);
+        checkFirstLaunchRegistration();
 
         // Build clean Material 3 ScrollView
         ScrollView scrollView = new ScrollView(this);
@@ -254,13 +268,13 @@ public class MainActivity extends Activity {
 
     private void updateStatusHeader() {
         boolean autoEnabled = prefs.getBoolean("auto_reply_enabled", true);
-        boolean isSubscribed = prefs.getBoolean("is_subscription_active", false);
+        boolean isEntitled = SubscriptionClient.isEntitled(this);
         boolean hasPerms = checkAllPermissionsGranted();
 
         if (!hasPerms) {
             tvStatusIndicator.setText("• Action Required: Missing Android Permissions");
             tvStatusIndicator.setTextColor(COLOR_WARNING);
-        } else if (!isSubscribed) {
+        } else if (!isEntitled) {
             tvStatusIndicator.setText("• Action Required: Subscription Required (₹100/mo)");
             tvStatusIndicator.setTextColor(COLOR_WARNING);
         } else if (!autoEnabled) {
@@ -279,33 +293,41 @@ public class MainActivity extends Activity {
         SubscriptionClient.checkStatus(this, new SubscriptionClient.SubscriptionCallback() {
             @Override
             public void onSuccess(SubscriptionClient.SubscriptionState state) {
-                if (state.isActive) {
-                    tvSubscriptionStatus.setText("Status: Active (₹100/mo) • Verified");
+                if ("active".equalsIgnoreCase(state.status)) {
+                    tvSubscriptionStatus.setText("Status: Active (₹100/mo) • Verified Pro");
                     tvSubscriptionStatus.setTextColor(COLOR_SUCCESS);
                     btnSubscribe.setVisibility(View.GONE);
+                } else if ("trial".equalsIgnoreCase(state.status)) {
+                    int days = Math.max(1, state.trialDaysRemaining);
+                    tvSubscriptionStatus.setText("Status: 3-Day Free Trial Active (" + days + " days remaining)");
+                    tvSubscriptionStatus.setTextColor(COLOR_PRIMARY);
+                    btnSubscribe.setText("Upgrade to Pro (₹100/mo)");
+                    btnSubscribe.setVisibility(View.VISIBLE);
+                } else if ("expired".equalsIgnoreCase(state.status)) {
+                    tvSubscriptionStatus.setText("Status: Expired • Renewal Required (₹100/mo)");
+                    tvSubscriptionStatus.setTextColor(COLOR_DANGER);
+                    btnSubscribe.setText("Subscribe ₹100/month");
+                    btnSubscribe.setVisibility(View.VISIBLE);
                 } else {
-                    String label = "Status: Payment Required • ₹100/month";
-                    if ("EXPIRED".equalsIgnoreCase(state.status)) {
-                        label = "Status: Expired • Renewal Required (₹100/mo)";
-                    }
-                    tvSubscriptionStatus.setText(label);
+                    tvSubscriptionStatus.setText("Status: 3-Day Trial Available • ₹100/month");
                     tvSubscriptionStatus.setTextColor(COLOR_WARNING);
+                    btnSubscribe.setText("Start 3-Day Free Trial");
                     btnSubscribe.setVisibility(View.VISIBLE);
                 }
                 updateStatusHeader();
             }
 
             @Override
-            public void onError(String message) {
-                boolean localActive = prefs.getBoolean("is_subscription_active", false);
-                long expiry = prefs.getLong("subscription_expiry_time", 0);
-                if (localActive && (expiry == 0 || System.currentTimeMillis() < expiry)) {
-                    tvSubscriptionStatus.setText("Status: Active (Offline Mode)");
+            public void onError(String message, String errorCode) {
+                if (SubscriptionClient.isEntitled(MainActivity.this)) {
+                    String status = prefs.getString("subscription_status", "trial");
+                    tvSubscriptionStatus.setText("Status: " + status.toUpperCase() + " (Offline Mode • 3-Day Grace)");
                     tvSubscriptionStatus.setTextColor(COLOR_SUCCESS);
                     btnSubscribe.setVisibility(View.GONE);
                 } else {
-                    tvSubscriptionStatus.setText("Status: Verification Pending • Connect Internet");
+                    tvSubscriptionStatus.setText("Status: Server Unreachable (" + errorCode + ") • Offline");
                     tvSubscriptionStatus.setTextColor(COLOR_TEXT_MUTED);
+                    btnSubscribe.setVisibility(View.VISIBLE);
                 }
                 updateStatusHeader();
             }
@@ -313,33 +335,64 @@ public class MainActivity extends Activity {
     }
 
     private void initiateSubscriptionFlow() {
-        Toast.makeText(this, "Preparing Razorpay ₹100/mo checkout...", Toast.LENGTH_SHORT).show();
         btnSubscribe.setEnabled(false);
+        Toast.makeText(this, "Connecting to payment gateway...", Toast.LENGTH_SHORT).show();
 
         SubscriptionClient.createSubscription(this, new SubscriptionClient.SubscriptionCallback() {
             @Override
             public void onSuccess(SubscriptionClient.SubscriptionState state) {
                 btnSubscribe.setEnabled(true);
-                if (state.checkoutUrl != null && !state.checkoutUrl.isEmpty()) {
-                    // Open official Razorpay checkout
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(state.checkoutUrl));
+                try {
+                    Checkout checkout = new Checkout();
+                    if (state.keyId != null && !state.keyId.isEmpty()) {
+                        checkout.setKeyID(state.keyId);
+                    }
+
+                    JSONObject options = new JSONObject();
+                    options.put("name", "MissCall Assistant");
+                    options.put("description", "₹100/month Unlimited Missed Call SMS Automation");
+                    if (state.subscriptionId != null && !state.subscriptionId.isEmpty()) {
+                        options.put("subscription_id", state.subscriptionId);
+                    }
+                    options.put("currency", "INR");
+                    options.put("amount", 10000); // 10000 paise = ₹100
+
+                    JSONObject prefill = new JSONObject();
+                    prefill.put("email", prefs.getString("user_email", "business@misscall.in"));
+                    prefill.put("contact", prefs.getString("user_contact", "9876543210"));
+                    options.put("prefill", prefill);
+
+                    checkout.open(MainActivity.this, options);
+                } catch (Exception e) {
+                    // Fallback to browser checkout
+                    String fallbackUrl = state.shortUrl != null && !state.shortUrl.isEmpty()
+                        ? state.shortUrl
+                        : "https://rzp.io/rzp/DCET6eO8";
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl));
                     startActivity(browserIntent);
-                    showCheckoutFollowUpDialog(state.subscriptionId);
-                } else {
-                    Toast.makeText(MainActivity.this, "Subscription initialized. Awaiting confirmation.", Toast.LENGTH_SHORT).show();
+                    showCheckoutFollowUpDialog(state.subscriptionId != null ? state.subscriptionId : "sub_manual");
                 }
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(String message, String errorCode) {
                 btnSubscribe.setEnabled(true);
+                String friendlyTitle = "Payment Connection";
+                String actionButton = "Retry";
+
+                if ("NO_INTERNET".equals(errorCode)) {
+                    friendlyTitle = "No Internet Connection";
+                    message = "Please turn on mobile data or connect to Wi-Fi to subscribe.";
+                }
+
                 new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Subscription • ₹100/mo")
-                    .setMessage("Could not connect directly to backend server (" + message + ").\n\nWould you like to open the official Razorpay payment page directly?")
-                    .setPositiveButton("Open Payment Link", (dialog, which) -> {
+                    .setTitle(friendlyTitle)
+                    .setMessage(message + "\n\nWould you like to retry or open the direct payment link?")
+                    .setPositiveButton(actionButton, (dialog, which) -> initiateSubscriptionFlow())
+                    .setNeutralButton("Direct Payment Link", (dialog, which) -> {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rzp.io/rzp/DCET6eO8"));
                         startActivity(browserIntent);
-                        showCheckoutFollowUpDialog("rzp_direct_sub");
+                        showCheckoutFollowUpDialog("sub_manual");
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
@@ -347,26 +400,64 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    public void onPaymentSuccess(String razorpayPaymentId, PaymentData paymentData) {
+        String subId = paymentData != null && paymentData.getSubscriptionId() != null
+            ? paymentData.getSubscriptionId()
+            : prefs.getString("razorpay_sub_id", "");
+        String sig = paymentData != null && paymentData.getSignature() != null
+            ? paymentData.getSignature()
+            : "client_verified_" + System.currentTimeMillis();
+
+        Toast.makeText(this, "Verifying payment with server...", Toast.LENGTH_SHORT).show();
+
+        SubscriptionClient.verifyPayment(this, razorpayPaymentId, subId, sig, new SubscriptionClient.SubscriptionCallback() {
+            @Override
+            public void onSuccess(SubscriptionClient.SubscriptionState state) {
+                Toast.makeText(MainActivity.this, "Payment Verified! Pro Subscription Active.", Toast.LENGTH_LONG).show();
+                refreshSubscriptionStatus();
+            }
+
+            @Override
+            public void onError(String message, String errorCode) {
+                new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Verification In Progress")
+                    .setMessage("Your payment (" + razorpayPaymentId + ") was received. Verification status: " + message)
+                    .setPositiveButton("Check Status Again", (dialog, which) -> refreshSubscriptionStatus())
+                    .setNegativeButton("OK", null)
+                    .show();
+            }
+        });
+    }
+
+    @Override
+    public void onPaymentError(int code, String response, PaymentData paymentData) {
+        btnSubscribe.setEnabled(true);
+        String title = "Payment Incomplete";
+        String message;
+
+        if (code == Checkout.PAYMENT_CANCELED) {
+            message = "Payment was cancelled. Tap 'Retry' to open checkout again.";
+        } else if (code == Checkout.NETWORK_ERROR) {
+            message = "Network connection lost during checkout. Please check your data connection.";
+        } else {
+            message = "Payment could not be completed (" + response + "). Please try again or use another payment method.";
+        }
+
+        new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Retry", (dialog, which) -> initiateSubscriptionFlow())
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
     private void showCheckoutFollowUpDialog(final String subId) {
         new AlertDialog.Builder(this)
             .setTitle("Completing Payment")
-            .setMessage("Once you complete the ₹100 monthly subscription on Razorpay, tap 'Verify Payment' below to activate automation.")
-            .setPositiveButton("Verify Payment", (dialog, which) -> {
-                SubscriptionClient.verifyPayment(MainActivity.this, subId, new SubscriptionClient.SubscriptionCallback() {
-                    @Override
-                    public void onSuccess(SubscriptionClient.SubscriptionState state) {
-                        Toast.makeText(MainActivity.this, "Payment verified! Automation activated.", Toast.LENGTH_LONG).show();
-                        refreshSubscriptionStatus();
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Toast.makeText(MainActivity.this, "Verification in progress. Rechecking...", Toast.LENGTH_SHORT).show();
-                        refreshSubscriptionStatus();
-                    }
-                });
-            })
-            .setNegativeButton("Cancel", null)
+            .setMessage("Once you complete the ₹100 monthly subscription on Razorpay, tap 'Check Status' below to activate automation.")
+            .setPositiveButton("Check Status", (dialog, which) -> refreshSubscriptionStatus())
+            .setNegativeButton("Later", null)
             .show();
     }
 
@@ -666,5 +757,61 @@ public class MainActivity extends Activity {
         View v = new View(this);
         v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
         layout.addView(v);
+    }
+
+    private void checkFirstLaunchRegistration() {
+        if (!prefs.getBoolean("business_registered", false)) {
+            showRegistrationDialog();
+        }
+    }
+
+    private void showRegistrationDialog() {
+        final EditText etName = new EditText(this);
+        etName.setHint("Business Name (e.g. Apex Electronics)");
+        etName.setText(prefs.getString("business_name", ""));
+        etName.setPadding(32, 24, 32, 24);
+
+        final EditText etPhone = new EditText(this);
+        etPhone.setHint("Business Phone (e.g. +91 98765 43210)");
+        etPhone.setText(prefs.getString("business_phone", ""));
+        etPhone.setPadding(32, 24, 32, 24);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(48, 32, 48, 16);
+        layout.addView(etName);
+        layout.addView(etPhone);
+
+        new AlertDialog.Builder(this)
+            .setTitle("Register Your Business")
+            .setMessage("Set your business profile to activate missed-call SMS automation and secure your account.")
+            .setView(layout)
+            .setCancelable(false)
+            .setPositiveButton("Register & Start", (dialog, which) -> {
+                String name = etName.getText().toString().trim();
+                String phone = etPhone.getText().toString().trim();
+                if (name.isEmpty() || phone.isEmpty()) {
+                    Toast.makeText(this, "Please enter both business name and phone number", Toast.LENGTH_SHORT).show();
+                    showRegistrationDialog();
+                    return;
+                }
+                SubscriptionClient.registerBusiness(this, name, phone, null, new SubscriptionClient.SubscriptionCallback() {
+                    @Override
+                    public void onSuccess(SubscriptionClient.SubscriptionState state) {
+                        Toast.makeText(MainActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
+                        if (editBusinessName != null) {
+                            editBusinessName.setText(name);
+                        }
+                        refreshSubscriptionStatus();
+                    }
+
+                    @Override
+                    public void onError(String msg, String code) {
+                        Toast.makeText(MainActivity.this, "Registration: " + msg, Toast.LENGTH_LONG).show();
+                        refreshSubscriptionStatus();
+                    }
+                });
+            })
+            .show();
     }
 }

@@ -13,6 +13,10 @@ public class SmsManagerHelper {
     private static final String TAG = "SmsManagerHelper";
 
     public static void sendSms(Context context, String destinationAddress, String message, int preferredSimSlot) {
+        if (!com.misscall.whatsappassistant.data.SubscriptionClient.isEntitled(context)) {
+            Log.w(TAG, "SMS dispatch blocked: Active subscription or 3-day trial is required.");
+            return;
+        }
         try {
             SmsManager smsManager = null;
 

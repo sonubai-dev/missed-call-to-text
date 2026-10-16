@@ -1,106 +1,108 @@
-export type MessageTone = "FRIENDLY" | "PROFESSIONAL" | "URGENT" | "CONCISE";
-export type MessageLanguage = "ENGLISH" | "HINDI" | "SPANISH" | "MARATHI";
+export type MessageTone = 'PROFESSIONAL' | 'FRIENDLY' | 'SHORT' | 'PREMIUM' | 'URGENT' | 'CONCISE';
+export type MessageLanguage = 'ENGLISH' | 'HINDI' | 'HINGLISH' | 'SPANISH';
 
-export interface GenerateOptions {
+export interface MessageGenerationRequest {
   businessName: string;
+  businessCategory?: string;
   customerPhone: string;
   customerName?: string;
-  missedCallTime?: string;
+  missedCallTime: string;
   tone: MessageTone;
   language: MessageLanguage;
 }
 
-export const localMessageGenerator = {
-  generate(options: GenerateOptions): { content: string; tone: MessageTone; language: MessageLanguage } {
-    const { businessName, customerName, missedCallTime, tone, language } = options;
-    const name = customerName?.trim() || "there";
-    const time = missedCallTime || "a moment ago";
+export interface GeneratedResult {
+  content: string;
+  tone: MessageTone;
+  language: MessageLanguage;
+  source: 'LOCAL_RULE_BASED' | 'REMOTE_AI';
+}
 
-    // English tone matrices
-    if (language === "HINDI") {
-      switch (tone) {
-        case "FRIENDLY":
-          return {
-            content: `नमस्ते ${name}! ${businessName} से संपर्क करने के लिए धन्यवाद। आपकी कॉल मिस हो गई थी (${time})। हम आपकी कैसे मदद कर सकते हैं? कृपया यहाँ मैसेज करें।`,
-            tone,
-            language,
-          };
-        case "PROFESSIONAL":
-          return {
-            content: `आदरणीय ${name}, ${businessName} में आपकी कॉल का उत्तर नहीं दे पाने के लिए हमें खेद है। हमारी टीम जल्द आपसे संपर्क करेगी। किसी भी तत्काल प्रश्न के लिए यहाँ उत्तर दें।`,
-            tone,
-            language,
-          };
-        case "URGENT":
-          return {
-            content: `ज़रूरी सूचना: ${name}, हमने ${businessName} पर आपकी कॉल मिस की। क्या यह कोई तत्काल मामला है? कृपया हमें तुरंत सूचित करें ताकि हम प्राथमिकता से मदद कर सकें।`,
-            tone,
-            language,
-          };
-        case "CONCISE":
-          return {
-            content: `नमस्ते ${name}, ${businessName} पर आपकी कॉल छूट गई। हम आपकी क्या सेवा कर सकते हैं?`,
-            tone,
-            language,
-          };
-      }
+export class LocalMessageGenerator {
+  generate(req: MessageGenerationRequest): GeneratedResult {
+    const hasName = !!req.customerName && req.customerName.trim().length > 0 && req.customerName !== req.customerPhone;
+    const name = hasName ? req.customerName!.trim() : "";
+    const business = req.businessName || "our team";
+    const time = req.missedCallTime || "a moment ago";
+
+    let content = "";
+    switch (req.language) {
+      case "ENGLISH":
+        content = this.generateEnglish(name, business, time, req.tone);
+        break;
+      case "HINDI":
+        content = this.generateHindi(name, business, time, req.tone);
+        break;
+      case "HINGLISH":
+        content = this.generateHinglish(name, business, time, req.tone);
+        break;
+      case "SPANISH":
+        content = `Hola! Gracias por llamar a ${business}. Lamentamos haber perdido su llamada a las ${time}. ¿En qué podemos ayudarle?`;
+        break;
     }
 
-    if (language === "SPANISH") {
-      switch (tone) {
-        case "FRIENDLY":
-          return {
-            content: `¡Hola ${name}! Gracias por llamar a ${businessName}. Lamentamos haber perdido su llamada a las ${time}. ¿Cómo podemos ayudarle hoy?`,
-            tone,
-            language,
-          };
-        case "PROFESSIONAL":
-          return {
-            content: `Estimado/a ${name}, disculpe que no hayamos podido atender su llamada en ${businessName}. Estamos a su entera disposición si desea dejarnos un mensaje por aquí.`,
-            tone,
-            language,
-          };
-        case "URGENT":
-          return {
-            content: `AVISO: ${name}, registramos una llamada perdida a ${businessName}. Si es urgente, por favor responda a este chat y le atenderemos de inmediato.`,
-            tone,
-            language,
-          };
-        case "CONCISE":
-          return {
-            content: `Hola ${name}, perdimos su llamada a ${businessName}. ¿En qué podemos ayudarle?`,
-            tone,
-            language,
-          };
-      }
-    }
+    return {
+      content: content.trim(),
+      tone: req.tone,
+      language: req.language,
+      source: "LOCAL_RULE_BASED",
+    };
+  }
 
-    // Default ENGLISH
+  private generateEnglish(name: string, business: string, time: string, tone: MessageTone): string {
+    const greeting = name ? `Hi ${name}!` : "Hi!";
+    const formalGreeting = name ? `Dear ${name},` : "Hello,";
+
     switch (tone) {
-      case "FRIENDLY":
-        return {
-          content: `Hi ${name}! Thanks for reaching out to ${businessName}. We noticed we missed your call around ${time}. How can we help you out today? Feel free to reply here! 😊`,
-          tone,
-          language,
-        };
       case "PROFESSIONAL":
-        return {
-          content: `Dear ${name}, thank you for contacting ${businessName}. We apologize for missing your call. Please let us know the nature of your inquiry so our team can assist you promptly.`,
-          tone,
-          language,
-        };
-      case "URGENT":
-        return {
-          content: `Urgent Follow-Up: Hello ${name}, we just missed your call at ${businessName}. If your request is time-sensitive, please reply right away and we'll escalate it immediately.`,
-          tone,
-          language,
-        };
+        return `${formalGreeting} thank you for reaching out to ${business}. We apologize for missing your call at ${time}. Please let us know how we may assist you.`;
+      case "FRIENDLY":
+        return `${greeting} We noticed that you called ${business}. Sorry we missed your call at ${time}. How can we help you today?`;
+      case "SHORT":
       case "CONCISE":
-        return {
-          content: `Hi ${name}, missed your call to ${businessName} at ${time}. How can we help?`,
-          tone,
-          language,
-        };
+        return `${greeting} missed your call to ${business} at ${time}. How can we help?`;
+      case "PREMIUM":
+        return `Hello ${name || "valued customer"}, thank you for contacting ${business}. We regret missing your call at ${time} and look forward to assisting you promptly.`;
+      case "URGENT":
+        return `Urgent update from ${business}: We missed your call at ${time}. Please reply or call back immediately.`;
     }
-  },
-};
+  }
+
+  private generateHindi(name: string, business: string, time: string, tone: MessageTone): string {
+    const greeting = name ? `नमस्ते ${name} जी,` : "नमस्ते,";
+
+    switch (tone) {
+      case "PROFESSIONAL":
+        return `${greeting} ${business} में संपर्क करने के लिए धन्यवाद। ${time} पर आया आपका कॉल हम नहीं उठा पाए, इसके लिए हमें खेद है। कृपया बताएं हम आपकी क्या सहायता कर सकते हैं?`;
+      case "FRIENDLY":
+        return `${greeting} ${business} पर कॉल करने के लिए धन्यवाद। क्षमा करें हम आपका कॉल नहीं उठा सके। हम आपकी क्या मदद कर सकते हैं?`;
+      case "SHORT":
+      case "CONCISE":
+        return `${greeting} ${business} पर आपका कॉल छूट गया। बताएं हम आपकी क्या मदद कर सकते हैं?`;
+      case "PREMIUM":
+        return `${greeting} ${business} में आपका स्वागत है। ${time} पर आपका कॉल हम अटेंड नहीं कर सके। कृपया अपनी आवश्यकता बताएं, हम तुरंत संपर्क करेंगे।`;
+      case "URGENT":
+        return `अत्यावश्यक: ${business} में आपका कॉल छूट गया। कृपया शीघ्र संपर्क करें।`;
+    }
+  }
+
+  private generateHinglish(name: string, business: string, time: string, tone: MessageTone): string {
+    const greeting = name ? `Hi ${name}!` : "Hi!";
+
+    switch (tone) {
+      case "PROFESSIONAL":
+        return `Hello ${name ? `${name} ji` : ""}, ${business} par call karne ke liye thank you. ${time} par aaya aapka call hum attend nahi kar paaye. Please batayein hum aapki kaise help kar sakte hain?`;
+      case "FRIENDLY":
+        return `${greeting} Humne notice kiya aapne ${business} par call kiya tha. Sorry hum aapka call miss kar gaye. Batayein hum aapki kya help kar sakte hain?`;
+      case "SHORT":
+      case "CONCISE":
+        return `${greeting} ${business} par aapka call miss ho gaya at ${time}. How can we help?`;
+      case "PREMIUM":
+        return `${greeting} ${business} me contact karne ke liye dhanyawad. We regret missing your call at ${time}. Please batayein aapko kya help chahiye, hum jaldi update denge.`;
+      case "URGENT":
+        return `Urgent alert from ${business}: Aapka call miss hua. Please jaldi contact karein.`;
+    }
+  }
+}
+
+export const localMessageGenerator = new LocalMessageGenerator();

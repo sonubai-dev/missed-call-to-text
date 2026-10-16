@@ -28,7 +28,7 @@ export const SmsHistoryView: React.FC<SmsHistoryViewProps> = ({
   const [smsText, setSmsText] = useState(
     `Hi, we missed your call to ${settings.businessName || "Apex Electronics"}. Please reply here or visit us today!`
   );
-  const [selectedSim, setSelectedSim] = useState<"SIM 1 (Airtel)" | "SIM 2 (Jio)">(
+  const [selectedSim, setSelectedSim] = useState<string>(
     settings.defaultSmsSim || "SIM 1 (Airtel)"
   );
   const [isSending, setIsSending] = useState(false);
@@ -36,7 +36,7 @@ export const SmsHistoryView: React.FC<SmsHistoryViewProps> = ({
   const calc = calculateSmsSegments(smsText);
 
   const smsLogs = messages.filter(
-    (m) => m.channel === "SMS" || m.mode.startsWith("SMS")
+    (m) => m.channel === "SMS" || (m.mode ? m.mode.startsWith("SMS") : false)
   );
 
   const handleSend = (e: React.FormEvent) => {

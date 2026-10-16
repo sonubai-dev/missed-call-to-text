@@ -110,7 +110,7 @@ export const WhatsAppWorkbenchView: React.FC<WhatsAppWorkbenchViewProps> = ({
   };
 
   const handleInsertTag = (tag: string) => {
-    setEditorText((prev) => `${prev} ${tag}`);
+    setEditorText((prev: string) => `${prev} ${tag}`);
   };
 
   const handleSend = () => {
@@ -130,7 +130,7 @@ export const WhatsAppWorkbenchView: React.FC<WhatsAppWorkbenchViewProps> = ({
   };
 
   const conversationMessages = messages.filter(
-    (m) => m.phoneNumber === selectedPhone && (m.channel === "WHATSAPP" || m.mode.includes("WHATSAPP"))
+    (m) => m.phoneNumber === selectedPhone && (m.channel === "WHATSAPP" || (m.mode ? m.mode.includes("WHATSAPP") : false))
   );
 
   const filteredCalls = calls.filter(

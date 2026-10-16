@@ -392,7 +392,7 @@ export default function App() {
 
   const handleSimulatorCallProcessed = (
     newCall: CallEvent,
-    _newCust?: Customer,
+    _newCust?: Customer | null,
     autoDispatchedMessage?: string
   ) => {
     setCalls((prev) => [newCall, ...prev]);
@@ -547,7 +547,7 @@ export default function App() {
       <WebsiteView
         onOpenDashboard={() => setCurrentTab("dashboard")}
         onOpenSimulator={() => setCurrentTab("simulator")}
-        onNavigateTab={(tab) => setCurrentTab(tab)}
+        onNavigateTab={(tab: NavTab) => setCurrentTab(tab)}
       />
     );
   }
@@ -696,7 +696,7 @@ export default function App() {
           customer={selectedCustomer}
           onClose={() => setSelectedCustomer(null)}
           onUpdate={handleUpdateCustomer}
-          onSendMessage={(phone, name) => {
+          onSendMessage={(phone: string, name: string) => {
             setSelectedCustomer(null);
             handleOpenMessageForPhone(phone, name);
           }}

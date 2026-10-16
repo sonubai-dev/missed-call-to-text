@@ -21,6 +21,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "BACKEND_BASE_URL", "\"https://web-dashboard-eight-mu.vercel.app/\"")
     }
 
     signingConfigs {
@@ -165,6 +167,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("androidx.browser:browser:1.8.0")
+    implementation("com.razorpay:checkout:1.6.40")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

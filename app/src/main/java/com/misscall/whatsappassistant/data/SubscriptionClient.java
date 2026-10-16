@@ -2,6 +2,8 @@ package com.misscall.whatsappassistant.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -19,321 +21,489 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Authoritative client for device-linked Razorpay subscription verification.
- * Communicates with the backend REST API without trusting insecure local overrides.
+ * Robust Client for Anonymous Device Subscription & Entitlement.
+ * Features:
+ * - 3-day server-tracked free trial on first launch
+ * - Razorpay ₹100/mo subscription creation and HMAC verification
+ * - 3-day local cache fallback for offline missed-call SMS execution
+ * - Specific user-facing error reporting with retry handling
  */
 public class SubscriptionClient {
     private static final String TAG = "SubscriptionClient";
+    private static final String PREFS_NAME = "misscall_prefs";
+    private static final String KEY_DEVICE_ID = "anonymous_device_id";
+    private static final String KEY_AUTH_TOKEN = "device_auth_token";
+    private static final String KEY_SUBSCRIPTION_STATUS = "subscription_status";
+    private static final String KEY_VALID_UNTIL = "subscription_valid_until";
+    private static final String KEY_TRIAL_DAYS = "trial_days_remaining";
+    private static final String KEY_LAST_VERIFIED = "last_verified_timestamp";
+    private static final String KEY_SUB_ID = "razorpay_sub_id";
 
-    // Configurable backend base URL (points to production or dev API proxy)
-    public static final String DEFAULT_BASE_URL = "https://web-dashboard-eight-mu.vercel.app";
+    // Primary Vercel production server URL with local fallback
+    private static final String DEFAULT_BASE_URL = "https://web-dashboard-eight-mu.vercel.app";
 
-    public interface SubscriptionCallback {
-        void onSuccess(SubscriptionState state);
-        void onError(String message);
-    }
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public static class SubscriptionState {
-        public boolean isActive;
-        public String status; // "ACTIVE", "PAYMENT_REQUIRED", "EXPIRED", "VERIFICATION_PENDING"
+        public boolean isEntitled; // True if active or within trial
+        public String status;      // "trial", "active", "expired", "none"
+        public long validUntil;
+        public int trialDaysRemaining;
         public String subscriptionId;
-        public String message;
-        public long expiryTime;
-        public String checkoutUrl;
         public String keyId;
+        public String shortUrl;
+        public String message;
+        public String errorCode;
 
-        public SubscriptionState(boolean isActive, String status, String message) {
-            this.isActive = isActive;
+        public SubscriptionState(boolean isEntitled, String status, String message) {
+            this.isEntitled = isEntitled;
             this.status = status;
             this.message = message;
         }
     }
 
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private static final Handler mainHandler = new Handler(Looper.getMainLooper());
+    public interface SubscriptionCallback {
+        void onSuccess(SubscriptionState state);
+        void onError(String userFriendlyMessage, String errorCode);
+    }
 
     public static String getOrCreateDeviceId(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
-        String deviceId = prefs.getString("device_install_id", null);
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String deviceId = prefs.getString(KEY_DEVICE_ID, null);
         if (deviceId == null || deviceId.isEmpty()) {
-            deviceId = "mc_" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-            prefs.edit().putString("device_install_id", deviceId).apply();
+            deviceId = "dev_" + UUID.randomUUID().toString();
+            prefs.edit().putString(KEY_DEVICE_ID, deviceId).apply();
         }
         return deviceId;
     }
 
     public static String getBaseUrl(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
-        return prefs.getString("backend_url", DEFAULT_BASE_URL);
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString("custom_backend_url", DEFAULT_BASE_URL).replaceAll("/+$", "");
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return false;
+            NetworkInfo active = cm.getActiveNetworkInfo();
+            return active != null && active.isConnected();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
-     * Check subscription status against backend with offline grace period check.
+     * Checks if device is entitled to run missed-call SMS automation.
+     * Evaluates live status or falls back to 3-day offline cache.
      */
-    public static void checkStatus(final Context context, final SubscriptionCallback callback) {
+    public static boolean isEntitled(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String status = prefs.getString(KEY_SUBSCRIPTION_STATUS, "none");
+        long validUntil = prefs.getLong(KEY_VALID_UNTIL, 0);
+        long lastVerified = prefs.getLong(KEY_LAST_VERIFIED, 0);
+        long now = System.currentTimeMillis();
+
+        if ("active".equalsIgnoreCase(status) && validUntil > now) {
+            return true;
+        }
+        if ("trial".equalsIgnoreCase(status) && validUntil > now) {
+            return true;
+        }
+
+        // 3-day offline grace period cache
+        if (("active".equalsIgnoreCase(status) || "trial".equalsIgnoreCase(status)) && (now - lastVerified < 3 * 24 * 60 * 60 * 1000L)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Authenticates anonymous device and initializes 3-day trial on first launch.
+     */
+    public static void authenticateDevice(final Context context, final SubscriptionCallback callback) {
+        final String deviceId = getOrCreateDeviceId(context);
+
+        if (!isNetworkAvailable(context)) {
+            // Read from local cache
+            boolean entitled = isEntitled(context);
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            SubscriptionState cached = new SubscriptionState(
+                entitled,
+                prefs.getString(KEY_SUBSCRIPTION_STATUS, "none"),
+                "Offline Mode: using cached subscription status"
+            );
+            cached.validUntil = prefs.getLong(KEY_VALID_UNTIL, 0);
+            cached.trialDaysRemaining = prefs.getInt(KEY_TRIAL_DAYS, 0);
+            if (callback != null) callback.onSuccess(cached);
+            return;
+        }
+
         executor.execute(() -> {
             try {
-                SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
-                String token = prefs.getString("auth_token", null);
-                String deviceId = getOrCreateDeviceId(context);
                 String baseUrl = getBaseUrl(context);
+                URL url = new URL(baseUrl + "/api/auth/device");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
+                conn.setDoOutput(true);
 
-                // If no token exists, perform device authentication first
-                if (token == null) {
-                    token = performDeviceAuth(context, baseUrl, deviceId);
+                JSONObject req = new JSONObject();
+                req.put("deviceId", deviceId);
+                req.put("appSignature", "misscall_assistant_v1");
+
+                byte[] out = req.toString().getBytes(StandardCharsets.UTF_8);
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(out);
                 }
 
-                if (token == null) {
-                    // Check local cache with reasonable offline grace
-                    boolean isSub = prefs.getBoolean("is_subscription_active", false);
-                    long expiry = prefs.getLong("subscription_expiry_time", 0);
-                    if (isSub && (expiry == 0 || System.currentTimeMillis() < expiry)) {
-                        postSuccess(callback, new SubscriptionState(true, "ACTIVE", "Subscription active (Offline cache)"));
-                        return;
-                    }
-                    postSuccess(callback, new SubscriptionState(false, "PAYMENT_REQUIRED", "Subscription required for automation"));
-                    return;
+                int code = conn.getResponseCode();
+                String responseBody = readStream(conn, code);
+
+                if (code == 200) {
+                    JSONObject res = new JSONObject(responseBody);
+                    String token = res.optString("token", "");
+                    String status = res.optString("status", "trial");
+                    long validUntil = res.optLong("validUntil", System.currentTimeMillis() + 3 * 86400000L);
+                    int trialDays = res.optInt("trialDaysRemaining", 3);
+
+                    SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+                    editor.putString(KEY_AUTH_TOKEN, token);
+                    editor.putString(KEY_SUBSCRIPTION_STATUS, status);
+                    editor.putLong(KEY_VALID_UNTIL, validUntil);
+                    editor.putInt(KEY_TRIAL_DAYS, trialDays);
+                    editor.putLong(KEY_LAST_VERIFIED, System.currentTimeMillis());
+                    editor.apply();
+
+                    boolean entitled = "active".equalsIgnoreCase(status) || "trial".equalsIgnoreCase(status);
+                    SubscriptionState state = new SubscriptionState(entitled, status, res.optString("message", ""));
+                    state.validUntil = validUntil;
+                    state.trialDaysRemaining = trialDays;
+
+                    postSuccess(callback, state);
+                } else {
+                    postError(callback, "Server responded with status " + code + ". Please retry.", "SERVER_ERROR_" + code);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Device authentication error", e);
+                postError(callback, "Cannot connect to server. Check your internet connection.", "NO_INTERNET");
+            }
+        });
+    }
+
+    /**
+     * Registers business on first launch via POST /api/register
+     * Stores JWT token and initial status (registered_unpaid).
+     */
+    public static void registerBusiness(
+        final Context context,
+        final String businessName,
+        final String phone,
+        final String fcmToken,
+        final SubscriptionCallback callback
+    ) {
+        final String deviceId = getOrCreateDeviceId(context);
+
+        if (!isNetworkAvailable(context)) {
+            postError(callback, "No internet connection: Please turn on mobile data or Wi-Fi to register.", "NO_INTERNET");
+            return;
+        }
+
+        executor.execute(() -> {
+            try {
+                String baseUrl = getBaseUrl(context);
+                URL url = new URL(baseUrl + "/api/register");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
+                conn.setDoOutput(true);
+
+                JSONObject req = new JSONObject();
+                req.put("deviceId", deviceId);
+                req.put("businessName", businessName);
+                req.put("phone", phone);
+                if (fcmToken != null && !fcmToken.isEmpty()) {
+                    req.put("fcmToken", fcmToken);
                 }
 
-                // Call GET /api/v1/subscription/status
-                URL url = new URL(baseUrl + "/api/v1/subscription/status");
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(req.toString().getBytes(StandardCharsets.UTF_8));
+                }
+
+                int code = conn.getResponseCode();
+                String responseBody = readStream(conn, code);
+
+                if (code == 200) {
+                    JSONObject res = new JSONObject(responseBody);
+                    String token = res.optString("token", "");
+                    String status = res.optString("status", "registered_unpaid");
+
+                    SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+                    editor.putString(KEY_AUTH_TOKEN, token);
+                    editor.putString(KEY_SUBSCRIPTION_STATUS, status);
+                    editor.putString("business_name", businessName);
+                    editor.putString("business_phone", phone);
+                    editor.putBoolean("business_registered", true);
+                    editor.putLong(KEY_LAST_VERIFIED, System.currentTimeMillis());
+                    editor.apply();
+
+                    boolean entitled = "active".equalsIgnoreCase(status) || "trial".equalsIgnoreCase(status);
+                    SubscriptionState state = new SubscriptionState(entitled, status, "Business registered successfully");
+                    postSuccess(callback, state);
+                } else {
+                    postError(callback, "Registration failed (" + code + "). Please retry.", "REGISTER_ERROR_" + code);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Business registration error", e);
+                postError(callback, "Could not reach registration server. Check network connection.", "NETWORK_ERROR");
+            }
+        });
+    }
+
+    /**
+     * Checks subscription status via GET /api/status (or /api/subscription/status)
+     */
+    public static void checkStatus(final Context context, final SubscriptionCallback callback) {
+        final String deviceId = getOrCreateDeviceId(context);
+
+        if (!isNetworkAvailable(context)) {
+            boolean entitled = isEntitled(context);
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            SubscriptionState cached = new SubscriptionState(
+                entitled,
+                prefs.getString(KEY_SUBSCRIPTION_STATUS, "none"),
+                "Offline Mode: using cached subscription status"
+            );
+            cached.validUntil = prefs.getLong(KEY_VALID_UNTIL, 0);
+            cached.trialDaysRemaining = prefs.getInt(KEY_TRIAL_DAYS, 0);
+            if (callback != null) callback.onSuccess(cached);
+            return;
+        }
+
+        executor.execute(() -> {
+            try {
+                String baseUrl = getBaseUrl(context);
+                URL url = new URL(baseUrl + "/api/subscription/status?deviceId=" + deviceId);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", "Bearer " + token);
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
 
                 int code = conn.getResponseCode();
+                String responseBody = readStream(conn, code);
+
                 if (code == 200) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) sb.append(line);
-                    br.close();
+                    JSONObject res = new JSONObject(responseBody);
+                    String status = res.optString("status", "none");
+                    long validUntil = res.optLong("validUntil", 0);
+                    int trialDays = res.optInt("trialDaysRemaining", 0);
+                    String subId = res.optString("subscriptionId", "");
 
-                    JSONObject json = new JSONObject(sb.toString());
-                    boolean active = json.optBoolean("active", false);
-                    String status = json.optString("status", active ? "ACTIVE" : "PAYMENT_REQUIRED").toUpperCase();
-                    String msg = json.optString("message", active ? "Subscription active" : "Payment required");
-                    String subId = json.optString("subscription_id", "");
-                    long currentEnd = json.optLong("current_end", 0);
+                    SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+                    editor.putString(KEY_SUBSCRIPTION_STATUS, status);
+                    editor.putLong(KEY_VALID_UNTIL, validUntil);
+                    editor.putInt(KEY_TRIAL_DAYS, trialDays);
+                    if (!subId.isEmpty()) editor.putString(KEY_SUB_ID, subId);
+                    editor.putLong(KEY_LAST_VERIFIED, System.currentTimeMillis());
+                    editor.apply();
 
-                    long expiryMs = currentEnd > 0 ? (currentEnd * 1000L) : (System.currentTimeMillis() + (30L * 86400000L));
-
-                    // Save authoritative state locally
-                    prefs.edit()
-                        .putBoolean("is_subscription_active", active)
-                        .putString("subscription_status", status)
-                        .putString("subscription_id", subId)
-                        .putLong("subscription_expiry_time", expiryMs)
-                        .apply();
-
-                    SubscriptionState state = new SubscriptionState(active, status, msg);
+                    boolean entitled = "active".equalsIgnoreCase(status) || "trial".equalsIgnoreCase(status);
+                    SubscriptionState state = new SubscriptionState(entitled, status, res.optString("message", ""));
+                    state.validUntil = validUntil;
+                    state.trialDaysRemaining = trialDays;
                     state.subscriptionId = subId;
-                    state.expiryTime = expiryMs;
+
                     postSuccess(callback, state);
                 } else {
-                    // Temporary network or server error: check grace period
-                    boolean wasSub = prefs.getBoolean("is_subscription_active", false);
-                    long expiry = prefs.getLong("subscription_expiry_time", 0);
-                    if (wasSub && (expiry == 0 || System.currentTimeMillis() < expiry)) {
-                        postSuccess(callback, new SubscriptionState(true, "ACTIVE", "Active (Offline grace period)"));
-                    } else {
-                        postSuccess(callback, new SubscriptionState(false, "PAYMENT_REQUIRED", "Subscription renewal required"));
-                    }
+                    postError(callback, "Subscription status check returned code " + code, "STATUS_CHECK_FAILED");
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Subscription check failed", e);
-                SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
-                boolean wasSub = prefs.getBoolean("is_subscription_active", false);
-                long expiry = prefs.getLong("subscription_expiry_time", 0);
-                if (wasSub && (expiry == 0 || System.currentTimeMillis() < expiry)) {
-                    postSuccess(callback, new SubscriptionState(true, "ACTIVE", "Active (Offline grace period)"));
-                } else {
-                    postSuccess(callback, new SubscriptionState(false, "PAYMENT_REQUIRED", "Offline. Subscription verification pending"));
-                }
+                Log.e(TAG, "Subscription status check error", e);
+                postError(callback, "Could not check subscription status. Check network connection.", "NETWORK_UNAVAILABLE");
             }
         });
     }
 
     /**
-     * Create a Razorpay ₹100/mo subscription on the backend.
+     * Prepares subscription and returns subscription_id + key_id for Razorpay Checkout.
      */
     public static void createSubscription(final Context context, final SubscriptionCallback callback) {
+        if (!isNetworkAvailable(context)) {
+            postError(callback, "No internet connection: Please connect to Wi-Fi or mobile data to subscribe.", "NO_INTERNET");
+            return;
+        }
+
         executor.execute(() -> {
             try {
-                SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
+                SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                String token = prefs.getString(KEY_AUTH_TOKEN, null);
+
+                // If token missing, register device first
+                if (token == null || token.isEmpty()) {
+                    String deviceId = getOrCreateDeviceId(context);
+                    String baseUrl = getBaseUrl(context);
+                    URL authUrl = new URL(baseUrl + "/api/auth/device");
+                    HttpURLConnection authConn = (HttpURLConnection) authUrl.openConnection();
+                    authConn.setRequestMethod("POST");
+                    authConn.setRequestProperty("Content-Type", "application/json");
+                    authConn.setDoOutput(true);
+                    JSONObject req = new JSONObject();
+                    req.put("deviceId", deviceId);
+                    try (OutputStream os = authConn.getOutputStream()) {
+                        os.write(req.toString().getBytes(StandardCharsets.UTF_8));
+                    }
+                    if (authConn.getResponseCode() == 200) {
+                        JSONObject authRes = new JSONObject(readStream(authConn, 200));
+                        token = authRes.optString("token", "");
+                        prefs.edit().putString(KEY_AUTH_TOKEN, token).apply();
+                    }
+                }
+
                 String baseUrl = getBaseUrl(context);
-                String deviceId = getOrCreateDeviceId(context);
-                String token = prefs.getString("auth_token", null);
-
-                if (token == null) {
-                    token = performDeviceAuth(context, baseUrl, deviceId);
-                }
-
-                if (token == null) {
-                    postError(callback, "Device authentication failed");
-                    return;
-                }
-
-                URL url = new URL(baseUrl + "/api/v1/subscription/create");
+                URL url = new URL(baseUrl + "/api/subscription/create");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Authorization", "Bearer " + token);
                 conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                if (token != null && !token.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(10000);
                 conn.setDoOutput(true);
 
-                JSONObject payload = new JSONObject();
-                payload.put("plan", "monthly_100");
                 try (OutputStream os = conn.getOutputStream()) {
-                    os.write(payload.toString().getBytes(StandardCharsets.UTF_8));
+                    os.write("{}".getBytes(StandardCharsets.UTF_8));
                 }
 
                 int code = conn.getResponseCode();
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                    code < 400 ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8
-                ));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) sb.append(line);
-                br.close();
+                String responseBody = readStream(conn, code);
 
-                if (code == 201 || code == 200) {
-                    JSONObject json = new JSONObject(sb.toString());
-                    String subId = json.optString("subscriptionId", "sub_misscall_pro");
-                    String shortUrl = json.optString("shortUrl", "https://rzp.io/rzp/DCET6eO8");
-                    if (shortUrl.isEmpty()) {
-                        shortUrl = "https://rzp.io/rzp/DCET6eO8";
-                    }
-                    String keyId = json.optString("keyId", "");
+                if (code == 200) {
+                    JSONObject res = new JSONObject(responseBody);
+                    String subId = res.optString("subscription_id", "");
+                    String keyId = res.optString("key_id", "");
+                    String shortUrl = res.optString("short_url", "https://rzp.io/rzp/DCET6eO8");
 
-                    SubscriptionState state = new SubscriptionState(false, "PAYMENT_REQUIRED", "Subscription created. Payment pending.");
+                    SubscriptionState state = new SubscriptionState(false, "PAYMENT_PENDING", "Checkout initiated");
                     state.subscriptionId = subId;
-                    state.checkoutUrl = shortUrl;
                     state.keyId = keyId;
+                    state.shortUrl = shortUrl;
 
-                    prefs.edit().putString("pending_subscription_id", subId).apply();
+                    prefs.edit().putString(KEY_SUB_ID, subId).apply();
                     postSuccess(callback, state);
                 } else {
-                    postError(callback, "Subscription creation failed (" + code + "): " + sb.toString());
+                    postError(callback, "Subscription creation failed (" + code + "). Server is busy, please retry.", "CREATE_FAILED_" + code);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Create subscription error", e);
-                postError(callback, "Network error: " + e.getMessage());
+                postError(callback, "Could not reach payment gateway: " + e.getMessage(), "GATEWAY_TIMEOUT");
             }
         });
     }
 
     /**
-     * Verify payment on server immediately following checkout completion.
+     * Verifies payment completion using HMAC-SHA256 signature on backend.
      */
-    public static void verifyPayment(final Context context, final String subscriptionId, final SubscriptionCallback callback) {
+    public static void verifyPayment(
+        final Context context,
+        final String paymentId,
+        final String subscriptionId,
+        final String signature,
+        final SubscriptionCallback callback
+    ) {
+        if (!isNetworkAvailable(context)) {
+            postError(callback, "No internet connection: Please connect to verify your payment.", "NO_INTERNET");
+            return;
+        }
+
         executor.execute(() -> {
             try {
-                SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
-                String baseUrl = getBaseUrl(context);
-                String token = prefs.getString("auth_token", null);
+                SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                String token = prefs.getString(KEY_AUTH_TOKEN, "");
+                String deviceId = getOrCreateDeviceId(context);
 
-                URL url = new URL(baseUrl + "/api/v1/subscription/verify");
+                String baseUrl = getBaseUrl(context);
+                URL url = new URL(baseUrl + "/api/subscription/verify");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Authorization", "Bearer " + token);
                 conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                if (!token.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(10000);
                 conn.setDoOutput(true);
 
-                JSONObject payload = new JSONObject();
-                payload.put("subscriptionId", subscriptionId);
+                JSONObject req = new JSONObject();
+                req.put("deviceId", deviceId);
+                req.put("razorpay_payment_id", paymentId);
+                req.put("razorpay_subscription_id", subscriptionId);
+                req.put("razorpay_signature", signature);
+
                 try (OutputStream os = conn.getOutputStream()) {
-                    os.write(payload.toString().getBytes(StandardCharsets.UTF_8));
+                    os.write(req.toString().getBytes(StandardCharsets.UTF_8));
                 }
 
                 int code = conn.getResponseCode();
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                    code < 400 ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8
-                ));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) sb.append(line);
-                br.close();
+                String responseBody = readStream(conn, code);
 
                 if (code == 200) {
-                    JSONObject json = new JSONObject(sb.toString());
-                    boolean active = json.optBoolean("active", false);
-                    String status = json.optString("status", active ? "ACTIVE" : "INACTIVE").toUpperCase();
+                    JSONObject res = new JSONObject(responseBody);
+                    long validUntil = res.optLong("validUntil", System.currentTimeMillis() + 30 * 86400000L);
 
-                    prefs.edit()
-                        .putBoolean("is_subscription_active", active)
-                        .putString("subscription_status", status)
-                        .putString("subscription_id", subscriptionId)
-                        .putLong("subscription_expiry_time", System.currentTimeMillis() + (30L * 86400000L))
-                        .apply();
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString(KEY_SUBSCRIPTION_STATUS, "active");
+                    editor.putLong(KEY_VALID_UNTIL, validUntil);
+                    editor.putLong(KEY_LAST_VERIFIED, System.currentTimeMillis());
+                    editor.putString(KEY_SUB_ID, subscriptionId);
+                    editor.apply();
 
-                    postSuccess(callback, new SubscriptionState(active, status, "Payment verified successfully!"));
+                    SubscriptionState state = new SubscriptionState(true, "active", "Pro Subscription active for ₹100/mo");
+                    state.validUntil = validUntil;
+                    state.subscriptionId = subscriptionId;
+                    postSuccess(callback, state);
                 } else {
-                    postError(callback, "Payment verification pending with payment gateway.");
+                    postError(callback, "Verification failed (" + code + "): Payment recorded, tap Check Status to update.", "VERIFICATION_REJECTED");
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Verify payment error", e);
-                postError(callback, "Verification network error: " + e.getMessage());
+                postError(callback, "Verification request failed: " + e.getMessage(), "NETWORK_ERROR");
             }
         });
     }
 
-    private static String performDeviceAuth(Context context, String baseUrl, String deviceId) {
-        try {
-            SharedPreferences prefs = context.getSharedPreferences("misscall_prefs", Context.MODE_PRIVATE);
-            String businessName = prefs.getString("business_name", "My Store");
-
-            URL url = new URL(baseUrl + "/api/v1/auth/device-auth");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setConnectTimeout(8000);
-            conn.setReadTimeout(8000);
-            conn.setDoOutput(true);
-
-            JSONObject payload = new JSONObject();
-            payload.put("deviceId", deviceId);
-            payload.put("businessName", businessName);
-
-            try (OutputStream os = conn.getOutputStream()) {
-                os.write(payload.toString().getBytes(StandardCharsets.UTF_8));
-            }
-
-            if (conn.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) sb.append(line);
-                br.close();
-
-                JSONObject res = new JSONObject(sb.toString());
-                String token = res.optString("token", null);
-                if (token != null) {
-                    prefs.edit().putString("auth_token", token).apply();
-                }
-                return token;
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Device auth failed", e);
-        }
-        return null;
+    private static String readStream(HttpURLConnection conn, int code) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+            code < 400 ? conn.getInputStream() : conn.getErrorStream(),
+            StandardCharsets.UTF_8
+        ));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) sb.append(line);
+        br.close();
+        return sb.toString();
     }
 
-    private static void postSuccess(SubscriptionCallback callback, SubscriptionState state) {
+    private static void postSuccess(final SubscriptionCallback callback, final SubscriptionState state) {
         if (callback != null) {
             mainHandler.post(() -> callback.onSuccess(state));
         }
     }
 
-    private static void postError(SubscriptionCallback callback, String message) {
+    private static void postError(final SubscriptionCallback callback, final String msg, final String code) {
         if (callback != null) {
-            mainHandler.post(() -> callback.onError(message));
+            mainHandler.post(() -> callback.onError(msg, code));
         }
     }
 }
