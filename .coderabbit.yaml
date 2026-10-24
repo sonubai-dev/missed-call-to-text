@@ -1,0 +1,56 @@
+# CodeRabbit Configuration for MissCall Assistant
+# Documentation: https://docs.coderabbit.ai/guides/configure-coderabbit
+
+version: "2"
+language: "en-US"
+tone_instructions: "Be concise, actionable, and focus on security, Android background stability, and payment integrity."
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+      - "develop"
+
+  # Path filters to ignore binaries and generated artifacts
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/.gradle/**"
+    - "!**/.next/**"
+    - "!**/*.apk"
+    - "!**/*.jks"
+    - "!**/*.log"
+    - "!**/*.json" # avoid reviewing large build/data files like devices_db.json
+    - "!.data/**"
+
+  # Custom review instructions tailored to MissCall Assistant architecture
+  path_instructions:
+    - path: "app/**"
+      instructions: |
+        - Verify Android background lifecycle and CallScreeningService compliance for Android 10-14.
+        - Ensure telephony permissions (READ_CALL_LOG, READ_PHONE_STATE, SEND_SMS) are safely guarded.
+        - Ensure delay safeguards (2s, 5s, 10s) prevent duplicate or premature SMS dispatches.
+        - Verify Razorpay Checkout SDK integration handles errors and cancellations gracefully.
+    - path: "backend/**"
+      instructions: |
+        - Ensure Razorpay webhook HMAC signatures are strictly validated before state mutations.
+        - Ensure SQL injection and parameterization protections are maintained.
+        - Enforce JWT authentication on protected device routes.
+        - Keep database migrations backward-compatible.
+    - path: "src/**"
+      instructions: |
+        - Ensure React components maintain clean responsive layouts across mobile and desktop.
+        - Avoid hardcoding production secrets or sensitive keys in client-side code.
+
+chat:
+  auto_reply: true

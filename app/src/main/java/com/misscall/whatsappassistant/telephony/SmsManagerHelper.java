@@ -7,6 +7,7 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SmsManagerHelper {
@@ -53,8 +54,14 @@ public class SmsManagerHelper {
             }
 
             if (smsManager != null) {
-                smsManager.sendTextMessage(destinationAddress, null, message, null, null);
-                Log.i(TAG, "SMS successfully dispatched to: " + destinationAddress);
+                ArrayList<String> parts = smsManager.divideMessage(message);
+                if (parts != null && parts.size() > 1) {
+                    smsManager.sendMultipartTextMessage(destinationAddress, null, parts, null, null);
+                    Log.i(TAG, "Multipart SMS (" + parts.size() + " parts) successfully dispatched to: " + destinationAddress);
+                } else {
+                    smsManager.sendTextMessage(destinationAddress, null, message, null, null);
+                    Log.i(TAG, "Single SMS successfully dispatched to: " + destinationAddress);
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to send SMS to " + destinationAddress, e);

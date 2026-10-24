@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "python3 scripts/build_production_release.py",
+    "prebuild": "python scripts/build_production_release.py",
     "build": "vite build",
     "lint": "tsc --noEmit",
     "preview": "vite preview"

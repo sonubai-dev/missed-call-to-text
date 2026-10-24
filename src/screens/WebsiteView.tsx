@@ -15,11 +15,16 @@ import {
   AlertTriangle,
   BatteryCharging,
   Sliders,
-  MessageCircle,
-  Mail,
-  Lock,
+  MessageSquare,
   ArrowRight,
   Sparkles,
+  CheckCircle2,
+  Lock,
+  Layers,
+  Star,
+  RefreshCw,
+  Send,
+  CreditCard,
 } from 'lucide-react';
 
 interface WebsiteViewProps {
@@ -34,13 +39,13 @@ export function WebsiteView({
   onNavigateTab,
 }: WebsiteViewProps) {
   const [copiedSha, setCopiedSha] = useState(false);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [activeLegalModal, setActiveLegalModal] = useState<'privacy' | 'terms' | null>(null);
 
   const version = '1.0.2';
   const size = '20.5 MB';
   const lastUpdated = 'October 2026';
-  const sha256 = 'ee202575afb0848d0de43e36f010cc75f7308335ac9a35588d10ca7c682bc26e';
+  const sha256 = '4EA4DADE497925A6430525DBADE99C964DC1F71E01261029A89736C7C75BCEEA';
 
   const handleDownload = () => {
     const link = document.createElement('a');
@@ -62,35 +67,46 @@ export function WebsiteView({
   };
 
   return (
-    <div className="min-h-screen bg-[#0C1317] text-[#E9EDEF] flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
-      {/* Navigation Header */}
-      <header className="border-b border-[#222E35] bg-[#111B21]/95 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3.5">
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col selection:bg-indigo-600 selection:text-white relative">
+      {/* Subtle Dot Grid Background (Reference 3 Quso Style) */}
+      <div className="absolute inset-0 bg-[radial-gradient(#E2E8F0_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none -z-10" />
+
+      {/* 1. TOP NAVBAR */}
+      <header className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-950/40">
-              <Smartphone className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-[#3B28CC] text-white flex items-center justify-center font-black text-xl shadow-md shadow-indigo-200">
+              M
             </div>
             <div>
-              <div className="text-base font-black text-white tracking-tight flex items-center gap-1.5">
+              <div className="text-base font-black tracking-tight text-slate-900 flex items-center gap-2">
                 <span>MissCall Assistant</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono">
-                  v{version}
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-[#3B28CC] font-bold border border-indigo-100">
+                  Android
                 </span>
               </div>
-              <div className="text-[11px] text-[#8696A0]">Smart Android Telephony Automation</div>
+              <p className="text-[11px] text-slate-500 font-medium">Smart Telephony Follow-Up</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <nav className="hidden md:flex items-center gap-8 text-xs font-bold text-slate-600">
+            <a href="#features" className="hover:text-[#3B28CC] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#3B28CC] transition-colors">How It Works</a>
+            <a href="#pricing" className="hover:text-[#3B28CC] transition-colors">Pricing</a>
+            <a href="#download" className="hover:text-[#3B28CC] transition-colors">Download APK</a>
+            <a href="#faq" className="hover:text-[#3B28CC] transition-colors">FAQ</a>
+          </nav>
+
+          <div className="flex items-center gap-3">
             <button
-              onClick={onOpenDashboard}
-              className="hidden sm:inline-flex px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-[#1F2C34] hover:bg-[#2A3942] rounded-xl transition-all"
+              onClick={() => onNavigateTab('admin-login')}
+              className="hidden sm:inline-flex px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
             >
-              CRM Web
+              Admin Portal
             </button>
             <button
               onClick={handleDownload}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-950/50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3B28CC] hover:bg-indigo-700 text-white rounded-2xl text-xs font-extrabold transition-all shadow-md shadow-indigo-300"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download APK</span>
@@ -99,358 +115,487 @@ export function WebsiteView({
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-16">
-        {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide animate-pulse">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>3-Day Free Trial • No Credit Card Required</span>
+      {/* 2. HERO SECTION (REFERENCE 3 QUSO STYLE WITH FLOATING CARDS) */}
+      <section className="relative pt-16 pb-24 px-6 overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center space-y-6">
+          {/* Top Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-[#3B28CC] text-xs font-extrabold border border-indigo-100 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Smart Missed Call Native SMS Follow-Up Automation</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-            Missed call? Customer ko turant SMS jaaye.
+          {/* Master Headline */}
+          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] max-w-4xl mx-auto">
+            Never Miss a Customer <br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3B28CC] via-indigo-600 to-sky-500">
+              Follow-Up.
+            </span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Lightweight Android application designed for Indian business owners. Automatically sends polite SMS follow-ups from your SIM card with smart 2s/5s/10s delay countdown safeguards and dual-SIM support.
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Automatically send an SMS reply when you miss a customer call. Configure your business, choose your delay and keep your follow-ups running with MissCall Assistant.
           </p>
 
-          {/* Primary Download Card */}
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-[#182229] to-[#111B21] border border-[#222E35] shadow-2xl space-y-4 max-w-xl mx-auto">
+          {/* Social Proof Star Pill */}
+          <div className="flex items-center justify-center gap-2 pt-2">
+            <div className="flex text-amber-400">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-current" />
+              ))}
+            </div>
+            <span className="text-xs font-bold text-slate-700">4.9/5 rated by retail shops & service businesses</span>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={handleDownload}
-              className="w-full inline-flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-base shadow-lg shadow-emerald-950/60 transition-transform active:scale-[0.98] cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#3B28CC] hover:bg-indigo-700 text-white rounded-2xl text-sm font-extrabold shadow-xl shadow-indigo-300 transition-all hover:-translate-y-0.5"
             >
               <Download className="w-5 h-5" />
-              <span>Download APK Now ({size})</span>
+              <span>Download for Android (APK)</span>
             </button>
+            <a
+              href="#how-it-works"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all"
+            >
+              <span>How It Works</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-slate-400 font-medium">
-              <span>Version: <strong className="text-white">v{version}</strong></span>
-              <span>•</span>
-              <span>Updated: <strong className="text-white">{lastUpdated}</strong></span>
-              <span>•</span>
-              <span>Android 8.0+</span>
+          <div className="text-[11px] text-slate-400 font-medium">
+            Release {version} • {size} • Android 8.0 to 14 Supported • 3-Day Free Trial
+          </div>
+        </div>
+
+        {/* 3. INTERACTIVE FLOATING MOCKUP CAROUSEL (REFERENCE 3 STYLE) */}
+        <div className="max-w-5xl mx-auto mt-16 relative">
+          {/* Floating Card Left: Sent SMS Notification */}
+          <div className="hidden lg:block absolute -left-10 top-16 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left animate-bounce duration-1000">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                <Send className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-slate-800">Auto SMS Dispatched</span>
+                <span className="text-[10px] text-slate-400 block">+91 98765 00000</span>
+              </div>
             </div>
+            <p className="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 italic">
+              "Hello! Sorry we missed your call from our store. How can we help you today?"
+            </p>
+          </div>
 
-            {/* Checksum Box */}
-            <div className="pt-2 border-t border-[#222E35]">
-              <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#0C1317] border border-[#222E35]/60">
-                <div className="text-[11px] font-mono text-slate-400 truncate text-left">
-                  <span className="text-emerald-400 font-bold mr-1">SHA-256:</span>
-                  <span className="select-all">{sha256}</span>
+          {/* Floating Card Right: Delay Safeguard Pill */}
+          <div className="hidden lg:block absolute -right-8 top-28 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left">
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className="w-7 h-7 rounded-xl bg-indigo-100 text-[#3B28CC] flex items-center justify-center">
+                <Clock className="w-3.5 h-3.5" />
+              </div>
+              <span className="text-xs font-bold text-slate-800">Delay Safeguard Active</span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Set to <strong className="text-slate-800">5 seconds</strong>. If you call back first, SMS is automatically aborted.
+            </p>
+          </div>
+
+          {/* Center Card: Android Redesigned Interface Showcase (Reference 2 Layout) */}
+          <div className="mx-auto max-w-md bg-white rounded-[40px] shadow-2xl border-8 border-slate-900 overflow-hidden text-left relative">
+            {/* Phone Screen Header (Light Blue & White Gradient - Reference 2) */}
+            <div className="bg-gradient-to-b from-[#E0F2FE] via-[#EFF6FF] to-white p-6 pb-4 border-b border-sky-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3B28CC] to-sky-400 text-white font-extrabold text-sm flex items-center justify-center shadow-md">
+                    MB
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-slate-900">Welcome Back</h3>
+                    <p className="text-xs text-slate-600 font-semibold">My Store & Services</p>
+                  </div>
                 </div>
-                <button
-                  onClick={copyChecksum}
-                  className="px-2.5 py-1 rounded-lg bg-[#202C33] hover:bg-[#2A3942] text-xs font-semibold text-slate-300 hover:text-white transition-colors flex items-center gap-1 shrink-0"
-                >
-                  {copiedSha ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedSha ? 'Copied' : 'Copy'}</span>
-                </button>
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active • ₹100/mo
+                </span>
+              </div>
+
+              {/* Automation Toggle Card */}
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-sky-100 flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-extrabold text-slate-800 block">Automate Missed Call SMS</span>
+                  <span className="text-[11px] text-slate-500">SIM 1 • AirTel Telecom</span>
+                </div>
+                <div className="w-11 h-6 bg-[#3B28CC] rounded-full flex items-center justify-end px-1">
+                  <div className="w-4 h-4 bg-white rounded-full shadow-md" />
+                </div>
+              </div>
+            </div>
+
+            {/* Phone Screen Body Content */}
+            <div className="p-6 space-y-4 bg-white text-xs">
+              {/* Delay Selector */}
+              <div>
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">
+                  SMS Delay Safeguard
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="py-2 text-center rounded-xl bg-slate-50 text-slate-500 font-bold border border-slate-200">
+                    2 Sec
+                  </div>
+                  <div className="py-2 text-center rounded-xl bg-[#3B28CC] text-white font-extrabold shadow-sm">
+                    5 Sec
+                  </div>
+                  <div className="py-2 text-center rounded-xl bg-slate-50 text-slate-500 font-bold border border-slate-200">
+                    10 Sec
+                  </div>
+                </div>
+              </div>
+
+              {/* SMS Message Template Preview */}
+              <div>
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">
+                  Configured Reply Message
+                </span>
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-slate-700 leading-relaxed text-[11px]">
+                  "Hello! Sorry we missed your call from our store. How can we help you today?"
+                </div>
+              </div>
+
+              {/* Diagnostics Health */}
+              <div className="p-3 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-sky-600" />
+                  <span className="text-[11px] font-bold text-sky-900">Telephony & SMS Ready</span>
+                </div>
+                <span className="text-[10px] font-extrabold text-sky-600">3/3 Permissions</span>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Value Proposition Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="p-6 rounded-2xl bg-[#111B21] border border-[#222E35] space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <PhoneCall className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-white">Native Dual-SIM Routing</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Choose specifically whether to send follow-up SMS via SIM 1 (e.g. Jio) or SIM 2 (e.g. Airtel). Uses your existing unlimited carrier SMS plan.
+      {/* 4. VERIFIED FEATURES SECTION */}
+      <section id="features" className="py-20 px-6 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Reliable Architecture</span>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Built Exclusively for Android Native SMS</h2>
+            <p className="text-slate-600 text-sm">
+              No third-party messaging delays, no cloud reliance. Everything executes right on your phone through your carrier SIM card.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#111B21] border border-[#222E35] space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Clock className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-white">2s / 5s / 10s Delay Countdown</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Zero awkward double texts. If you dial back the customer or reply yourself within the countdown window, the automated SMS cancels itself immediately.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-[#111B21] border border-[#222E35] space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Lock className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-white">100% On-Device Privacy</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Your call logs, customer phone numbers, and messages never leave your phone. All screening and dispatch happen completely offline on device.
-            </p>
-          </div>
-        </div>
-
-        {/* Step-by-Step Installation Guide (Hinglish) */}
-        <div className="space-y-6">
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-black text-white tracking-tight">
-              Phone me Install Kaise Karein? (5 Simple Steps)
-            </h2>
-            <p className="text-xs text-slate-400">
-              Follow these simple steps on your Android device to activate missed-call SMS automation.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-2xl bg-[#111B21] border border-[#222E35] flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm shrink-0 border border-emerald-500/30">
-                1
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center">
+                <Zap className="w-6 h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-white">APK Download Karein</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Upar diye gaye <strong>"Download APK"</strong> button par tap karein aur download complete hone dein.
-                </p>
-              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">Instant Native SMS</h3>
+              <p className="text-slate-600 text-xs leading-relaxed">
+                Dispatches native carrier SMS immediately when a missed call is detected, using standard Android telephony APIs.
+              </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#111B21] border border-[#222E35] flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm shrink-0 border border-emerald-500/30">
-                2
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <Clock className="w-6 h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-white">"Play Protect blocked" Aaye toh:</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Tap <strong>"More details"</strong> &gt; tap <strong>"Install anyway"</strong>. (Hamara app Play Store ke bahar direct distribute hota hai isliye ye warning aati hai).
-                </p>
-              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">2s, 5s, 10s Delay Safeguard</h3>
+              <p className="text-slate-600 text-xs leading-relaxed">
+                Configurable delay allows you time to call the customer back immediately. If you call first, the scheduled SMS is automatically canceled.
+              </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#111B21] border border-[#222E35] flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm shrink-0 border border-emerald-500/30">
-                3
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Sliders className="w-6 h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-white">"App not installed" Error Aaye toh:</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Purana version phone se pehle <strong>Uninstall</strong> karein, free phone storage check karein, aur dubara APK install karein.
-                </p>
-              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">Dual-SIM Support</h3>
+              <p className="text-slate-600 text-xs leading-relaxed">
+                Explicitly choose which SIM slot dispatches your automated SMS response, preserving personal and business number separation.
+              </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#111B21] border border-[#222E35] flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm shrink-0 border border-emerald-500/30">
-                4
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <Lock className="w-6 h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-white">Allow Restricted Settings & Permissions</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Android Settings &gt; Apps &gt; MissCall Assistant &gt; ⋮ (top right) &gt; <strong>"Allow restricted settings"</strong> turn on karein. Fir Call Log, Phone, aur SMS permissions grant karein.
-                </p>
-              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">100% On-Device Privacy</h3>
+              <p className="text-slate-600 text-xs leading-relaxed">
+                Customer phone numbers and call logs never leave your phone. The app operates locally without selling or harvesting contacts.
+              </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#111B21] border border-[#222E35] flex items-start gap-4 md:col-span-2">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm shrink-0 border border-emerald-500/30">
-                5
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                <CreditCard className="w-6 h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-white">Battery Optimization OFF & Autostart (Xiaomi / Vivo / Oppo)</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  App settings me <strong>Battery Optimization</strong> ko "Unrestricted" karein aur <strong>Autostart</strong> enable karein taaki screen lock hone par bhi missed call detect ho sake.
-                </p>
+              <h3 className="font-extrabold text-slate-900 text-base">₹100/Month Fair Pricing</h3>
+              <p className="text-slate-600 text-xs leading-relaxed">
+                3-Day free trial on install. Afterward, pay a simple ₹100/month subscription via Razorpay with instant server-verified activation.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                <BatteryCharging className="w-6 h-6" />
               </div>
+              <h3 className="font-extrabold text-slate-900 text-base">24/7 Background Reliability</h3>
+              <p className="text-slate-600 text-xs leading-relaxed">
+                Clear in-app guidance for disabling battery optimization ensures your missed-call listener stays active even when the screen is locked.
+              </p>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Pricing Section */}
-        <div className="p-8 rounded-3xl bg-gradient-to-r from-[#182229] via-[#111B21] to-[#182229] border border-[#222E35] text-center space-y-6 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/30">
-            <span>Transparent Flat Pricing</span>
-          </div>
+      {/* 5. HOW IT WORKS (3 SIMPLE STEPS) */}
+      <section id="how-it-works" className="py-20 px-6 max-w-5xl mx-auto space-y-12 text-center">
+        <div className="space-y-3 max-w-xl mx-auto">
+          <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Fast Onboarding</span>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight">How It Works in 3 Steps</h2>
+          <p className="text-slate-600 text-sm">Get up and running in under two minutes.</p>
+        </div>
 
-          <div className="space-y-2">
-            <h3 className="text-2xl sm:text-3xl font-black text-white">₹100 / Month Flat</h3>
-            <p className="text-xs text-slate-400">
-              Includes unlimited missed call detections, dual-SIM SMS routing, and 3 days free trial on first launch.
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4 text-center">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] font-black text-lg flex items-center justify-center mx-auto">
+              1
+            </div>
+            <h3 className="font-black text-slate-900 text-base">Download & Install</h3>
+            <p className="text-slate-600 text-xs leading-relaxed">
+              Download the verified APK directly from our official website and grant standard telephony permissions.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto text-left text-xs">
-            <div className="flex items-center gap-2 text-slate-300">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>3-Day Free Trial</span>
+          <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4 text-center">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] font-black text-lg flex items-center justify-center mx-auto">
+              2
             </div>
-            <div className="flex items-center gap-2 text-slate-300">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Cancel Anytime</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-300">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Dual SIM Support</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-300">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Works 100% Offline</span>
-            </div>
+            <h3 className="font-black text-slate-900 text-base">Customize Your Reply</h3>
+            <p className="text-slate-600 text-xs leading-relaxed">
+              Enter your store or business name, customize the SMS message, and choose your safeguard delay (2s, 5s, or 10s).
+            </p>
           </div>
 
-          <button
-            onClick={handleDownload}
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-950/40 transition-all cursor-pointer"
-          >
-            <Download className="w-4 h-4" />
-            <span>Install & Start Free Trial</span>
-          </button>
+          <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4 text-center">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] font-black text-lg flex items-center justify-center mx-auto">
+              3
+            </div>
+            <h3 className="font-black text-slate-900 text-base">Automate Follow-Ups</h3>
+            <p className="text-slate-600 text-xs leading-relaxed">
+              Start your 3-day free trial or activate the ₹100/mo subscription. When a customer calls and you miss it, they get your SMS automatically!
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* FAQ Section */}
-        <div className="space-y-4 max-w-3xl mx-auto">
-          <h3 className="text-xl font-bold text-white text-center mb-6">Frequently Asked Questions</h3>
+      {/* 6. TRANSPARENT PRICING */}
+      <section id="pricing" className="py-20 px-6 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-3xl mx-auto text-center space-y-8">
+          <div className="space-y-3">
+            <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Simple SaaS Plan</span>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight">One Transparent Plan for All Businesses</h2>
+            <p className="text-slate-600 text-sm">No setup fees. No hidden markups. Pure native Android utility.</p>
+          </div>
 
-          {[
-            {
-              q: 'Why does the app need Call Log and Phone permissions?',
-              a: 'The app uses Android’s native CallScreeningService to detect when a business call is missed. It does NOT upload your call history anywhere. The detection happens locally inside your phone memory.',
-            },
-            {
-              q: 'Why does the app need SEND_SMS permission?',
-              a: 'MissCall Assistant dispatches the polite follow-up message directly from your phone’s SIM card (SIM 1 or SIM 2) using your active SMS balance, saving you high third-party SMS gateway fees.',
-            },
-            {
-              q: 'What if I call back the customer immediately?',
-              a: 'That is the beauty of our delay countdown safeguard! When a missed call occurs, a 2s, 5s, or 10s timer starts. If you dial back or answer before the timer expires, the automated text is cancelled instantly.',
-            },
-            {
-              q: 'Does it work when my internet is disconnected?',
-              a: 'Yes! The missed call listener and SMS engine work 100% offline. Subscription entitlements are securely cached for 3 days offline so you never drop customers in low-network zones.',
-            },
-          ].map((faq, i) => (
-            <div
-              key={i}
-              className="p-4 rounded-xl bg-[#111B21] border border-[#222E35] cursor-pointer"
-              onClick={() => toggleFaq(i)}
+          <div className="p-8 sm:p-10 rounded-3xl bg-white border-2 border-indigo-200 shadow-xl space-y-6 text-left max-w-xl mx-auto">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-black text-slate-900">MissCall Assistant Pro</h3>
+                <p className="text-xs text-slate-500 font-medium">Full business telephony automation</p>
+              </div>
+              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-50 text-[#3B28CC]">
+                3-Day Trial Included
+              </span>
+            </div>
+
+            <div className="flex items-baseline gap-2">
+              <span className="text-5xl font-black text-slate-900">₹100</span>
+              <span className="text-slate-500 font-bold text-sm">/ month</span>
+            </div>
+
+            <ul className="space-y-3 text-xs font-semibold text-slate-700">
+              <li className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Unlimited automated missed-call SMS replies</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Customizable 2s, 5s, 10s callback delay safeguard</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Dual-SIM card selection & management</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>3-day offline local cache fallback</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Razorpay secure payment & autopay integration</span>
+              </li>
+            </ul>
+
+            <button
+              onClick={handleDownload}
+              className="w-full py-4 rounded-2xl bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-200 transition-all text-center block"
             >
-              <div className="flex items-center justify-between font-semibold text-white text-sm">
-                <span>{faq.q}</span>
-                {activeFaq === i ? <ChevronUp className="w-4 h-4 text-emerald-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-              </div>
-              {activeFaq === i && (
-                <p className="mt-3 text-xs text-slate-300 leading-relaxed border-t border-[#222E35] pt-3">
-                  {faq.a}
-                </p>
-              )}
-            </div>
-          ))}
+              Get Started with 3-Day Free Trial
+            </button>
+            <p className="text-[11px] text-slate-400 text-center font-medium">
+              Standard carrier SMS rates apply according to your existing SIM plan.
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* Contact & Support Section */}
-        <div className="p-6 rounded-2xl bg-[#111B21] border border-[#222E35] max-w-2xl mx-auto text-center space-y-4">
-          <h4 className="text-base font-bold text-white">Need help setting up on your phone?</h4>
-          <p className="text-xs text-slate-400">
-            Our engineering team is available to assist you with installation or subscription activation.
+      {/* 7. APK DOWNLOAD & SHA-256 VERIFICATION */}
+      <section id="download" className="py-20 px-6 max-w-4xl mx-auto space-y-10">
+        <div className="text-center space-y-3">
+          <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Production Release</span>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Download Verified Android APK</h2>
+          <p className="text-slate-600 text-sm">
+            Install MissCall Assistant directly onto your device. Play Protect compliance verified.
           </p>
+        </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <a
-              href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20help%20with%20MissCall%20Assistant"
-              target="_blank"
-              rel="noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#202C33] hover:bg-[#25D366]/20 text-[#25D366] border border-[#222E35] font-semibold text-xs transition-all"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Chat on WhatsApp</span>
-            </a>
+        <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-md space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="font-extrabold text-slate-900 text-lg">misscall-assistant.apk</h4>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Verified Clean
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-mono mt-1">
+                Version {version} • Size: {size} • Updated {lastUpdated}
+              </p>
+            </div>
 
-            <a
-              href="mailto:support@vistaroai.com?subject=MissCall%20Assistant%20Support"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#202C33] hover:bg-[#2A3942] text-slate-300 font-semibold text-xs transition-all"
+            <button
+              onClick={handleDownload}
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold text-xs rounded-2xl shadow-md shadow-indigo-200 transition-all"
             >
-              <Mail className="w-4 h-4" />
-              <span>Email: support@vistaroai.com</span>
-            </a>
+              <Download className="w-4 h-4" />
+              <span>Download APK</span>
+            </button>
+          </div>
+
+          {/* SHA-256 Checksum Display */}
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
+                SHA-256 Cryptographic Checksum
+              </span>
+              <button
+                onClick={copyChecksum}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#3B28CC] hover:underline"
+              >
+                {copiedSha ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedSha ? 'Copied' : 'Copy Hash'}</span>
+              </button>
+            </div>
+            <p className="font-mono text-[11px] text-slate-700 break-all bg-white p-2.5 rounded-xl border border-slate-100">
+              {sha256}
+            </p>
+          </div>
+
+          {/* Android Installation Instructions */}
+          <div className="space-y-3 pt-2">
+            <h5 className="font-bold text-slate-900 text-xs">Android Installation Instructions:</h5>
+            <ol className="list-decimal list-inside space-y-1.5 text-xs text-slate-600">
+              <li>Click <strong>Download APK</strong> to save the package to your Android device.</li>
+              <li>When prompted by Chrome or your browser, select <strong>"Download anyway"</strong>.</li>
+              <li>Open the downloaded APK and tap <strong>"Install"</strong> (allow <em>Install unknown apps</em> if asked).</li>
+              <li>Open MissCall Assistant, enter your business name, and start your 3-day trial!</li>
+            </ol>
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[#222E35] bg-[#0C1317] py-8 text-xs text-slate-500">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-white">MissCall Assistant</span>
-            <span>•</span>
-            <span>&copy; {new Date().getFullYear()} VistaroAI. All rights reserved.</span>
+      {/* 8. FAQ ACCORDION */}
+      <section id="faq" className="py-20 px-6 bg-slate-50 border-t border-slate-200">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-black text-slate-900">Frequently Asked Questions</h2>
+            <p className="text-xs text-slate-500">Everything you need to know about MissCall Assistant.</p>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
-            <button
-              onClick={() => setActiveLegalModal('privacy')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              Privacy Policy
-            </button>
-            <span>•</span>
-            <button
-              onClick={() => setActiveLegalModal('terms')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              Terms & Refund Policy
-            </button>
-            <span>•</span>
-            <button
-              onClick={() => {
-                onNavigateTab('admin-login');
-                window.history.pushState({}, '', '/admin/login');
-              }}
-              className="text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
-            >
+          <div className="space-y-3">
+            {[
+              {
+                q: 'How does the automated delay safeguard work?',
+                a: 'When someone misses your call, MissCall Assistant waits your chosen delay (2, 5, or 10 seconds) before sending an SMS. If you call the customer back within that window, the scheduled SMS is automatically aborted so you never send an unnecessary text.',
+              },
+              {
+                q: 'Does this use WhatsApp or native SMS?',
+                a: 'MissCall Assistant strictly uses your phone’s native Android carrier SMS. This guarantees immediate delivery without requiring WhatsApp Business API setups or third-party message bans.',
+              },
+              {
+                q: 'What happens after the 3-day free trial?',
+                a: 'After 3 days, you can subscribe for just ₹100/month via our secure Razorpay integration. Your subscription activates instantly and you can cancel anytime.',
+              },
+              {
+                q: 'Are my customer phone numbers uploaded to your servers?',
+                a: 'No. MissCall Assistant processes calls and dispatches SMS directly on your phone. Your contacts, customer phone numbers, and call logs remain 100% private on your device.',
+              },
+              {
+                q: 'Which Android versions are supported?',
+                a: 'The application supports Android 8.0 up through Android 14 (SDK 26 to 34). We use native CallScreeningService for modern Android compatibility.',
+              },
+            ].map((faq, idx) => (
+              <div
+                key={idx}
+                className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm cursor-pointer"
+                onClick={() => toggleFaq(idx)}
+              >
+                <div className="flex items-center justify-between font-bold text-sm text-slate-800">
+                  <span>{faq.q}</span>
+                  {activeFaq === idx ? (
+                    <ChevronUp className="w-4 h-4 text-[#3B28CC]" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                  )}
+                </div>
+                {activeFaq === idx && (
+                  <p className="mt-3 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 9. FOOTER */}
+      <footer className="border-t border-slate-200 bg-white py-12 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500 font-medium">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-xl bg-[#3B28CC] text-white flex items-center justify-center font-bold text-sm">
+              M
+            </div>
+            <span className="font-bold text-slate-900">MissCall Assistant</span>
+            <span>• © 2026 All rights reserved.</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button onClick={() => onNavigateTab('admin-login')} className="hover:text-slate-900">
               Admin Portal
+            </button>
+            <button onClick={() => onNavigateTab('simulator')} className="hover:text-slate-900">
+              Call Simulator
+            </button>
+            <button onClick={handleDownload} className="text-[#3B28CC] font-bold hover:underline">
+              Download APK
             </button>
           </div>
         </div>
       </footer>
-
-      {/* Privacy Policy & Terms Modal */}
-      {activeLegalModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#111B21] border border-[#222E35] rounded-2xl max-w-xl w-full p-6 text-xs text-slate-300 space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#222E35] pb-3">
-              <h3 className="font-bold text-white text-base">
-                {activeLegalModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service & Refund Policy'}
-              </h3>
-              <button
-                onClick={() => setActiveLegalModal(null)}
-                className="px-2 py-1 rounded bg-[#202C33] text-slate-400 hover:text-white"
-              >
-                Close
-              </button>
-            </div>
-
-            {activeLegalModal === 'privacy' ? (
-              <div className="space-y-3 leading-relaxed">
-                <p>
-                  <strong>1. Zero Data Harvesting:</strong> MissCall Assistant does NOT upload, sell, or collect your call logs, phone contacts, or SMS messages to any cloud database. All operations take place locally on your Android device.
-                </p>
-                <p>
-                  <strong>2. Anonymous Device Identification:</strong> When checking subscription status, the app generates a random device UUID without collecting your name, Google account, or personal profile.
-                </p>
-                <p>
-                  <strong>3. Payments via Razorpay:</strong> All subscription billing is processed through Razorpay's PCI-DSS compliant secure servers. Your payment details (UPI, debit card, net banking) are handled directly by Razorpay and never stored on our servers.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3 leading-relaxed">
-                <p>
-                  <strong>1. Subscription Terms:</strong> MissCall Assistant provides automated missed-call SMS software for a monthly subscription fee of ₹100.
-                </p>
-                <p>
-                  <strong>2. 3-Day Free Trial:</strong> All new devices receive 3 days of complimentary access to test SMS auto-dispatch before payment is required.
-                </p>
-                <p>
-                  <strong>3. Cancellation & Refund Policy:</strong> You may cancel your subscription at any time through the in-app subscription menu or Razorpay dashboard. If you experience technical defects, contact support@vistaroai.com within 7 days for a full refund.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

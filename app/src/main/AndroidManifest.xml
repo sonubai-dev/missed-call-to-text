@@ -35,6 +35,14 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".telephony.PhoneCallReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
         <!-- Native Call Screening Service for Android 10+ Missed Call Detection -->
         <service
             android:name=".telephony.CallScreeningService"

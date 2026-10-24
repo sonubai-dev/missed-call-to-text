@@ -236,7 +236,12 @@ apiRouter.post('/razorpay/webhook', async (req: Request, res: Response): Promise
   // Always acknowledge immediately with 200
   try {
     const signature = req.headers['x-razorpay-signature'] as string;
-    const rawBody = (req as any).rawBody || JSON.stringify(req.body);
+    const rawPayload = (req as any).rawBody || req.body;
+    const rawBody = Buffer.isBuffer(rawPayload)
+      ? rawPayload
+      : typeof rawPayload === 'string'
+      ? rawPayload
+      : JSON.stringify(rawPayload || {});
 
     if (signature && !RazorpayService.verifyWebhookSignature(rawBody, signature)) {
       console.warn('[Razorpay Webhook Warning] Invalid webhook signature detected.');
@@ -244,7 +249,22 @@ apiRouter.post('/razorpay/webhook', async (req: Request, res: Response): Promise
       return;
     }
 
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    let body: any = {};
+    if (Buffer.isBuffer(req.body)) {
+      try {
+        body = JSON.parse(req.body.toString('utf-8'));
+      } catch {
+        body = {};
+      }
+    } else if (typeof req.body === 'string') {
+      try {
+        body = JSON.parse(req.body);
+      } catch {
+        body = {};
+      }
+    } else {
+      body = req.body || {};
+    }
     const eventType = body?.event || 'unknown';
     const payload = body?.payload || {};
 
