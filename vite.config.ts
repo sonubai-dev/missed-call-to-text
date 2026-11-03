@@ -265,7 +265,7 @@ export default defineConfig({
                 registeredUnpaid: unpaid,
                 trialUsers: trial,
                 haltedOrCancelled: halted,
-                estimatedMonthlyRevenue: active * 100,
+                estimatedMonthlyRevenue: active * 99,
                 currency: 'INR',
               }));
               return;
@@ -569,7 +569,7 @@ export default defineConfig({
                   status: currentStatus,
                   validUntil: device.validUntil,
                   trialDaysRemaining: daysRemaining,
-                  plan: '₹100/month',
+                  plan: '₹99/month',
                   message: currentStatus === 'trial' ? `3-Day Free Trial active (${daysRemaining} days left)` : 'Device authenticated',
                 }));
               } catch (e: any) {
@@ -606,7 +606,7 @@ export default defineConfig({
                 validUntil: 0,
                 trialDaysRemaining: 0,
                 isTrial: false,
-                plan: '₹100/month',
+                plan: '₹99/month',
                 message: 'Device not registered',
               }));
               return;
@@ -637,7 +637,7 @@ export default defineConfig({
               validUntil: device.validUntil,
               trialDaysRemaining: daysRemaining,
               isTrial: computedStatus === 'trial',
-              plan: '₹100/month',
+              plan: '₹99/month',
               subscriptionId: device.razorpaySubscriptionId || null,
               message: computedStatus === 'active'
                 ? `Active until ${new Date(device.validUntil).toLocaleDateString()}`
@@ -679,12 +679,12 @@ export default defineConfig({
               success: true,
               subscription_id: subId,
               key_id: keyId,
-              plan_id: process.env.RAZORPAY_PLAN_ID || 'plan_misscall_100mo',
-              amount: 10000,
+              plan_id: process.env.RAZORPAY_PLAN_ID || 'plan_misscall_99mo',
+              amount: 9900,
               currency: 'INR',
               short_url: 'https://rzp.io/rzp/DCET6eO8',
               name: 'MissCall Assistant Pro',
-              description: '₹100/month Unlimited Missed Call SMS & Automation',
+              description: '₹99/month Unlimited Missed Call SMS & Automation',
             }));
             return;
           }

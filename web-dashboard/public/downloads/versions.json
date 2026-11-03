@@ -9,16 +9,16 @@
   "minAndroid": "Android 8.0 (API 26) or higher",
   "downloadUrl": "/downloads/misscall-assistant.apk",
   "pricing": {
-    "amount": "₹100",
+    "amount": "₹99",
     "period": "month",
     "trialDays": 3,
-    "description": "3-day free trial on first launch, then ₹100/month. Cancel anytime."
+    "description": "3-day free trial on first launch, then ₹99/month. Cancel anytime."
   },
   "features": [
     "Instant SMS auto-reply for missed business calls",
     "Dual-SIM Android smart routing (SIM 1 / SIM 2 selection)",
     "2s, 5s, 10s anti-awkward delay countdown with auto-cancel on call back",
-    "In-app Razorpay ₹100/mo subscription with 3-day free trial",
+    "In-app Razorpay ₹99/mo subscription with 3-day free trial",
     "Offline mode: 3-day cached entitlement fallback"
   ]
 }

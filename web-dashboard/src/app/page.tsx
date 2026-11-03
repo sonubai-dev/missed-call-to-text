@@ -16,7 +16,7 @@ import {
 export const metadata = {
   title: 'MissCall Assistant - Missed call? Customer ko turant SMS jaaye.',
   description:
-    'Download MissCall Assistant Android APK. Automated missed call SMS follow-up, dual-SIM support, 2s/5s/10s delay countdown safeguard, and ₹100/mo subscription with 3-day free trial.',
+    'Download MissCall Assistant Android APK. Automated missed call SMS follow-up, dual-SIM support, 2s/5s/10s delay countdown safeguard, and ₹99/mo subscription with 3-day free trial.',
   openGraph: {
     title: 'MissCall Assistant - Missed call? Customer ko turant SMS jaaye.',
     description: 'Instant SMS auto-reply for missed business calls on Android with dual-SIM routing.',
@@ -221,7 +221,7 @@ export default function HomePage() {
         {/* Pricing Section */}
         <div className="p-8 rounded-3xl bg-gradient-to-r from-[#182229] via-[#111B21] to-[#182229] border border-[#222E35] text-center space-y-6 max-w-2xl mx-auto">
           <div className="space-y-2">
-            <h3 className="text-2xl sm:text-3xl font-black text-white">₹100 / Month Flat</h3>
+            <h3 className="text-2xl sm:text-3xl font-black text-white">₹99 / Month Flat</h3>
             <p className="text-xs text-slate-400">
               Includes unlimited missed call detections, dual-SIM SMS routing, and 3 days free trial on first launch.
             </p>

@@ -10,7 +10,7 @@ export class RazorpayService {
   }
 
   static getPlanId(): string {
-    return process.env.RAZORPAY_PLAN_ID || 'plan_misscall_100mo';
+    return process.env.RAZORPAY_PLAN_ID || 'plan_misscall_99mo';
   }
 
   static getWebhookSecret(): string {
@@ -18,7 +18,7 @@ export class RazorpayService {
   }
 
   /**
-   * Creates an official Razorpay Subscription for ₹100/mo.
+   * Creates an official Razorpay Subscription for ₹99/mo.
    */
   static async createSubscription(businessId: string, deviceId: string): Promise<{
     subscriptionId: string;
@@ -77,7 +77,7 @@ export class RazorpayService {
       subscriptionId,
       keyId,
       planId,
-      amount: 10000, // ₹100 in paise
+      amount: 9900, // ₹99 in paise
       currency: 'INR',
     };
   }

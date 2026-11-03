@@ -55,7 +55,7 @@ export function AuthPaywallModal({
                 SaaS Subscription & Account
               </h2>
               <p className="text-[11px] text-slate-400">
-                Razorpay billing integration (₹100/mo) & backend sync
+                Razorpay billing integration (₹99/mo) & backend sync
               </p>
             </div>
           </div>
@@ -87,7 +87,7 @@ export function AuthPaywallModal({
                     : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
                 }`}
               >
-                {user.subscriptionStatus === 'ACTIVE' ? 'Active • ₹100/mo' : 'Payment Required'}
+                {user.subscriptionStatus === 'ACTIVE' ? 'Active • ₹99/mo' : 'Payment Required'}
               </span>
             </div>
             <div className="text-sm font-semibold text-white">{user.planName}</div>
@@ -111,7 +111,7 @@ export function AuthPaywallModal({
                   className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-lg"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  <span>Open Official Razorpay Link (₹100/mo)</span>
+                  <span>Open Official Razorpay Link (₹99/mo)</span>
                 </a>
 
                 <button

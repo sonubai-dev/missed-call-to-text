@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const deviceId = auth.deviceId;
     const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder_key_id';
     const keySecret = process.env.RAZORPAY_KEY_SECRET || '';
-    const planId = process.env.RAZORPAY_PLAN_ID || 'plan_misscall_100mo';
+    const planId = process.env.RAZORPAY_PLAN_ID || 'plan_misscall_99mo';
 
     let subscriptionId = '';
     let shortUrl = '';
@@ -73,11 +73,11 @@ export async function POST(req: Request) {
       subscription_id: subscriptionId,
       key_id: keyId,
       plan_id: planId,
-      amount: 10000, // ₹100 in paise
+      amount: 9900, // ₹99 in paise
       currency: 'INR',
       short_url: shortUrl,
       name: 'MissCall Assistant Pro',
-      description: '₹100/month Unlimited Missed Call SMS & Automation',
+      description: '₹99/month Unlimited Missed Call SMS & Automation',
     });
   } catch (err: any) {
     console.error('Subscription creation failed:', err);

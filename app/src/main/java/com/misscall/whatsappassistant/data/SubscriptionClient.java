@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
  * Robust Client for Anonymous Device Subscription & Entitlement.
  * Features:
  * - 3-day server-tracked free trial on first launch
- * - Razorpay ₹100/mo subscription creation and HMAC verification
+ * - Razorpay ₹99/mo subscription creation and HMAC verification
  * - 3-day local cache fallback for offline missed-call SMS execution
  * - Specific user-facing error reporting with retry handling
  */
@@ -469,7 +469,7 @@ public class SubscriptionClient {
                     editor.putString(KEY_SUB_ID, subscriptionId);
                     editor.apply();
 
-                    SubscriptionState state = new SubscriptionState(true, "active", "Pro Subscription active for ₹100/mo");
+                    SubscriptionState state = new SubscriptionState(true, "active", "Pro Subscription active for ₹99/mo");
                     state.validUntil = validUntil;
                     state.subscriptionId = subscriptionId;
                     postSuccess(callback, state);

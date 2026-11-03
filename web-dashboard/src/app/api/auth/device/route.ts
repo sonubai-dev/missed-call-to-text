@@ -44,13 +44,13 @@ export async function POST(req: Request) {
       status,
       validUntil: record.validUntil,
       trialDaysRemaining: daysRemaining,
-      plan: '₹100/month',
+      plan: '₹99/month',
       message:
         status === 'trial'
           ? `3-Day Free Trial active (${daysRemaining} days remaining)`
           : status === 'active'
           ? 'Pro Subscription active'
-          : 'Subscription expired. Please subscribe for ₹100/mo.',
+          : 'Subscription expired. Please subscribe for ₹99/mo.',
     });
   } catch (err: any) {
     console.error('Device auth failed:', err);

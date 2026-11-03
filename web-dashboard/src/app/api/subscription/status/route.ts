@@ -26,7 +26,7 @@ export async function GET(req: Request) {
         validUntil: 0,
         trialDaysRemaining: 0,
         isTrial: false,
-        plan: '₹100/month',
+        plan: '₹99/month',
         message: 'Device not registered. Call /api/auth/device to start 3-day free trial.',
       });
     }
@@ -40,14 +40,14 @@ export async function GET(req: Request) {
       validUntil: device.validUntil,
       trialDaysRemaining: daysRemaining,
       isTrial: status === 'trial',
-      plan: '₹100/month',
+      plan: '₹99/month',
       subscriptionId: device.razorpaySubscriptionId || null,
       message:
         status === 'active'
           ? `Subscription active until ${new Date(device.validUntil).toLocaleDateString()}`
           : status === 'trial'
           ? `3-Day Free Trial active (${daysRemaining} days remaining)`
-          : 'Subscription expired. Please renew for ₹100/mo.',
+          : 'Subscription expired. Please renew for ₹99/mo.',
     });
   } catch (err: any) {
     console.error('Status check failed:', err);

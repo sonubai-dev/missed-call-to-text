@@ -55,7 +55,7 @@ import java.util.Locale;
  * - 4-Tab navigation: Dashboard, Activity, Settings, Subscription.
  * - Configurable 2s, 5s, 10s delay safeguard (aborts SMS if user calls back first).
  * - Dual-SIM slot management.
- * - ₹100/mo Razorpay subscription flow with 3-day server-tracked free trial.
+ * - ₹99/mo Razorpay subscription flow with 3-day server-tracked free trial.
  * - 3-day offline cache fallback for continuous operation.
  */
 public class MainActivity extends Activity implements PaymentResultWithDataListener {
@@ -572,7 +572,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         return tab;
     }
 
-    // --- TAB 4: SUBSCRIPTION (₹100/MO RAZORPAY) ---
+    // --- TAB 4: SUBSCRIPTION (₹99/MO RAZORPAY) ---
     private LinearLayout createSubscriptionTab() {
         LinearLayout tab = new LinearLayout(this);
         tab.setOrientation(LinearLayout.VERTICAL);
@@ -582,7 +582,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         card.addView(createSectionTitle("MissCall Assistant Pro"));
 
         TextView tvPrice = new TextView(this);
-        tvPrice.setText("₹100 / month");
+        tvPrice.setText("₹99 / month");
         tvPrice.setTextSize(26);
         tvPrice.setTypeface(null, Typeface.BOLD);
         tvPrice.setTextColor(COLOR_PRIMARY);
@@ -607,7 +607,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         tvSubScreenExpiry.setPadding(0, 4, 0, 16);
         card.addView(tvSubScreenExpiry);
 
-        btnSubscribeAction = createButton("Subscribe • ₹100/month", COLOR_PRIMARY, Color.WHITE);
+        btnSubscribeAction = createButton("Subscribe • ₹99/month", COLOR_PRIMARY, Color.WHITE);
         btnSubscribeAction.setOnClickListener(v -> initiateSubscriptionFlow());
         card.addView(btnSubscribeAction);
 
@@ -675,7 +675,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
                 tvHeaderStatusPill.setTextColor(COLOR_TEXT_MUTED);
                 pillBg.setColor(Color.parseColor("#F1F5F9"));
             } else {
-                tvHeaderStatusPill.setText("• Active (₹100/mo)");
+                tvHeaderStatusPill.setText("• Active (₹99/mo)");
                 tvHeaderStatusPill.setTextColor(COLOR_SUCCESS);
                 pillBg.setColor(Color.parseColor("#DCFCE7"));
             }
@@ -711,16 +711,16 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
                         tvSubScreenStatus.setTextColor(COLOR_PRIMARY);
                     }
                     if (btnSubscribeAction != null) {
-                        btnSubscribeAction.setText("Upgrade to Pro (₹100/mo)");
+                        btnSubscribeAction.setText("Upgrade to Pro (₹99/mo)");
                         btnSubscribeAction.setVisibility(View.VISIBLE);
                     }
                 } else {
                     if (tvSubScreenStatus != null) {
-                        tvSubScreenStatus.setText("Status: Expired • Renewal Required (₹100/mo)");
+                        tvSubScreenStatus.setText("Status: Expired • Renewal Required (₹99/mo)");
                         tvSubScreenStatus.setTextColor(COLOR_DANGER);
                     }
                     if (btnSubscribeAction != null) {
-                        btnSubscribeAction.setText("Subscribe ₹100/month");
+                        btnSubscribeAction.setText("Subscribe ₹99/month");
                         btnSubscribeAction.setVisibility(View.VISIBLE);
                     }
                 }
@@ -761,12 +761,12 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
 
                     JSONObject options = new JSONObject();
                     options.put("name", "MissCall Assistant");
-                    options.put("description", "₹100/month Unlimited Missed Call SMS Automation");
+                    options.put("description", "₹99/month Unlimited Missed Call SMS Automation");
                     if (state.subscriptionId != null && !state.subscriptionId.isEmpty()) {
                         options.put("subscription_id", state.subscriptionId);
                     }
                     options.put("currency", "INR");
-                    options.put("amount", 10000); // 10000 paise = ₹100
+                    options.put("amount", 9900); // 9900 paise = ₹99
 
                     JSONObject prefill = new JSONObject();
                     prefill.put("email", prefs.getString("user_email", "business@misscall.in"));
@@ -838,7 +838,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         if (btnSubscribeAction != null) btnSubscribeAction.setEnabled(true);
         new AlertDialog.Builder(this)
             .setTitle("Payment Cancelled")
-            .setMessage("The payment process was interrupted. Tap 'Retry' to subscribe for ₹100/month.")
+            .setMessage("The payment process was interrupted. Tap 'Retry' to subscribe for ₹99/month.")
             .setPositiveButton("Retry", (dialog, which) -> initiateSubscriptionFlow())
             .setNegativeButton("Cancel", null)
             .show();

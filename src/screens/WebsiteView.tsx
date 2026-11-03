@@ -216,7 +216,7 @@ export function WebsiteView({
                   </div>
                 </div>
                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active • ₹100/mo
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active • ₹99/mo
                 </span>
               </div>
 
@@ -331,9 +331,9 @@ export function WebsiteView({
               <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
                 <CreditCard className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-base">₹100/Month Fair Pricing</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">₹99/Month Fair Pricing</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                3-Day free trial on install. Afterward, pay a simple ₹100/month subscription via Razorpay with instant server-verified activation.
+                3-Day free trial on install. Afterward, pay a simple ₹99/month subscription via Razorpay with instant server-verified activation.
               </p>
             </div>
 
@@ -385,7 +385,7 @@ export function WebsiteView({
             </div>
             <h3 className="font-black text-slate-900 text-base">Automate Follow-Ups</h3>
             <p className="text-slate-600 text-xs leading-relaxed">
-              Start your 3-day free trial or activate the ₹100/mo subscription. When a customer calls and you miss it, they get your SMS automatically!
+              Start your 3-day free trial or activate the ₹99/mo subscription. When a customer calls and you miss it, they get your SMS automatically!
             </p>
           </div>
         </div>
@@ -412,7 +412,7 @@ export function WebsiteView({
             </div>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-black text-slate-900">₹100</span>
+              <span className="text-5xl font-black text-slate-900">₹99</span>
               <span className="text-slate-500 font-bold text-sm">/ month</span>
             </div>
 
@@ -537,7 +537,7 @@ export function WebsiteView({
               },
               {
                 q: 'What happens after the 3-day free trial?',
-                a: 'After 3 days, you can subscribe for just ₹100/month via our secure Razorpay integration. Your subscription activates instantly and you can cancel anytime.',
+                a: 'After 3 days, you can subscribe for just ₹99/month via our secure Razorpay integration. Your subscription activates instantly and you can cancel anytime.',
               },
               {
                 q: 'Are my customer phone numbers uploaded to your servers?',

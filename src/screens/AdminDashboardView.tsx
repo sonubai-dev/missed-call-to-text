@@ -86,7 +86,7 @@ export function AdminDashboardView({
   const [showNotifyModal, setShowNotifyModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [notifyTitle, setNotifyTitle] = useState('MissCall Assistant Pro: Keep Follow-Ups Active');
-  const [notifyBody, setNotifyBody] = useState('Resume automated missed-call SMS follow-ups for your customers for only ₹100/month.');
+  const [notifyBody, setNotifyBody] = useState('Resume automated missed-call SMS follow-ups for your customers for only ₹99/month.');
   const [notifySuccessMsg, setNotifySuccessMsg] = useState('');
   const [isSendingPush, setIsSendingPush] = useState(false);
 
@@ -189,7 +189,7 @@ export function AdminDashboardView({
       case 'active':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active (₹100/mo)
+            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active (₹99/mo)
           </span>
         );
       case 'trial':
@@ -329,7 +329,7 @@ export function AdminDashboardView({
               <ShieldCheck className="w-4 h-4 text-emerald-300" />
               <span>Railway Verified</span>
             </div>
-            <p className="text-[10px] text-indigo-200 mt-1">₹100/mo Razorpay HMAC Webhook Security Active</p>
+            <p className="text-[10px] text-indigo-200 mt-1">₹99/mo Razorpay HMAC Webhook Security Active</p>
           </div>
           <button
             onClick={onLogout}
@@ -433,7 +433,7 @@ export function AdminDashboardView({
               </div>
               <div>
                 <div className="text-3xl font-black">{stats.activeSubscribers}</div>
-                <div className="text-[11px] text-sky-200 font-medium mt-1">₹100/mo autopay active</div>
+                <div className="text-[11px] text-sky-200 font-medium mt-1">₹99/mo autopay active</div>
               </div>
             </div>
 
@@ -508,7 +508,7 @@ export function AdminDashboardView({
                     <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">DB Sync</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-base font-extrabold text-sky-600">₹100</div>
+                    <div className="text-base font-extrabold text-sky-600">₹99</div>
                     <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">Plan</div>
                   </div>
                 </div>

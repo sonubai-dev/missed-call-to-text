@@ -384,8 +384,8 @@ export const db = {
       const trial = parseInt(trialRes.rows[0].count, 10);
       const halted = parseInt(haltedRes.rows[0].count, 10);
 
-      // Revenue estimate: Active * ₹100/mo
-      const estimatedMonthlyRevenue = active * 100;
+      // Revenue estimate: Active * ₹99/mo
+      const estimatedMonthlyRevenue = active * 99;
 
       return {
         totalBusinesses: total,
@@ -415,7 +415,7 @@ export const db = {
         registeredUnpaid: unpaid,
         trialUsers: trial,
         haltedOrCancelled: halted,
-        estimatedMonthlyRevenue: active * 100,
+        estimatedMonthlyRevenue: active * 99,
         currency: 'INR',
       };
     }
