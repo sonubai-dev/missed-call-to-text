@@ -82,16 +82,6 @@ export const Header: React.FC<HeaderProps> = ({
           <span>App Website</span>
         </button>
 
-        {/* Telephony Simulator Button */}
-        <button
-          onClick={onOpenSimulator}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-emerald-900/30"
-          title="Launch Telephony & Call Pipeline Simulator"
-        >
-          <Play className="w-3.5 h-3.5 fill-current" />
-          <span className="hidden sm:inline">Call Simulator</span>
-        </button>
-
         {/* Subscription / Paywall Status */}
         <button
           onClick={onOpenPaywall}

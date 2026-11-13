@@ -13,7 +13,6 @@ import { WhatsAppWorkbenchView } from "./screens/WhatsAppWorkbenchView";
 import { SmsHistoryView } from "./screens/SmsHistoryView";
 import { RulesView } from "./screens/RulesView";
 import { TemplatesView } from "./screens/TemplatesView";
-import { SimulatorView } from "./screens/SimulatorView";
 import { WebhooksView } from "./screens/WebhooksView";
 import { SettingsView } from "./screens/SettingsView";
 import { DownloadView } from "./screens/DownloadView";
@@ -21,6 +20,7 @@ import { WebsiteView } from "./screens/WebsiteView";
 import { AdminLoginView } from "./screens/AdminLoginView";
 import { AdminDashboardView } from "./screens/AdminDashboardView";
 
+import { supabase } from "./lib/supabase";
 import { appStorage } from "./lib/storage";
 import {
   CallEvent,
@@ -59,7 +59,7 @@ export default function App() {
       const search = new URLSearchParams(window.location.search);
       const viewParam = search.get("view") || search.get("tab");
       if (viewParam === "dashboard") return "dashboard";
-      if (viewParam === "simulator") return "simulator";
+      if (viewParam === "simulator") return "dashboard";
       if (viewParam === "calls") return "calls";
       if (viewParam === "customers") return "customers";
       if (viewParam === "download") return "download";
@@ -71,7 +71,7 @@ export default function App() {
       if (path === "/admin/login" || path.startsWith("/admin/login")) return "admin-login";
       if (path === "/admin" || path.startsWith("/admin")) return "admin-dashboard";
       if (path.startsWith("/dashboard")) return "dashboard";
-      if (path.startsWith("/simulator")) return "simulator";
+      if (path.startsWith("/simulator")) return "dashboard";
       if (path.startsWith("/calls")) return "calls";
       if (path.startsWith("/download")) return "download";
     }
@@ -92,13 +92,81 @@ export default function App() {
       .catch(() => {});
   }, []);
 
+  // Supabase Live Data Synchronization
+  useEffect(() => {
+    let isMounted = true;
+    async function loadSupabaseData() {
+      try {
+        // 1. Fetch real Missed Calls from Supabase
+        const { data: callsData } = await supabase
+          .from('missed_calls')
+          .select('*')
+          .order('call_time', { ascending: false })
+          .limit(100);
+
+        if (callsData && callsData.length > 0 && isMounted) {
+          const mappedCalls: CallEvent[] = callsData.map((c: any) => ({
+            id: c.id,
+            phoneNumber: c.phone_number,
+            customerName: c.customer_name || undefined,
+            timestamp: new Date(c.call_time).getTime(),
+            status: c.call_status,
+            whatsappStatus: c.whatsapp_status,
+            suggestedMessage: c.suggested_message || 'Thank you for calling. We will get back to you shortly.',
+            notes: c.notes || undefined,
+          }));
+          setCalls(mappedCalls);
+        }
+
+        // 2. Fetch real Customers from Supabase
+        const { data: custData } = await supabase
+          .from('customers')
+          .select('*')
+          .order('last_call_timestamp', { ascending: false });
+
+        if (custData && custData.length > 0 && isMounted) {
+          const mappedCust: Customer[] = custData.map((cu: any) => ({
+            id: cu.id,
+            phoneNumber: cu.phone_number,
+            name: cu.name || 'Caller',
+            company: cu.company || undefined,
+            totalMissedCalls: cu.total_missed_calls || 1,
+            lastCallTimestamp: new Date(cu.last_call_timestamp).getTime(),
+            isVip: cu.is_vip || false,
+            isBlacklisted: cu.is_blacklisted || false,
+            notes: cu.notes || undefined,
+            status: 'NEW',
+          }));
+          setCustomers(mappedCust);
+        }
+
+        // 3. Fetch real Templates from Supabase
+        const { data: tmplData } = await supabase.from('templates').select('*');
+        if (tmplData && tmplData.length > 0 && isMounted) {
+          const mappedTmpl: MessageTemplate[] = tmplData.map((t: any) => ({
+            id: t.id,
+            name: t.name,
+            content: t.content,
+            isDefault: t.is_default || false,
+            language: t.language || 'English',
+          }));
+          setTemplates(mappedTmpl);
+        }
+      } catch (err) {
+        console.warn('[Supabase Sync] Using local storage data fallback:', err);
+      }
+    }
+    loadSupabaseData();
+    return () => { isMounted = false; };
+  }, []);
+
   useEffect(() => {
     const handlePopState = () => {
       if (typeof window !== "undefined") {
         const search = new URLSearchParams(window.location.search);
         const viewParam = search.get("view") || search.get("tab");
         if (viewParam === "dashboard") setCurrentTab("dashboard");
-        else if (viewParam === "simulator") setCurrentTab("simulator");
+        else if (viewParam === "simulator") setCurrentTab("dashboard");
         else if (viewParam === "website") setCurrentTab("website");
         else if (viewParam === "admin-login") setCurrentTab("admin-login");
         else if (window.location.pathname.startsWith("/admin/login")) {
@@ -175,6 +243,7 @@ export default function App() {
     setCalls((prev) =>
       prev.map((c) => (c.id === callId ? { ...c, whatsappStatus: "IGNORED" } : c))
     );
+    supabase.from('missed_calls').update({ whatsapp_status: 'IGNORED' }).eq('id', callId).then(() => {}).catch(() => {});
   };
 
   const handleAddCustomer = (newCust: Omit<Customer, "id">) => {
@@ -183,11 +252,28 @@ export default function App() {
       ...newCust,
     };
     setCustomers((prev) => [cust, ...prev]);
+    supabase.from('customers').insert({
+      device_id: 'default_device',
+      phone_number: cust.phoneNumber,
+      name: cust.name,
+      company: cust.company || '',
+      is_vip: cust.isVip,
+      is_blacklisted: cust.isBlacklisted,
+      total_missed_calls: cust.totalMissedCalls,
+      notes: cust.notes || '',
+    }).then(() => {}).catch(() => {});
   };
 
   const handleUpdateCustomer = (updated: Customer) => {
     setCustomers((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
     setSelectedCustomer(updated);
+    supabase.from('customers').update({
+      name: updated.name,
+      company: updated.company || '',
+      is_vip: updated.isVip,
+      is_blacklisted: updated.isBlacklisted,
+      notes: updated.notes || '',
+    }).eq('phone_number', updated.phoneNumber).then(() => {}).catch(() => {});
   };
 
   const handleSelectCustomerByPhone = (phoneNumber: string) => {
@@ -245,6 +331,15 @@ export default function App() {
     };
 
     setMessages((prev) => [newMsg, ...prev]);
+
+    supabase.from('messages').insert({
+      device_id: 'default_device',
+      phone_number: phoneNumber,
+      customer_name: customerName || '',
+      content: content,
+      status: 'SENT',
+      mode: settings.whatsAppSendingMode === 'CLOUD_API' ? 'CLOUD_API' : 'MANUAL',
+    }).then(() => {}).catch(() => {});
 
     // Update corresponding call event if exists
     if (callEventId) {
@@ -338,6 +433,15 @@ export default function App() {
       simSlot: sms.simSlot,
     };
     setMessages((prev) => [newMsg, ...prev]);
+
+    supabase.from('messages').insert({
+      device_id: 'default_device',
+      phone_number: phoneNumber,
+      customer_name: customerName || '',
+      content: content,
+      status: 'SENT',
+      mode: settings.whatsAppSendingMode === 'CLOUD_API' ? 'CLOUD_API' : 'MANUAL',
+    }).then(() => {}).catch(() => {});
 
     setCustomers((prev) =>
       prev.map((c) => {
@@ -546,7 +650,7 @@ export default function App() {
     return (
       <WebsiteView
         onOpenDashboard={() => setCurrentTab("dashboard")}
-        onOpenSimulator={() => setCurrentTab("simulator")}
+        onOpenSimulator={() => setCurrentTab("dashboard")}
         onNavigateTab={(tab: NavTab) => setCurrentTab(tab)}
       />
     );
@@ -654,17 +758,6 @@ export default function App() {
               templates={templates}
               settings={settings}
               onUpdateTemplates={setTemplates}
-            />
-          )}
-
-          {currentTab === "simulator" && (
-            <SimulatorView
-              customers={customers}
-              rules={rules}
-              templates={templates}
-              settings={settings}
-              calls={calls}
-              onCallProcessed={handleSimulatorCallProcessed}
             />
           )}
 

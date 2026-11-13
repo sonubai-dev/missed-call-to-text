@@ -77,13 +77,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span>Download Android App</span>
           </button>
           <button
-            onClick={onOpenSimulator}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-emerald-900/30"
-          >
-            <Play className="w-3.5 h-3.5 fill-current" />
-            <span>Simulate Call</span>
-          </button>
-          <button
             onClick={() => onNavigate("whatsapp")}
             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#202C33] hover:bg-[#2A3942] text-white text-xs font-semibold transition-all border border-[#222E35]"
           >
@@ -297,7 +290,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
               {calls.length === 0 && (
                 <div className="py-12 text-center text-[#8696A0] text-xs">
-                  No missed calls recorded yet. Use the simulator above to test call detection!
+                  No missed calls recorded yet. Incoming calls from your Android device will appear here in real time.
                 </div>
               )}
             </div>

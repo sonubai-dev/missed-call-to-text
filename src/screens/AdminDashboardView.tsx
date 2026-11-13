@@ -33,6 +33,7 @@ import {
   Layers,
   ChevronDown,
 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface BusinessItem {
   id: string;
@@ -96,9 +97,30 @@ export function AdminDashboardView({
       if (res.ok) {
         const data = await res.json();
         setStats(data);
+        return;
       }
     } catch (e) {
-      console.error('Failed to load stats:', e);
+      // fallback to Supabase query
+    }
+
+    try {
+      const { data: devices } = await supabase.from('devices').select('*');
+      if (devices) {
+        const active = devices.filter((d: any) => d.status === 'active').length;
+        const trial = devices.filter((d: any) => d.status === 'trial').length;
+        const unpaid = devices.filter((d: any) => d.status === 'registered_unpaid').length;
+        const halted = devices.filter((d: any) => ['halted', 'cancelled', 'expired'].includes(d.status)).length;
+        setStats({
+          totalBusinesses: devices.length,
+          activeSubscribers: active,
+          registeredUnpaid: unpaid,
+          trialUsers: trial,
+          haltedOrCancelled: halted,
+          estimatedMonthlyRevenue: active * 99,
+        });
+      }
+    } catch (err) {
+      console.warn('Could not query devices from Supabase:', err);
     }
   };
 
@@ -113,9 +135,27 @@ export function AdminDashboardView({
       if (res.ok) {
         const data = await res.json();
         setBusinesses(data.data || []);
+        setIsLoading(false);
+        return;
       }
     } catch (e) {
-      console.error('Failed to load businesses:', e);
+      // fallback to Supabase
+    }
+
+    try {
+      let query = supabase.from('devices').select('*').order('created_at', { ascending: false });
+      if (selectedStatus !== 'all') {
+        query = query.eq('status', selectedStatus);
+      }
+      if (searchQuery.trim()) {
+        query = query.or(`business_name.ilike.%${searchQuery.trim()}%,phone.ilike.%${searchQuery.trim()}%,device_id.ilike.%${searchQuery.trim()}%`);
+      }
+      const { data } = await query;
+      if (data) {
+        setBusinesses(data as BusinessItem[]);
+      }
+    } catch (err) {
+      console.warn('Could not fetch businesses from Supabase:', err);
     } finally {
       setIsLoading(false);
     }
@@ -138,8 +178,22 @@ export function AdminDashboardView({
       if (res.ok) {
         const data = await res.json();
         setPaymentEvents(data.paymentEvents || []);
+        return;
       }
     } catch (e) {
+      // fallback to Supabase
+    }
+
+    try {
+      const { data: payments } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('device_id', b.device_id)
+        .order('created_at', { ascending: false });
+      if (payments) {
+        setPaymentEvents(payments);
+      }
+    } catch (err) {
       setPaymentEvents([]);
     }
   };
@@ -316,7 +370,7 @@ export function AdminDashboardView({
                 className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-xs font-medium text-indigo-200 hover:bg-white/10 hover:text-white transition-all"
               >
                 <Smartphone className="w-4 h-4" />
-                <span>CRM Simulator</span>
+                <span>User Dashboard</span>
               </button>
             </div>
           </nav>
@@ -707,8 +761,8 @@ export function AdminDashboardView({
                       <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors" />
                     </div>
                     <div>
-                      <h5 className="font-bold text-slate-800 text-xs">Call Flow Simulator</h5>
-                      <p className="text-[11px] text-slate-500 mt-1">Test 2s, 5s, 10s SMS delay safely without live carrier charges</p>
+                      <h5 className="font-bold text-slate-800 text-xs">Live Telephony Dashboard</h5>
+                      <p className="text-[11px] text-slate-500 mt-1">Real-time status of installed Android application instances</p>
                     </div>
                   </div>
                 </div>

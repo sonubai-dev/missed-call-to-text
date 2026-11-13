@@ -256,21 +256,29 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <a
-              href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20help%20with%20MissCall%20Assistant"
+              href="https://wa.me/919341718066?text=Hi%20Solita%20Solutions%2C%20I%20need%20help%20with%20MissCall%20Assistant"
               target="_blank"
               rel="noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#202C33] hover:bg-[#25D366]/20 text-[#25D366] border border-[#222E35] font-semibold text-xs transition-all"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>Chat on WhatsApp</span>
+              <span>WhatsApp: +91 9341718066</span>
             </a>
 
             <a
-              href="mailto:support@vistaroai.com?subject=MissCall%20Assistant%20Support"
+              href="mailto:help.solita@gmail.com?subject=MissCall%20Assistant%20Support"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#202C33] hover:bg-[#2A3942] text-slate-300 font-semibold text-xs transition-all"
             >
               <Mail className="w-4 h-4" />
-              <span>Email: support@vistaroai.com</span>
+              <span>help.solita@gmail.com</span>
+            </a>
+
+            <a
+              href="tel:+917439551862"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#202C33] hover:bg-[#2A3942] text-slate-300 font-semibold text-xs transition-all"
+            >
+              <Phone className="w-4 h-4" />
+              <span>Dev: +91 7439551862</span>
             </a>
           </div>
         </div>
@@ -280,7 +288,7 @@ export default function HomePage() {
       <footer className="border-t border-[#222E35] bg-[#0C1317] py-8 text-xs text-slate-500">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span className="font-bold text-white">MissCall Assistant</span> • &copy; {new Date().getFullYear()} VistaroAI
+            <span className="font-bold text-white">MissCall Assistant</span> • Built by <strong className="text-slate-300">Solita Solutions</strong> (Gaya, Bihar 824232) • &copy; {new Date().getFullYear()}
           </div>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>

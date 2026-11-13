@@ -25,6 +25,9 @@ import {
   RefreshCw,
   Send,
   CreditCard,
+  MapPin,
+  Mail,
+  Phone,
 } from 'lucide-react';
 
 interface WebsiteViewProps {
@@ -95,6 +98,7 @@ export function WebsiteView({
             <a href="#pricing" className="hover:text-[#3B28CC] transition-colors">Pricing</a>
             <a href="#download" className="hover:text-[#3B28CC] transition-colors">Download APK</a>
             <a href="#faq" className="hover:text-[#3B28CC] transition-colors">FAQ</a>
+            <a href="#contact" className="hover:text-[#3B28CC] transition-colors">Contact</a>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -572,23 +576,148 @@ export function WebsiteView({
         </div>
       </section>
 
-      {/* 9. FOOTER */}
+      {/* 9. AUTHOR & CONTACT SECTION */}
+      <section className="py-16 px-6 bg-slate-50 border-t border-slate-200" id="contact">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center max-w-xl mx-auto mb-10">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#3B28CC] bg-[#3B28CC]/10 px-3 py-1 rounded-full">
+              Author & Support
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-3 tracking-tight">
+              Solita Solutions
+            </h2>
+            <p className="text-slate-600 text-xs sm:text-sm mt-2 flex items-center justify-center gap-1.5">
+              <MapPin className="w-4 h-4 text-[#3B28CC] shrink-0" />
+              <span>Gaya, Bihar - 824232, India</span>
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* General & WhatsApp Support */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base">Customer & Sales Support</h3>
+                    <p className="text-slate-500 text-xs">Assistance with setup, licensing & inquiries</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3 mt-4 text-xs">
+                  <div className="flex items-center gap-3 text-slate-700">
+                    <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span>Email:</span>
+                    <a href="mailto:help.solita@gmail.com" className="font-semibold text-[#3B28CC] hover:underline">
+                      help.solita@gmail.com
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 text-slate-700">
+                    <Phone className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span>WhatsApp:</span>
+                    <a href="https://wa.me/919341718066" target="_blank" rel="noopener noreferrer" className="font-semibold text-emerald-600 hover:underline">
+                      +91 9341718066
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3">
+                <a
+                  href="https://wa.me/919341718066?text=Hi%20Solita%20Solutions,%20I%20need%20help%20with%20MissCall%20Assistant"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  Chat on WhatsApp
+                </a>
+                <a
+                  href="mailto:help.solita@gmail.com"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  Email Support
+                </a>
+              </div>
+            </div>
+
+            {/* Developer Contact */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center font-bold">
+                    <Zap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base">Developer Contact</h3>
+                    <p className="text-slate-500 text-xs">Direct technical contact, bug reports & API</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 mt-4 text-xs">
+                  <div className="flex items-center gap-3 text-slate-700">
+                    <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span>Email:</span>
+                    <a href="mailto:contact.dev.sonu@gmail.com" className="font-semibold text-[#3B28CC] hover:underline">
+                      contact.dev.sonu@gmail.com
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 text-slate-700">
+                    <Phone className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span>Call / WhatsApp:</span>
+                    <a href="tel:+917439551862" className="font-semibold text-slate-900 hover:underline">
+                      +91 7439551862
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3">
+                <a
+                  href="tel:+917439551862"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  Call Developer
+                </a>
+                <a
+                  href="https://wa.me/917439551862?text=Hi%20Sonu,%20contacting%20regarding%20MissCall%20Assistant"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. FOOTER */}
       <footer className="border-t border-slate-200 bg-white py-12 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500 font-medium">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-[#3B28CC] text-white flex items-center justify-center font-bold text-sm">
-              M
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-xl bg-[#3B28CC] text-white flex items-center justify-center font-bold text-sm">
+                M
+              </div>
+              <span className="font-bold text-slate-900">MissCall Assistant</span>
             </div>
-            <span className="font-bold text-slate-900">MissCall Assistant</span>
+            <span>• Built by <strong className="text-slate-800">Solita Solutions</strong> (Gaya, Bihar 824232)</span>
             <span>• © 2026 All rights reserved.</span>
           </div>
 
           <div className="flex items-center gap-6">
+            <a href="#contact" className="hover:text-slate-900">
+              Contact
+            </a>
             <button onClick={() => onNavigateTab('admin-login')} className="hover:text-slate-900">
               Admin Portal
-            </button>
-            <button onClick={() => onNavigateTab('simulator')} className="hover:text-slate-900">
-              Call Simulator
             </button>
             <button onClick={handleDownload} className="text-[#3B28CC] font-bold hover:underline">
               Download APK
