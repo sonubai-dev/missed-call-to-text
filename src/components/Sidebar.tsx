@@ -116,6 +116,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: undefined,
     },
     {
+      id: "simulator" as NavTab,
+      label: "Android Simulator",
+      icon: Smartphone,
+      badge: "Interactive",
+      badgeColor: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+    },
+    {
       id: "webhooks" as NavTab,
       label: "Webhooks & Sync",
       icon: Webhook,
