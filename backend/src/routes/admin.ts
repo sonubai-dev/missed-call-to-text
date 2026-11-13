@@ -1,20 +1,35 @@
 import { Router, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import { db } from '../db';
 import {
   requireAdminAuth,
   signAdminSessionToken,
   verifyAdminSessionCookie,
+  safeEqualStrings,
   ADMIN_OWNER_EMAIL,
   ADMIN_PASSWORD,
 } from '../middleware/auth';
 
 export const adminRouter = Router();
 
+// Strict rate limiter for admin login to prevent credential brute-forcing
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // max 5 attempts per IP per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    errorCode: 'TOO_MANY_LOGIN_ATTEMPTS',
+    error: 'Too many administrative login attempts. Please wait 15 minutes before trying again.',
+  },
+});
+
 /**
  * 1. POST /api/admin/login
  * Validates admin owner email and password, emits secure HttpOnly cookie.
  */
-adminRouter.post('/login', async (req: Request, res: Response): Promise<void> => {
+adminRouter.post('/login', adminLoginLimiter, async (req: Request, res: Response): Promise<void> => {
   try {
     const email = (req.body?.email || '').trim().toLowerCase();
     const password = (req.body?.password || '').trim();
@@ -32,7 +47,7 @@ adminRouter.post('/login', async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    if (password !== ADMIN_PASSWORD) {
+    if (!safeEqualStrings(password, ADMIN_PASSWORD)) {
       res.status(401).json({ success: false, error: 'Invalid admin credentials provided.' });
       return;
     }

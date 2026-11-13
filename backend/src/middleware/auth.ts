@@ -15,6 +15,30 @@ export const ADMIN_OWNER_EMAIL = (process.env.ADMIN_OWNER_EMAIL || 'ssdd747346@g
 export const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD || 'admin_misscall_secret_2026').trim();
 export const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || ADMIN_SECRET;
 
+// Defensive check: Alert if default administrative secrets are detected in production
+if (process.env.NODE_ENV === 'production') {
+  if (
+    ADMIN_SECRET === 'misscall_admin_super_secret_master_key_2026' ||
+    ADMIN_PASSWORD === 'admin_misscall_secret_2026' ||
+    JWT_SECRET === 'misscall_jwt_default_secret_production_key_32bytes'
+  ) {
+    console.error(
+      '[SECURITY ALERT] Default production secrets detected! Please set JWT_SECRET, ADMIN_SECRET, and ADMIN_PASSWORD in your environment variables.'
+    );
+  }
+}
+
+/**
+ * Constant-time string comparison to prevent timing side-channel attacks.
+ */
+export function safeEqualStrings(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = Buffer.from(a, 'utf-8');
+  const bufB = Buffer.from(b, 'utf-8');
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 export function signBusinessJwt(payload: { businessId: string; deviceId: string }): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '90d' });
 }
@@ -125,15 +149,15 @@ export function requireAdminAuth(
   const adminSecretHeader = req.headers['x-admin-secret'];
   const cookieHeader = req.headers.cookie;
 
-  // 1. Check Bearer / Header secret
+  // 1. Check Bearer / Header secret with constant-time equality check
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const provided = authHeader.substring(7).trim();
-    if (provided === ADMIN_SECRET) {
+    if (safeEqualStrings(provided, ADMIN_SECRET)) {
       return next();
     }
   }
 
-  if (typeof adminSecretHeader === 'string' && adminSecretHeader.trim() === ADMIN_SECRET) {
+  if (typeof adminSecretHeader === 'string' && safeEqualStrings(adminSecretHeader.trim(), ADMIN_SECRET)) {
     return next();
   }
 

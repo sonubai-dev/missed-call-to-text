@@ -5,6 +5,14 @@ export const dynamic = 'force-dynamic';
 
 const ADMIN_SECRET = process.env.ADMIN_SESSION_SECRET || 'admin_jwt_super_secret_session_key_2026';
 
+function safeEqual(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = Buffer.from(a, 'utf-8');
+  const bufB = Buffer.from(b, 'utf-8');
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 function signToken(email: string): string {
   const payload = JSON.stringify({
     email,
@@ -42,8 +50,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Password Verification
-    if (password !== adminPassword) {
+    // 2. Password Verification (constant-time check)
+    if (!safeEqual(password, adminPassword)) {
       return NextResponse.json(
         { success: false, error: 'Invalid admin credentials provided.' },
         { status: 401 }

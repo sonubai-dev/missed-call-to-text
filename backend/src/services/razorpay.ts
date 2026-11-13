@@ -109,7 +109,13 @@ export class RazorpayService {
       return true;
     }
 
-    // In sandbox test mode, check that paymentId exists
+    // In production, never bypass payment signature validation
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Razorpay Security Alert] Attempted payment verification in production without RAZORPAY_KEY_SECRET configured!');
+      return false;
+    }
+
+    // In local sandbox / development test mode, check that paymentId exists
     return Boolean(paymentId && paymentId.startsWith('pay_'));
   }
 
@@ -120,7 +126,11 @@ export class RazorpayService {
   static verifyWebhookSignature(rawBody: string | Buffer, signature: string): boolean {
     const webhookSecret = this.getWebhookSecret();
     if (!webhookSecret || webhookSecret.includes('placeholder')) {
-      return true; // Pass in unconfigured test mode
+      if (process.env.NODE_ENV === 'production') {
+        console.error('[Razorpay Security Alert] Attempted webhook processing in production without RAZORPAY_WEBHOOK_SECRET configured!');
+        return false;
+      }
+      return true; // Pass in unconfigured local test mode only
     }
 
     const generated = crypto

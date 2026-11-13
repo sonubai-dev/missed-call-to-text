@@ -21,10 +21,22 @@ app.use(
   })
 );
 
-// 2. CORS
+// 2. CORS (Configurable via ALLOWED_ORIGINS, default permissive for dev & mobile clients)
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+  : null;
+
 app.use(
   cors({
-    origin: '*',
+    origin: (origin, callback) => {
+      // Allow mobile apps, curl, and server-to-server calls without an Origin header
+      if (!origin) return callback(null, true);
+      if (!allowedOrigins || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS policy violation: Origin ${origin} is not allowed.`));
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Razorpay-Signature', 'X-Admin-Secret'],
   })
