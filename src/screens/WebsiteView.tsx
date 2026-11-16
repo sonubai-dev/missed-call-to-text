@@ -103,6 +103,13 @@ export function WebsiteView({
 
           <div className="flex items-center gap-3">
             <button
+              onClick={onOpenSimulator}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#3B28CC] bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-all border border-indigo-200 cursor-pointer"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>Test Simulator</span>
+            </button>
+            <button
               onClick={() => onNavigateTab('admin-login')}
               className="hidden sm:inline-flex px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
             >
@@ -155,14 +162,21 @@ export function WebsiteView({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={handleDownload}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#3B28CC] hover:bg-indigo-700 text-white rounded-2xl text-sm font-extrabold shadow-xl shadow-indigo-300 transition-all hover:-translate-y-0.5"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#3B28CC] hover:bg-indigo-700 text-white rounded-2xl text-sm font-extrabold shadow-xl shadow-indigo-300 transition-all hover:-translate-y-0.5 cursor-pointer"
             >
               <Download className="w-5 h-5" />
               <span>Download for Android (APK)</span>
             </button>
+            <button
+              onClick={onOpenSimulator}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 rounded-2xl text-sm font-extrabold transition-all shadow-sm cursor-pointer"
+            >
+              <Smartphone className="w-4 h-4 text-[#3B28CC]" />
+              <span>Test App Simulator in Browser</span>
+            </button>
             <a
               href="#how-it-works"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all"
             >
               <span>How It Works</span>
               <ArrowRight className="w-4 h-4" />

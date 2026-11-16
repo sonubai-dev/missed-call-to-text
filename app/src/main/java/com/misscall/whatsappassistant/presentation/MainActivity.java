@@ -381,6 +381,53 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         tvDelayExpl.setPadding(0, 0, 0, 12);
         cardDelay.addView(tvDelayExpl);
 
+        // Visual Stepper Micro-Timeline (Improvement #4)
+        LinearLayout stepperLayout = new LinearLayout(this);
+        stepperLayout.setOrientation(LinearLayout.HORIZONTAL);
+        stepperLayout.setGravity(Gravity.CENTER_VERTICAL);
+        stepperLayout.setPadding(16, 12, 16, 12);
+        GradientDrawable stepperBg = new GradientDrawable();
+        stepperBg.setColor(Color.parseColor("#F8FAFC"));
+        stepperBg.setCornerRadius(14);
+        stepperBg.setStroke(2, COLOR_CARD_BORDER);
+        stepperLayout.setBackground(stepperBg);
+
+        TextView tvStep1 = new TextView(this);
+        tvStep1.setText("1. Inbound Call");
+        tvStep1.setTextSize(10);
+        tvStep1.setTypeface(null, Typeface.BOLD);
+        tvStep1.setTextColor(COLOR_TEXT_SECONDARY);
+        stepperLayout.addView(tvStep1);
+
+        TextView tvArrow1 = new TextView(this);
+        tvArrow1.setText(" → ");
+        tvArrow1.setTextSize(10);
+        tvArrow1.setTextColor(COLOR_TEXT_MUTED);
+        stepperLayout.addView(tvArrow1);
+
+        TextView tvStep2 = new TextView(this);
+        tvStep2.setText("2. " + selectedDelaySeconds + "s Buffer (Safe)");
+        tvStep2.setTextSize(10);
+        tvStep2.setTypeface(null, Typeface.BOLD);
+        tvStep2.setTextColor(COLOR_PRIMARY);
+        stepperLayout.addView(tvStep2);
+
+        TextView tvArrow2 = new TextView(this);
+        tvArrow2.setText(" → ");
+        tvArrow2.setTextSize(10);
+        tvArrow2.setTextColor(COLOR_TEXT_MUTED);
+        stepperLayout.addView(tvArrow2);
+
+        TextView tvStep3 = new TextView(this);
+        tvStep3.setText("3. Auto-SMS");
+        tvStep3.setTextSize(10);
+        tvStep3.setTypeface(null, Typeface.BOLD);
+        tvStep3.setTextColor(COLOR_SUCCESS);
+        stepperLayout.addView(tvStep3);
+
+        cardDelay.addView(stepperLayout);
+        addSpacing(cardDelay, 12);
+
         LinearLayout delayContainer = new LinearLayout(this);
         delayContainer.setOrientation(LinearLayout.HORIZONTAL);
         delayContainer.setWeightSum(3);
@@ -398,7 +445,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         tab.addView(cardDelay);
         addSpacing(tab, 20);
 
-        // 3. Configured SMS Preview Card
+        // 3. Configured SMS Preview Card with Instant Bottom Sheet Tap (Improvement #9)
         LinearLayout cardSmsPreview = createCard();
         cardSmsPreview.addView(createSectionTitle("Reply Message Preview"));
 
@@ -418,9 +465,18 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         previewBg.setCornerRadius(14);
         previewBg.setStroke(2, COLOR_CARD_BORDER);
         tvSmsPreviewContent.setBackground(previewBg);
+        tvSmsPreviewContent.setClickable(true);
+        tvSmsPreviewContent.setOnClickListener(v -> showInstantTemplateDialog());
         cardSmsPreview.addView(tvSmsPreviewContent);
 
-        Button btnEditSmsQuick = createSubtleButton("Edit Message Template →");
+        TextView tvHint = new TextView(this);
+        tvHint.setText("💡 Tap bubble to edit template or switch industry presets instantly");
+        tvHint.setTextSize(10);
+        tvHint.setTextColor(COLOR_PRIMARY);
+        tvHint.setPadding(0, 8, 0, 8);
+        cardSmsPreview.addView(tvHint);
+
+        Button btnEditSmsQuick = createSubtleButton("Customize in Settings →");
         btnEditSmsQuick.setOnClickListener(v -> switchTab(2));
         cardSmsPreview.addView(btnEditSmsQuick);
 
@@ -523,6 +579,53 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         tvTime.setTextColor(COLOR_TEXT_MUTED);
         row.addView(tvTime);
 
+        // Improvement #6: Actionable Activity Cards (Call Back & WhatsApp)
+        LinearLayout actionsRow = new LinearLayout(this);
+        actionsRow.setOrientation(LinearLayout.HORIZONTAL);
+        actionsRow.setPadding(0, 8, 0, 0);
+
+        Button btnCall = new Button(this);
+        btnCall.setText("📞 Call Back");
+        btnCall.setTextSize(10);
+        btnCall.setPadding(16, 8, 16, 8);
+        GradientDrawable callBg = new GradientDrawable();
+        callBg.setColor(Color.parseColor("#EFF6FF"));
+        callBg.setCornerRadius(12);
+        callBg.setStroke(1, Color.parseColor("#BFDBFE"));
+        btnCall.setBackground(callBg);
+        btnCall.setTextColor(COLOR_PRIMARY);
+        btnCall.setOnClickListener(v -> {
+            try {
+                Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+                startActivity(dialIntent);
+            } catch (Exception ignored) {}
+        });
+        actionsRow.addView(btnCall);
+
+        Button btnWa = new Button(this);
+        btnWa.setText("💬 WhatsApp");
+        btnWa.setTextSize(10);
+        btnWa.setPadding(16, 8, 16, 8);
+        LinearLayout.LayoutParams waLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        waLp.setMargins(12, 0, 0, 0);
+        btnWa.setLayoutParams(waLp);
+        GradientDrawable waBg = new GradientDrawable();
+        waBg.setColor(Color.parseColor("#ECFDF5"));
+        waBg.setCornerRadius(12);
+        waBg.setStroke(1, Color.parseColor("#A7F3D0"));
+        btnWa.setBackground(waBg);
+        btnWa.setTextColor(COLOR_SUCCESS);
+        btnWa.setOnClickListener(v -> {
+            try {
+                String cleanPhone = phone.replaceAll("[^0-9]", "");
+                Intent waIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + cleanPhone));
+                startActivity(waIntent);
+            } catch (Exception ignored) {}
+        });
+        actionsRow.addView(btnWa);
+
+        textCol.addView(actionsRow);
+
         container.addView(row);
         addSpacing(container, 12);
     }
@@ -541,11 +644,82 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         card.addView(editBusinessName);
 
         card.addView(createFieldLabel("Missed Call SMS Template"));
+
+        // Improvement #2: 1-Click Industry Template Chips
+        HorizontalScrollView hsvPresets = new HorizontalScrollView(this);
+        hsvPresets.setHorizontalScrollBarEnabled(false);
+        hsvPresets.setPadding(0, 0, 0, 8);
+        LinearLayout layoutPresets = new LinearLayout(this);
+        layoutPresets.setOrientation(LinearLayout.HORIZONTAL);
+
+        String currentBiz = prefs.getString("business_name", "our store");
+        String[][] presets = {
+            {"🏪 Retail", "Thanks for calling " + currentBiz + "! We are assisting customers. What product are you looking for?"},
+            {"🏥 Clinic", "Hello from " + currentBiz + "! For appointments or timings, reply with your patient name."},
+            {"🔧 Services", "Missed your call at " + currentBiz + "! Please share your service requirement for fast support."},
+            {"🌙 Night Mode", currentBiz + " is closed for the day. We will call you back at 9:00 AM tomorrow!"},
+            {"💼 General", "Hello! Sorry we missed your call from " + currentBiz + ". How can we help you today?"}
+        };
+
+        for (final String[] pData : presets) {
+            Button btnP = new Button(this);
+            btnP.setText(pData[0]);
+            btnP.setTextSize(11);
+            btnP.setPadding(24, 12, 24, 12);
+            GradientDrawable btnBg = new GradientDrawable();
+            btnBg.setColor(Color.parseColor("#F1F5F9"));
+            btnBg.setCornerRadius(18);
+            btnBg.setStroke(2, COLOR_CARD_BORDER);
+            btnP.setBackground(btnBg);
+            btnP.setTextColor(COLOR_TEXT_PRIMARY);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 0, 12, 0);
+            btnP.setLayoutParams(lp);
+            btnP.setOnClickListener(v -> editSmsTemplate.setText(pData[1]));
+            layoutPresets.addView(btnP);
+        }
+        hsvPresets.addView(layoutPresets);
+        card.addView(hsvPresets);
+
         editSmsTemplate = createEditText(prefs.getString(
             "sms_template",
             "Hello! Sorry we missed your call from our store. How can we help you today?"
         ), true);
         card.addView(editSmsTemplate);
+
+        // Improvement #7: Real-Time Character & SMS Parts Counter
+        final TextView tvCharCount = new TextView(this);
+        tvCharCount.setTextSize(11);
+        tvCharCount.setTextColor(COLOR_TEXT_MUTED);
+        tvCharCount.setPadding(0, 4, 0, 12);
+        int initialLen = editSmsTemplate.getText().length();
+        int initialParts = Math.max(1, (int) Math.ceil((double) initialLen / 160));
+        tvCharCount.setText(initialLen + " / 160 characters • " + initialParts + " SMS part(s)");
+        editSmsTemplate.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int len = s.length();
+                int parts = Math.max(1, (int) Math.ceil((double) len / 160));
+                tvCharCount.setText(len + " / 160 characters • " + parts + " SMS part(s)" + (parts > 1 ? " (⚠️ Multi-part)" : ""));
+                tvCharCount.setTextColor(parts > 1 ? COLOR_WARNING : COLOR_TEXT_MUTED);
+            }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+        card.addView(tvCharCount);
+
+        // Improvement #8: Business Working Hours Scheduler Switch
+        Switch switchWorkingHours = new Switch(this);
+        switchWorkingHours.setText("Business Working Hours (9 AM – 8 PM)");
+        switchWorkingHours.setTextSize(13);
+        switchWorkingHours.setTypeface(null, Typeface.BOLD);
+        switchWorkingHours.setTextColor(COLOR_TEXT_PRIMARY);
+        switchWorkingHours.setChecked(prefs.getBoolean("working_hours_enabled", true));
+        switchWorkingHours.setOnCheckedChangeListener((bv, isChecked) -> prefs.edit().putBoolean("working_hours_enabled", isChecked).apply());
+        card.addView(switchWorkingHours);
+        addSpacing(card, 12);
 
         card.addView(createFieldLabel("Dispatch SIM Card"));
         spinnerSimSlot = new Spinner(this);
@@ -610,6 +784,37 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         btnSubscribeAction = createButton("Subscribe • ₹99/month", COLOR_PRIMARY, Color.WHITE);
         btnSubscribeAction.setOnClickListener(v -> initiateSubscriptionFlow());
         card.addView(btnSubscribeAction);
+
+        // Improvement #10: High-Trust Indian UPI Badges
+        LinearLayout upiRow = new LinearLayout(this);
+        upiRow.setOrientation(LinearLayout.HORIZONTAL);
+        upiRow.setPadding(0, 12, 0, 8);
+        String[] upiApps = {"Google Pay", "PhonePe", "Paytm", "BHIM UPI"};
+        for (String app : upiApps) {
+            TextView tvApp = new TextView(this);
+            tvApp.setText(app);
+            tvApp.setTextSize(9);
+            tvApp.setTypeface(null, Typeface.BOLD);
+            tvApp.setTextColor(COLOR_TEXT_SECONDARY);
+            tvApp.setPadding(14, 6, 14, 6);
+            GradientDrawable appBg = new GradientDrawable();
+            appBg.setColor(Color.parseColor("#F1F5F9"));
+            appBg.setCornerRadius(10);
+            appBg.setStroke(1, COLOR_CARD_BORDER);
+            tvApp.setBackground(appBg);
+            LinearLayout.LayoutParams lpApp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lpApp.setMargins(0, 0, 8, 0);
+            tvApp.setLayoutParams(lpApp);
+            upiRow.addView(tvApp);
+        }
+        card.addView(upiRow);
+
+        TextView tvTrustMicro = new TextView(this);
+        tvTrustMicro.setText("🔒 100% Secure • Cancel anytime with 1-click • No auto-debit without consent");
+        tvTrustMicro.setTextSize(10);
+        tvTrustMicro.setTextColor(COLOR_TEXT_MUTED);
+        tvTrustMicro.setPadding(0, 0, 0, 12);
+        card.addView(tvTrustMicro);
 
         Button btnRefresh = createSubtleButton("Check Subscription Status");
         btnRefresh.setOnClickListener(v -> refreshSubscriptionStatus());
@@ -1005,13 +1210,51 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         loadSimSlots();
     }
 
+    // Improvement #1: Interactive Test Missed Call Simulator with Cancel Action
     private void runSafeDiagnosticTest() {
+        final String testNumber = "+910000000000";
+        PendingSmsScheduler.getInstance().schedule(MainActivity.this, testNumber);
+
         new AlertDialog.Builder(this)
-            .setTitle("Diagnostic Test Call")
-            .setMessage("Schedule a 5-second simulated missed call to verify the delay scheduler safely without carrier charges?")
-            .setPositiveButton("Schedule Test", (d, w) -> {
-                PendingSmsScheduler.getInstance().schedule(MainActivity.this, "+910000000000");
-                Toast.makeText(MainActivity.this, "Test call triggered! 5-second timer started.", Toast.LENGTH_SHORT).show();
+            .setTitle("In-App Test Call Active")
+            .setMessage("Simulated missed call detected! A 5-second safeguard buffer is active.\n\nTap 'Simulate Call Back' to test immediate SMS cancellation.")
+            .setPositiveButton("Let SMS Send", (d, w) -> {
+                Toast.makeText(MainActivity.this, "Test follow-up proceeding!", Toast.LENGTH_SHORT).show();
+            })
+            .setNegativeButton("Simulate Call Back (Abort)", (d, w) -> {
+                PendingSmsScheduler.getInstance().cancel(testNumber);
+                Toast.makeText(MainActivity.this, "SMS Aborted! Outgoing call simulated.", Toast.LENGTH_SHORT).show();
+            })
+            .show();
+    }
+
+    // Improvement #9: Instant Template Edit Dialog from Dashboard Bubble
+    private void showInstantTemplateDialog() {
+        final EditText etEdit = new EditText(this);
+        etEdit.setText(prefs.getString("sms_template", "Hello! Sorry we missed your call from our store. How can we help you today?"));
+        etEdit.setTextSize(13);
+        etEdit.setPadding(32, 24, 32, 24);
+
+        LinearLayout dialogLayout = new LinearLayout(this);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        dialogLayout.setPadding(32, 16, 32, 16);
+        dialogLayout.addView(etEdit);
+
+        new AlertDialog.Builder(this)
+            .setTitle("Quick Edit Reply Template")
+            .setView(dialogLayout)
+            .setPositiveButton("Save Template", (d, w) -> {
+                String newTmpl = etEdit.getText().toString().trim();
+                if (!newTmpl.isEmpty()) {
+                    prefs.edit().putString("sms_template", newTmpl).apply();
+                    if (tvSmsPreviewContent != null) {
+                        tvSmsPreviewContent.setText("\"" + newTmpl + "\"");
+                    }
+                    if (editSmsTemplate != null) {
+                        editSmsTemplate.setText(newTmpl);
+                    }
+                    Toast.makeText(MainActivity.this, "Template updated successfully!", Toast.LENGTH_SHORT).show();
+                }
             })
             .setNegativeButton("Cancel", null)
             .show();
