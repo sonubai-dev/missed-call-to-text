@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.misscall.whatsappassistant.data.SubscriptionClient;
 import com.misscall.whatsappassistant.data.SubscriptionSyncWorker;
+import com.misscall.whatsappassistant.security.AndroidSecurityManager;
 import com.misscall.whatsappassistant.telephony.PendingSmsScheduler;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
@@ -109,16 +110,20 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
     private int selectedDelaySeconds = 5;
 
     // Settings Views
+    private EditText editUserName;
     private EditText editBusinessName;
+    private EditText editLocation;
     private EditText editSmsTemplate;
     private Spinner spinnerSimSlot;
     private TextView tvDiagnosticsDetails;
     private Button btnGrantPermissions;
+    private TextView tvSettingTrialDays;
 
     // Subscription Views
     private TextView tvSubScreenStatus;
     private TextView tvSubScreenExpiry;
     private Button btnSubscribeAction;
+    private AlertDialog paywallDialog = null;
 
     // Activity Views
     private LinearLayout layoutActivityList;
@@ -146,6 +151,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(COLOR_BG);
+        AndroidSecurityManager.applyTapjackingDefense(root);
 
         // 1. TOP HEADER WITH WELCOME GREETING & STATUS PILL (REFERENCE 2)
         root.addView(createTopHeader());
@@ -195,6 +201,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         refreshSubscriptionStatus();
         updateDiagnosticsUI();
         updateStatusHeader();
+        checkPaywallEnforcement();
     }
 
     // --- TOP HEADER (REFERENCE 2 STYLE) ---
@@ -636,12 +643,64 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         tab.setOrientation(LinearLayout.VERTICAL);
         tab.setPadding(32, 8, 32, 48);
 
-        LinearLayout card = createCard();
-        card.addView(createSectionTitle("Business & Telephony Settings"));
+        // 1. Profile & Business Settings Card
+        LinearLayout cardProfile = createCard();
+        cardProfile.addView(createSectionTitle("Profile & Business Details"));
 
-        card.addView(createFieldLabel("Business Name"));
+        cardProfile.addView(createFieldLabel("Your Full Name"));
+        editUserName = createEditText(prefs.getString("user_name", "Business Owner"), false);
+        cardProfile.addView(editUserName);
+
+        cardProfile.addView(createFieldLabel("Business Name"));
         editBusinessName = createEditText(prefs.getString("business_name", "My Store"), false);
-        card.addView(editBusinessName);
+        cardProfile.addView(editBusinessName);
+
+        cardProfile.addView(createFieldLabel("Location / City"));
+        editLocation = createEditText(prefs.getString("business_location", "India"), false);
+        cardProfile.addView(editLocation);
+
+        tab.addView(cardProfile);
+        addSpacing(tab, 20);
+
+        // 2. 14-Day Free Trial & Plan Card
+        LinearLayout cardTrial = createCard();
+        cardTrial.addView(createSectionTitle("14-Day Free Trial & Subscription"));
+
+        tvSettingTrialDays = new TextView(this);
+        int daysLeft = SubscriptionClient.getTrialDaysRemaining(this);
+        boolean isPaid = prefs.getBoolean("subscription_is_paid", false);
+        if (isPaid) {
+            tvSettingTrialDays.setText("Status: Pro Plan Active (₹99/mo)");
+            tvSettingTrialDays.setTextColor(COLOR_SUCCESS);
+        } else if (daysLeft > 0) {
+            tvSettingTrialDays.setText("14-Day Free Trial Active • " + daysLeft + " Days Left");
+            tvSettingTrialDays.setTextColor(COLOR_PRIMARY);
+        } else {
+            tvSettingTrialDays.setText("Trial Expired • Missed-call SMS paused");
+            tvSettingTrialDays.setTextColor(COLOR_DANGER);
+        }
+        tvSettingTrialDays.setTextSize(14);
+        tvSettingTrialDays.setTypeface(null, Typeface.BOLD);
+        tvSettingTrialDays.setPadding(0, 4, 0, 8);
+        cardTrial.addView(tvSettingTrialDays);
+
+        TextView tvPlanInfo = new TextView(this);
+        tvPlanInfo.setText("MissCall Pro: ₹99/month for unlimited automated carrier SMS, delay safeguard, and instant lead logging.");
+        tvPlanInfo.setTextSize(11);
+        tvPlanInfo.setTextColor(COLOR_TEXT_SECONDARY);
+        tvPlanInfo.setPadding(0, 0, 0, 16);
+        cardTrial.addView(tvPlanInfo);
+
+        Button btnUpgradeSettings = createButton("Manage / Activate Pro • ₹99/mo", COLOR_PRIMARY, Color.WHITE);
+        btnUpgradeSettings.setOnClickListener(v -> switchTab(3));
+        cardTrial.addView(btnUpgradeSettings);
+
+        tab.addView(cardTrial);
+        addSpacing(tab, 20);
+
+        // 3. Telephony & SMS Template Settings Card
+        LinearLayout card = createCard();
+        card.addView(createSectionTitle("SMS Reply & Carrier Settings"));
 
         card.addView(createFieldLabel("Missed Call SMS Template"));
 
@@ -854,13 +913,35 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         boolean autoEnabled = prefs.getBoolean("auto_reply_enabled", true);
         boolean isEntitled = SubscriptionClient.isEntitled(this);
         boolean hasPerms = checkAllPermissionsGranted();
+        boolean isPaid = prefs.getBoolean("subscription_is_paid", false);
+        int daysLeft = SubscriptionClient.getTrialDaysRemaining(this);
 
+        String uName = prefs.getString("user_name", "");
         String bizName = prefs.getString("business_name", "My Business");
+        String loc = prefs.getString("business_location", "");
+
         if (tvBusinessGreeting != null) {
-            tvBusinessGreeting.setText(bizName);
+            if (!loc.isEmpty()) {
+                tvBusinessGreeting.setText(bizName + " (" + loc + ")");
+            } else {
+                tvBusinessGreeting.setText(bizName);
+            }
         }
         if (tvAvatarInitial != null && !bizName.isEmpty()) {
             tvAvatarInitial.setText(bizName.substring(0, Math.min(2, bizName.length())).toUpperCase());
+        }
+
+        if (tvSettingTrialDays != null) {
+            if (isPaid) {
+                tvSettingTrialDays.setText("Status: Pro Plan Active (₹99/mo)");
+                tvSettingTrialDays.setTextColor(COLOR_SUCCESS);
+            } else if (daysLeft > 0) {
+                tvSettingTrialDays.setText("14-Day Free Trial Active • " + daysLeft + " Days Remaining");
+                tvSettingTrialDays.setTextColor(COLOR_PRIMARY);
+            } else {
+                tvSettingTrialDays.setText("14-Day Trial Expired • Automated SMS Paused");
+                tvSettingTrialDays.setTextColor(COLOR_DANGER);
+            }
         }
 
         if (tvHeaderStatusPill != null) {
@@ -871,18 +952,22 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
                 tvHeaderStatusPill.setText("Missing Permissions");
                 tvHeaderStatusPill.setTextColor(COLOR_WARNING);
                 pillBg.setColor(Color.parseColor("#FEF3C7"));
-            } else if (!isEntitled) {
-                tvHeaderStatusPill.setText("Subscription Required");
+            } else if (!isEntitled || daysLeft <= 0) {
+                tvHeaderStatusPill.setText("Trial Expired • Pay ₹99");
                 tvHeaderStatusPill.setTextColor(COLOR_DANGER);
                 pillBg.setColor(Color.parseColor("#FEE2E2"));
             } else if (!autoEnabled) {
-                tvHeaderStatusPill.setText("Paused");
+                tvHeaderStatusPill.setText("Service Paused");
                 tvHeaderStatusPill.setTextColor(COLOR_TEXT_MUTED);
                 pillBg.setColor(Color.parseColor("#F1F5F9"));
-            } else {
-                tvHeaderStatusPill.setText("• Active (₹99/mo)");
+            } else if (isPaid) {
+                tvHeaderStatusPill.setText("• Pro Active");
                 tvHeaderStatusPill.setTextColor(COLOR_SUCCESS);
                 pillBg.setColor(Color.parseColor("#DCFCE7"));
+            } else {
+                tvHeaderStatusPill.setText("Trial • " + daysLeft + "d left");
+                tvHeaderStatusPill.setTextColor(COLOR_PRIMARY);
+                pillBg.setColor(Color.parseColor("#DBEAFE"));
             }
             tvHeaderStatusPill.setBackground(pillBg);
         }
@@ -910,9 +995,9 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
                         btnSubscribeAction.setVisibility(View.GONE);
                     }
                 } else if ("trial".equalsIgnoreCase(state.status)) {
-                    int days = Math.max(1, state.trialDaysRemaining);
+                    int days = Math.max(1, SubscriptionClient.getTrialDaysRemaining(MainActivity.this));
                     if (tvSubScreenStatus != null) {
-                        tvSubScreenStatus.setText("Status: 3-Day Free Trial (" + days + " days remaining)");
+                        tvSubScreenStatus.setText("Status: 14-Day Free Trial (" + days + " days remaining)");
                         tvSubScreenStatus.setTextColor(COLOR_PRIMARY);
                     }
                     if (btnSubscribeAction != null) {
@@ -935,14 +1020,15 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
             @Override
             public void onError(String message, String errorCode) {
                 if (SubscriptionClient.isEntitled(MainActivity.this)) {
+                    int days = SubscriptionClient.getTrialDaysRemaining(MainActivity.this);
                     if (tvSubScreenStatus != null) {
-                        tvSubScreenStatus.setText("Status: Entitled (Offline Mode • 3-Day Grace)");
+                        tvSubScreenStatus.setText("Status: 14-Day Free Trial Active (" + days + " days left)");
                         tvSubScreenStatus.setTextColor(COLOR_SUCCESS);
                     }
                 } else {
                     if (tvSubScreenStatus != null) {
-                        tvSubScreenStatus.setText("Status: Server Unreachable (" + errorCode + ")");
-                        tvSubScreenStatus.setTextColor(COLOR_TEXT_MUTED);
+                        tvSubScreenStatus.setText("Status: 14-Day Trial Expired • Renewal Required");
+                        tvSubScreenStatus.setTextColor(COLOR_DANGER);
                     }
                 }
                 updateStatusHeader();
@@ -951,6 +1037,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
     }
 
     private void initiateSubscriptionFlow() {
+        AndroidSecurityManager.applyFlagSecure(this);
         if (btnSubscribeAction != null) btnSubscribeAction.setEnabled(false);
         Toast.makeText(this, "Connecting to payment gateway...", Toast.LENGTH_SHORT).show();
 
@@ -1059,16 +1146,22 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
     }
 
     private void saveAllSettings() {
+        String uName = editUserName != null ? editUserName.getText().toString().trim() : "";
         String bizName = editBusinessName.getText().toString().trim();
+        String loc = editLocation != null ? editLocation.getText().toString().trim() : "";
         String template = editSmsTemplate.getText().toString().trim();
 
+        if (uName.isEmpty()) uName = "Business Owner";
         if (bizName.isEmpty()) bizName = "My Store";
+        if (loc.isEmpty()) loc = "India";
         if (template.isEmpty()) {
             template = "Hello! Sorry we missed your call from " + bizName + ". How can we help you today?";
         }
 
         prefs.edit()
+            .putString("user_name", uName)
             .putString("business_name", bizName)
+            .putString("business_location", loc)
             .putString("sms_template", template)
             .putInt("sms_delay_seconds", selectedDelaySeconds)
             .putInt("selected_sim_slot", selectedSimIndex)
@@ -1078,7 +1171,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
             tvSmsPreviewContent.setText("\"" + template + "\"");
         }
 
-        Toast.makeText(this, "Settings saved successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Profile and settings saved successfully!", Toast.LENGTH_SHORT).show();
         updateStatusHeader();
     }
 
@@ -1317,6 +1410,7 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
 
     private Button createButton(String text, int bgColor, int textColor) {
         Button btn = new Button(this);
+        AndroidSecurityManager.applyTapjackingDefense(btn);
         btn.setText(text);
         btn.setTextColor(textColor);
         btn.setTextSize(14);
@@ -1390,56 +1484,174 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
     private void checkFirstLaunchRegistration() {
         if (!prefs.getBoolean("business_registered", false)) {
             showRegistrationDialog();
+        } else {
+            checkPaywallEnforcement();
         }
     }
 
     private void showRegistrationDialog() {
-        final EditText etName = new EditText(this);
-        etName.setHint("Business Name (e.g. Apex Electronics)");
-        etName.setText(prefs.getString("business_name", ""));
-        etName.setPadding(32, 24, 32, 24);
+        final EditText etUserName = createEditText(prefs.getString("user_name", ""), false);
+        etUserName.setHint("Your Full Name (e.g. Vikram Sharma)");
 
-        final EditText etPhone = new EditText(this);
-        etPhone.setHint("Business Phone (e.g. +91 98765 43210)");
-        etPhone.setText(prefs.getString("business_phone", ""));
-        etPhone.setPadding(32, 24, 32, 24);
+        final EditText etBizName = createEditText(prefs.getString("business_name", ""), false);
+        etBizName.setHint("Business Name (e.g. Sharma Electronics)");
+
+        final EditText etLoc = createEditText(prefs.getString("business_location", ""), false);
+        etLoc.setHint("Business Location (e.g. Gaya, Bihar)");
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(48, 32, 48, 16);
-        layout.addView(etName);
-        layout.addView(etPhone);
+        layout.setPadding(48, 28, 48, 16);
+
+        // Header Description
+        TextView tvSub = new TextView(this);
+        tvSub.setText("Welcome to MissCall Assistant! Start your 14-Day Free Trial to automatically reply to missed customer calls via SMS.");
+        tvSub.setTextSize(12);
+        tvSub.setTextColor(COLOR_TEXT_SECONDARY);
+        tvSub.setPadding(0, 0, 0, 16);
+        layout.addView(tvSub);
+
+        layout.addView(createFieldLabel("Your Name"));
+        layout.addView(etUserName);
+
+        layout.addView(createFieldLabel("Business Name"));
+        layout.addView(etBizName);
+
+        layout.addView(createFieldLabel("Location / City"));
+        layout.addView(etLoc);
+
+        // 14-Day Free Trial Highlight Card
+        LinearLayout trialBadge = new LinearLayout(this);
+        trialBadge.setOrientation(LinearLayout.VERTICAL);
+        trialBadge.setPadding(20, 16, 20, 16);
+        GradientDrawable badgeBg = new GradientDrawable();
+        badgeBg.setColor(Color.parseColor("#EFF6FF"));
+        badgeBg.setCornerRadius(14);
+        badgeBg.setStroke(1, Color.parseColor("#BFDBFE"));
+        trialBadge.setBackground(badgeBg);
+
+        TextView tvPlanTitle = new TextView(this);
+        tvPlanTitle.setText("🎉 14-Day Free Trial Activated (₹0 Today)");
+        tvPlanTitle.setTextSize(12);
+        tvPlanTitle.setTypeface(null, Typeface.BOLD);
+        tvPlanTitle.setTextColor(COLOR_PRIMARY);
+        trialBadge.addView(tvPlanTitle);
+
+        TextView tvPlanDesc = new TextView(this);
+        tvPlanDesc.setText("Full feature access included. Continue after 14 days for just ₹99/month. Cancel anytime.");
+        tvPlanDesc.setTextSize(11);
+        tvPlanDesc.setTextColor(COLOR_TEXT_SECONDARY);
+        tvPlanDesc.setPadding(0, 4, 0, 0);
+        trialBadge.addView(tvPlanDesc);
+
+        addSpacing(layout, 16);
+        layout.addView(trialBadge);
 
         new AlertDialog.Builder(this)
-            .setTitle("Register Your Business")
-            .setMessage("Set your business profile to activate missed-call SMS automation and start your 3-day free trial.")
+            .setTitle("Get Started with MissCall Assistant")
             .setView(layout)
             .setCancelable(false)
-            .setPositiveButton("Register & Start", (dialog, which) -> {
-                String name = etName.getText().toString().trim();
-                String phone = etPhone.getText().toString().trim();
-                if (name.isEmpty() || phone.isEmpty()) {
-                    Toast.makeText(this, "Please enter both business name and phone number", Toast.LENGTH_SHORT).show();
-                    showRegistrationDialog();
-                    return;
-                }
-                SubscriptionClient.registerBusiness(this, name, phone, null, new SubscriptionClient.SubscriptionCallback() {
-                    @Override
-                    public void onSuccess(SubscriptionClient.SubscriptionState state) {
-                        Toast.makeText(MainActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
-                        if (editBusinessName != null) {
-                            editBusinessName.setText(name);
-                        }
-                        refreshSubscriptionStatus();
-                    }
+            .setPositiveButton("Start 14-Day Free Trial", (dialog, which) -> {
+                String userName = etUserName.getText().toString().trim();
+                String bizName = etBizName.getText().toString().trim();
+                String location = etLoc.getText().toString().trim();
 
-                    @Override
-                    public void onError(String msg, String code) {
-                        Toast.makeText(MainActivity.this, "Registration: " + msg, Toast.LENGTH_LONG).show();
-                        refreshSubscriptionStatus();
-                    }
-                });
+                if (userName.isEmpty()) userName = "Business Owner";
+                if (bizName.isEmpty()) bizName = "My Business";
+                if (location.isEmpty()) location = "India";
+
+                SubscriptionClient.start14DayTrial(MainActivity.this, userName, bizName, location);
+                Toast.makeText(MainActivity.this, "14-Day Free Trial Started! Enjoy full automation.", Toast.LENGTH_LONG).show();
+
+                if (editUserName != null) editUserName.setText(userName);
+                if (editBusinessName != null) editBusinessName.setText(bizName);
+                if (editLocation != null) editLocation.setText(location);
+
+                updateStatusHeader();
+                refreshSubscriptionStatus();
             })
             .show();
+    }
+
+    // --- HARD PAYWALL ENFORCEMENT (AFTER 14 DAYS EXPIRED) ---
+    private void checkPaywallEnforcement() {
+        if (!prefs.getBoolean("business_registered", false)) return;
+        boolean entitled = SubscriptionClient.isEntitled(this);
+        if (!entitled) {
+            showHardPaywallDialog();
+        } else if (paywallDialog != null && paywallDialog.isShowing()) {
+            paywallDialog.dismiss();
+            paywallDialog = null;
+        }
+    }
+
+    private void showHardPaywallDialog() {
+        if (paywallDialog != null && paywallDialog.isShowing()) return;
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(48, 36, 48, 28);
+        layout.setBackgroundColor(Color.WHITE);
+
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText("🔒 14-Day Free Trial Has Ended");
+        tvTitle.setTextSize(18);
+        tvTitle.setTypeface(null, Typeface.BOLD);
+        tvTitle.setTextColor(COLOR_DANGER);
+        layout.addView(tvTitle);
+
+        TextView tvMsg = new TextView(this);
+        tvMsg.setText("Your automated missed-call SMS service has completed its 14-day free trial. To resume automated SMS replies and lead capture for your customers, please activate your MissCall Pro subscription.");
+        tvMsg.setTextSize(13);
+        tvMsg.setTextColor(COLOR_TEXT_SECONDARY);
+        tvMsg.setPadding(0, 14, 0, 16);
+        layout.addView(tvMsg);
+
+        // Pricing Pill
+        LinearLayout priceBox = new LinearLayout(this);
+        priceBox.setOrientation(LinearLayout.VERTICAL);
+        priceBox.setPadding(20, 16, 20, 16);
+        GradientDrawable priceBg = new GradientDrawable();
+        priceBg.setColor(Color.parseColor("#EFF6FF"));
+        priceBg.setCornerRadius(14);
+        priceBg.setStroke(2, COLOR_CARD_BORDER);
+        priceBox.setBackground(priceBg);
+
+        TextView tvPrice = new TextView(this);
+        tvPrice.setText("₹99 / month");
+        tvPrice.setTextSize(22);
+        tvPrice.setTypeface(null, Typeface.BOLD);
+        tvPrice.setTextColor(COLOR_PRIMARY);
+        priceBox.addView(tvPrice);
+
+        TextView tvPriceSub = new TextView(this);
+        tvPriceSub.setText("Unlimited automated replies • Dual-SIM • Delay safeguard");
+        tvPriceSub.setTextSize(11);
+        tvPriceSub.setTextColor(COLOR_TEXT_SECONDARY);
+        priceBox.addView(tvPriceSub);
+
+        layout.addView(priceBox);
+        addSpacing(layout, 20);
+
+        Button btnPay = createButton("Subscribe Now • ₹99 / mo", COLOR_PRIMARY, Color.WHITE);
+        btnPay.setOnClickListener(v -> initiateSubscriptionFlow());
+        layout.addView(btnPay);
+
+        addSpacing(layout, 12);
+
+        TextView tvTrust = new TextView(this);
+        tvTrust.setText("Accepted: Google Pay • PhonePe • Paytm • BHIM UPI • Cards");
+        tvTrust.setTextSize(10);
+        tvTrust.setTextColor(COLOR_TEXT_MUTED);
+        tvTrust.setGravity(Gravity.CENTER);
+        layout.addView(tvTrust);
+
+        paywallDialog = new AlertDialog.Builder(this)
+            .setView(layout)
+            .setCancelable(false)
+            .create();
+        paywallDialog.setCanceledOnTouchOutside(false);
+        AndroidSecurityManager.applyFlagSecure(paywallDialog);
+        paywallDialog.show();
     }
 }

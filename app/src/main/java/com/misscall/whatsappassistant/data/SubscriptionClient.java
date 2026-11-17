@@ -31,13 +31,21 @@ import java.util.concurrent.Executors;
 public class SubscriptionClient {
     private static final String TAG = "SubscriptionClient";
     private static final String PREFS_NAME = "misscall_prefs";
-    private static final String KEY_DEVICE_ID = "anonymous_device_id";
-    private static final String KEY_AUTH_TOKEN = "device_auth_token";
-    private static final String KEY_SUBSCRIPTION_STATUS = "subscription_status";
-    private static final String KEY_VALID_UNTIL = "subscription_valid_until";
-    private static final String KEY_TRIAL_DAYS = "trial_days_remaining";
-    private static final String KEY_LAST_VERIFIED = "last_verified_timestamp";
-    private static final String KEY_SUB_ID = "razorpay_sub_id";
+    public static final String KEY_DEVICE_ID = "anonymous_device_id";
+    public static final String KEY_AUTH_TOKEN = "device_auth_token";
+    public static final String KEY_USER_NAME = "user_name";
+    public static final String KEY_BUSINESS_NAME = "business_name";
+    public static final String KEY_LOCATION = "business_location";
+    public static final String KEY_SUBSCRIPTION_STATUS = "subscription_status"; // "trial", "active", "expired"
+    public static final String KEY_VALID_UNTIL = "subscription_valid_until";
+    public static final String KEY_TRIAL_DAYS = "trial_days_remaining";
+    public static final String KEY_TRIAL_START_TIME = "trial_start_timestamp";
+    public static final String KEY_IS_PAID = "subscription_is_paid";
+    public static final String KEY_LAST_VERIFIED = "last_verified_timestamp";
+    public static final String KEY_SUB_ID = "razorpay_sub_id";
+
+    // 14-Day Free Trial Duration (in milliseconds)
+    public static final long TRIAL_DURATION_MS = 14L * 24 * 60 * 60 * 1000L;
 
     // Primary Vercel production server URL with local fallback
     private static final String DEFAULT_BASE_URL = "https://web-dashboard-eight-mu.vercel.app";
@@ -80,7 +88,13 @@ public class SubscriptionClient {
 
     public static String getBaseUrl(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getString("custom_backend_url", DEFAULT_BASE_URL).replaceAll("/+$", "");
+        String candidate = prefs.getString("custom_backend_url", DEFAULT_BASE_URL).replaceAll("/+$", "");
+        // Rule 3: Enforce HTTPS only, reject insecure HTTP endpoints
+        if (!candidate.startsWith("https://")) {
+            Log.w(TAG, "SEC-03: Blocked non-HTTPS URL (" + candidate + "). Falling back to secure default.");
+            return DEFAULT_BASE_URL;
+        }
+        return candidate;
     }
 
     public static boolean isNetworkAvailable(Context context) {
@@ -95,29 +109,90 @@ public class SubscriptionClient {
     }
 
     /**
+     * Calculates remaining days in the 14-day free trial.
+     * Returns 0 if expired, or 1-14 depending on elapsed time.
+     */
+    public static int getTrialDaysRemaining(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if (prefs.getBoolean(KEY_IS_PAID, false) || "active".equalsIgnoreCase(prefs.getString(KEY_SUBSCRIPTION_STATUS, ""))) {
+            return 14;
+        }
+        long startTime = prefs.getLong(KEY_TRIAL_START_TIME, 0);
+        if (startTime == 0) {
+            // Uninitialized: default to full 14 days
+            return 14;
+        }
+        long elapsed = System.currentTimeMillis() - startTime;
+        long remainingMs = TRIAL_DURATION_MS - elapsed;
+        if (remainingMs <= 0) {
+            return 0;
+        }
+        return (int) Math.ceil((double) remainingMs / (24L * 60 * 60 * 1000L));
+    }
+
+    /**
      * Checks if device is entitled to run missed-call SMS automation.
-     * Evaluates live status or falls back to 3-day offline cache.
+     * Enforces the 14-day trial hard cutoff: after 14 days, blocks automation
+     * unless paid subscription is active.
      */
     public static boolean isEntitled(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isPaid = prefs.getBoolean(KEY_IS_PAID, false);
         String status = prefs.getString(KEY_SUBSCRIPTION_STATUS, "none");
         long validUntil = prefs.getLong(KEY_VALID_UNTIL, 0);
-        long lastVerified = prefs.getLong(KEY_LAST_VERIFIED, 0);
         long now = System.currentTimeMillis();
 
-        if ("active".equalsIgnoreCase(status) && validUntil > now) {
-            return true;
-        }
-        if ("trial".equalsIgnoreCase(status) && validUntil > now) {
+        if (isPaid || ("active".equalsIgnoreCase(status) && validUntil > now)) {
             return true;
         }
 
-        // 3-day offline grace period cache
-        if (("active".equalsIgnoreCase(status) || "trial".equalsIgnoreCase(status)) && (now - lastVerified < 3 * 24 * 60 * 60 * 1000L)) {
-            return true;
+        if ("trial".equalsIgnoreCase(status) || status.equals("none")) {
+            int daysLeft = getTrialDaysRemaining(context);
+            if (daysLeft > 0) {
+                return true;
+            } else {
+                // 14 days completed: lock out automation
+                prefs.edit().putString(KEY_SUBSCRIPTION_STATUS, "expired").apply();
+                return false;
+            }
         }
 
         return false;
+    }
+
+    /**
+     * Starts the 14-day Free Trial with User Profile.
+     */
+    public static void start14DayTrial(Context context, String userName, String businessName, String location) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        long now = System.currentTimeMillis();
+        editor.putString(KEY_USER_NAME, userName);
+        editor.putString(KEY_BUSINESS_NAME, businessName);
+        editor.putString(KEY_LOCATION, location);
+        editor.putBoolean("business_registered", true);
+        editor.putString(KEY_SUBSCRIPTION_STATUS, "trial");
+        editor.putLong(KEY_TRIAL_START_TIME, now);
+        editor.putLong(KEY_VALID_UNTIL, now + TRIAL_DURATION_MS);
+        editor.putInt(KEY_TRIAL_DAYS, 14);
+        editor.putBoolean(KEY_IS_PAID, false);
+        editor.putLong(KEY_LAST_VERIFIED, now);
+        editor.apply();
+    }
+
+    /**
+     * Activates paid subscription (Pro ₹99/month).
+     */
+    public static void activateSubscription(Context context, String subId) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        long now = System.currentTimeMillis();
+        editor.putString(KEY_SUBSCRIPTION_STATUS, "active");
+        editor.putBoolean(KEY_IS_PAID, true);
+        editor.putLong(KEY_VALID_UNTIL, now + 30L * 24 * 60 * 60 * 1000L);
+        editor.putLong(KEY_LAST_VERIFIED, now);
+        if (subId != null && !subId.isEmpty()) {
+            editor.putString(KEY_SUB_ID, subId);
+        }
+        editor.apply();
     }
 
     /**

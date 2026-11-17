@@ -41,14 +41,13 @@ export function WebsiteView({
   onOpenSimulator,
   onNavigateTab,
 }: WebsiteViewProps) {
-  const [copiedSha, setCopiedSha] = useState(false);
+  const [activeBrandTab, setActiveBrandTab] = useState<'poco' | 'oppo' | 'vivo' | 'samsung'>('poco');
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [activeLegalModal, setActiveLegalModal] = useState<'privacy' | 'terms' | null>(null);
 
   const version = '1.0.2';
   const size = '20.5 MB';
   const lastUpdated = 'October 2026';
-  const sha256 = '4EA4DADE497925A6430525DBADE99C964DC1F71E01261029A89736C7C75BCEEA';
 
   const handleDownload = () => {
     const link = document.createElement('a');
@@ -57,12 +56,6 @@ export function WebsiteView({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  const copyChecksum = () => {
-    navigator.clipboard.writeText(sha256);
-    setCopiedSha(true);
-    setTimeout(() => setCopiedSha(false), 2500);
   };
 
   const toggleFaq = (index: number) => {
@@ -82,11 +75,8 @@ export function WebsiteView({
               M
             </div>
             <div>
-              <div className="text-base font-black tracking-tight text-slate-900 flex items-center gap-2">
+              <div className="text-base font-black tracking-tight text-slate-900">
                 <span>MissCall Assistant</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-[#3B28CC] font-bold border border-indigo-100">
-                  Android
-                </span>
               </div>
               <p className="text-[11px] text-slate-500 font-medium">Smart Telephony Follow-Up</p>
             </div>
@@ -503,34 +493,144 @@ export function WebsiteView({
             </button>
           </div>
 
-          {/* SHA-256 Checksum Display */}
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
-                SHA-256 Cryptographic Checksum
-              </span>
-              <button
-                onClick={copyChecksum}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#3B28CC] hover:underline"
-              >
-                {copiedSha ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedSha ? 'Copied' : 'Copy Hash'}</span>
-              </button>
+          {/* Step-by-Step Android Installation & Setup Guide */}
+          <div className="space-y-6 pt-2">
+            <div>
+              <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <span>Complete Android Installation & Setup Guide</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Follow these 4 simple steps to install and run MissCall Assistant smoothly on any Android smartphone:
+              </p>
             </div>
-            <p className="font-mono text-[11px] text-slate-700 break-all bg-white p-2.5 rounded-xl border border-slate-100">
-              {sha256}
-            </p>
-          </div>
 
-          {/* Android Installation Instructions */}
-          <div className="space-y-3 pt-2">
-            <h5 className="font-bold text-slate-900 text-xs">Android Installation Instructions:</h5>
-            <ol className="list-decimal list-inside space-y-1.5 text-xs text-slate-600">
-              <li>Click <strong>Download APK</strong> to save the package to your Android device.</li>
-              <li>When prompted by Chrome or your browser, select <strong>"Download anyway"</strong>.</li>
-              <li>Open the downloaded APK and tap <strong>"Install"</strong> (allow <em>Install unknown apps</em> if asked).</li>
-              <li>Open MissCall Assistant, enter your business name, and start your 3-day trial!</li>
-            </ol>
+            {/* 4 Primary Installation Steps */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#3B28CC] flex items-center justify-center text-[11px]">1</span>
+                  <span>Download APK</span>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  Tap <strong>"Download APK"</strong> above. If your browser warns <em>"File might be harmful"</em>, select <strong>"Download anyway"</strong>.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#3B28CC] flex items-center justify-center text-[11px]">2</span>
+                  <span>Open via File Manager</span>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  Open your phone’s <strong>File Manager ➔ Downloads</strong> folder and tap <code className="text-indigo-600 font-mono text-[10px]">misscall-assistant.apk</code>.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#3B28CC] flex items-center justify-center text-[11px]">3</span>
+                  <span>Allow Unknown Apps</span>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  When prompted, tap <strong>Settings</strong> and toggle <strong>"Allow from this source"</strong> ON. (On POCO/Xiaomi, check the risk box and tap OK after 10s).
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-[#3B28CC] text-xs">
+                  <span className="w-5 h-5 rounded-full bg-[#3B28CC] text-white flex items-center justify-center text-[11px]">4</span>
+                  <span>Play Protect: "Install Anyway"</span>
+                </div>
+                <p className="text-[11px] text-slate-700 leading-relaxed">
+                  If Google Play Protect appears, tap <strong>"More details" ➔ "Install anyway"</strong>. <em>(Do not tap "OK", as OK cancels installation).</em>
+                </p>
+              </div>
+            </div>
+
+            {/* Brand-Specific 24x7 Background Reliability Tabs */}
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
+                    <BatteryCharging className="w-4 h-4 text-emerald-600" />
+                    <span>24×7 Background Reliability Settings (Keep App Active)</span>
+                  </h4>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    Select your smartphone brand below to ensure auto-replies trigger when screen is locked:
+                  </p>
+                </div>
+              </div>
+
+              {/* Brand Tabs */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                {[
+                  { id: 'poco', label: 'POCO & Xiaomi (HyperOS / MIUI)' },
+                  { id: 'oppo', label: 'OPPO & Realme (ColorOS)' },
+                  { id: 'vivo', label: 'Vivo & iQOO (Funtouch OS)' },
+                  { id: 'samsung', label: 'Samsung Galaxy (One UI)' },
+                ].map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => setActiveBrandTab(b.id as any)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                      activeBrandTab === b.id
+                        ? 'bg-[#3B28CC] text-white shadow-sm'
+                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Brand Tab Contents */}
+              <div className="p-3.5 bg-white rounded-xl border border-slate-200 text-xs text-slate-700 space-y-2">
+                {activeBrandTab === 'poco' && (
+                  <div className="space-y-1.5 text-[11px]">
+                    <div className="font-bold text-slate-900">POCO / Xiaomi / Redmi (HyperOS & MIUI):</div>
+                    <ul className="list-disc list-inside space-y-1 text-slate-600">
+                      <li>Long press app icon ➔ <strong>App Info (i)</strong> ➔ Turn <strong>Autostart ON</strong>.</li>
+                      <li>In App Info ➔ <strong>Battery Saver</strong> ➔ Select <strong>"No restrictions"</strong> (अप्रतिबंधित).</li>
+                      <li>In App Info ➔ <strong>Other permissions</strong> ➔ Allow <em>"Display pop-up windows in background"</em>.</li>
+                      <li>Lock app in Recent Apps (multitasking screen) by tapping the 🔒 Lock icon.</li>
+                    </ul>
+                  </div>
+                )}
+
+                {activeBrandTab === 'oppo' && (
+                  <div className="space-y-1.5 text-[11px]">
+                    <div className="font-bold text-slate-900">OPPO & Realme (ColorOS / Realme UI):</div>
+                    <ul className="list-disc list-inside space-y-1 text-slate-600">
+                      <li>Go to <strong>Settings ➔ Apps ➔ Auto-launch</strong> ➔ Enable MissCall Assistant.</li>
+                      <li>Go to <strong>Settings ➔ Battery ➔ App battery management</strong> ➔ Allow <em>"Background activity"</em> and <em>"Auto-launch"</em>.</li>
+                      <li>In Recent Apps screen, tap the 3 dots (⋮) on MissCall Assistant and tap <strong>Lock</strong>.</li>
+                    </ul>
+                  </div>
+                )}
+
+                {activeBrandTab === 'vivo' && (
+                  <div className="space-y-1.5 text-[11px]">
+                    <div className="font-bold text-slate-900">Vivo & iQOO (Funtouch OS / OriginOS):</div>
+                    <ul className="list-disc list-inside space-y-1 text-slate-600">
+                      <li>Go to <strong>Settings ➔ Battery ➔ Background power consumption</strong> ➔ Select <em>"Allow high background power consumption"</em>.</li>
+                      <li>Go to <strong>Settings ➔ Apps & Permissions ➔ Autostart</strong> ➔ Turn ON MissCall Assistant.</li>
+                    </ul>
+                  </div>
+                )}
+
+                {activeBrandTab === 'samsung' && (
+                  <div className="space-y-1.5 text-[11px]">
+                    <div className="font-bold text-slate-900">Samsung Galaxy (One UI):</div>
+                    <ul className="list-disc list-inside space-y-1 text-slate-600">
+                      <li>Long press app icon ➔ <strong>App Info ➔ Battery</strong> ➔ Select <strong>"Unrestricted"</strong>.</li>
+                      <li>Go to <strong>Settings ➔ Battery ➔ Background usage limits ➔ Never sleeping apps</strong> ➔ Tap (+) and add MissCall Assistant.</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -31,3 +31,27 @@
 # OkHttp
 -dontwarn okhttp3.**
 -keep class okhttp3.** { *; }
+
+# =========================================================================
+# RULE 9 (SEC-09-R8-OBFUSCATION): R8 / ProGuard Obfuscation & Hardening
+# =========================================================================
+
+# Keep Security Enforcement Suite
+-keep class com.misscall.whatsappassistant.security.** { *; }
+
+# Razorpay SDK security rules
+-keep class com.razorpay.** { *; }
+-dontwarn com.razorpay.**
+
+# Strip verbose/debug logs in release builds to prevent credential and phone leakage
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+}
+
+# Preserve cryptographic and serializable models
+-keepattributes EnclosingMethod,InnerClasses,Signature,*Annotation*
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}

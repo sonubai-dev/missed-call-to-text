@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.misscall.whatsappassistant.data.SubscriptionClient;
+import com.misscall.whatsappassistant.security.AndroidSecurityManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,12 +35,18 @@ public class PendingSmsScheduler {
      * Schedule a delayed SMS follow-up for a genuine missed call.
      */
     public synchronized void schedule(final Context context, final String rawNumber) {
-        if (rawNumber == null || rawNumber.trim().isEmpty()) {
-            Log.w(TAG, "Cannot schedule SMS for empty phone number");
+        // Rule 7 (SEC-07-E164-SANITIZER): Strict E.164 phone sanitization & toll-fraud prevention
+        final String cleanNumber = AndroidSecurityManager.sanitizeAndValidatePhoneNumber(rawNumber);
+        if (cleanNumber == null) {
+            Log.w(TAG, "SEC-07: Rejected invalid or dangerous phone number: " + rawNumber);
             return;
         }
 
-        final String cleanNumber = rawNumber.trim();
+        // Rule 6 (SEC-06-SMS-RATE-LIMIT): Anti-toll-fraud circuit breaker & rate-limiting
+        if (!AndroidSecurityManager.isSmsRateLimitAllowed(context, cleanNumber)) {
+            Log.w(TAG, "SEC-06: Rate limit circuit breaker active. Suppressed auto-SMS for: " + cleanNumber);
+            return;
+        }
 
         // 1. Deduplication: Prevent duplicate SMS within 30 seconds for the same caller
         Long lastTime = lastProcessedTimestamps.get(cleanNumber);
