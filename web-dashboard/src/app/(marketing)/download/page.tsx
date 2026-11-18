@@ -75,12 +75,6 @@ export default function DownloadPage() {
                   <dt className="text-slate-500 font-medium">Requirements</dt>
                   <dd className="text-slate-900 col-span-2">{minSdk}</dd>
                 </div>
-                <div className="grid grid-cols-3 gap-2 border-t border-slate-200 pt-3 mt-3">
-                  <dt className="text-slate-500 font-medium">SHA-256</dt>
-                  <dd className="text-slate-900 col-span-2 break-all text-xs font-mono bg-white p-2 rounded border border-slate-200">
-                    {sha256}
-                  </dd>
-                </div>
               </dl>
             </div>
           </div>

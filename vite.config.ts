@@ -395,7 +395,7 @@ export default defineConfig({
                 let device = map[deviceId];
                 const now = Date.now();
                 if (!device) {
-                  const trialDuration = 3 * 24 * 60 * 60 * 1000;
+                  const trialDuration = 14 * 24 * 60 * 60 * 1000;
                   device = {
                     id: crypto.randomUUID(),
                     deviceId,
@@ -522,7 +522,7 @@ export default defineConfig({
                 const now = Date.now();
 
                 if (!device) {
-                  const trialDuration = 3 * 24 * 60 * 60 * 1000;
+                  const trialDuration = 14 * 24 * 60 * 60 * 1000;
                   device = {
                     deviceId,
                     status: 'trial',
@@ -570,7 +570,7 @@ export default defineConfig({
                   validUntil: device.validUntil,
                   trialDaysRemaining: daysRemaining,
                   plan: '₹99/month',
-                  message: currentStatus === 'trial' ? `3-Day Free Trial active (${daysRemaining} days left)` : 'Device authenticated',
+                  message: currentStatus === 'trial' ? `14-Day Free Trial active (${daysRemaining} days left)` : 'Device authenticated',
                 }));
               } catch (e: any) {
                 res.statusCode = 500;
@@ -642,7 +642,7 @@ export default defineConfig({
               message: computedStatus === 'active'
                 ? `Active until ${new Date(device.validUntil).toLocaleDateString()}`
                 : computedStatus === 'trial'
-                ? `3-Day Free Trial (${daysRemaining} days left)`
+                ? `14-Day Free Trial (${daysRemaining} days left)`
                 : 'Subscription expired',
             }));
             return;

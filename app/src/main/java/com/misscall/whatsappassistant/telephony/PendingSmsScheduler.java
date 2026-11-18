@@ -68,9 +68,9 @@ public class PendingSmsScheduler {
             return;
         }
 
-        // 3. Check Subscription Status (Entitled via Active Plan or 3-Day Free Trial / Offline Grace)
+        // 3. Check Subscription Status (Entitled via Active Plan or 14-Day Free Trial / Offline Grace)
         if (!SubscriptionClient.isEntitled(context)) {
-            Log.w(TAG, "Active subscription or 3-day trial required to send automated SMS. Task aborted.");
+            Log.w(TAG, "Active subscription or 14-day trial required to send automated SMS. Task aborted.");
             return;
         }
 

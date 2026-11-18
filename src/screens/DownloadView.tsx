@@ -622,22 +622,6 @@ export function DownloadView({ onBackToDashboard }: DownloadViewProps) {
             </a>
           </div>
         </div>
-
-        <div className="p-3 rounded-xl bg-[#111B21] border border-[#222E35] space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">SHA-256 Checksum</span>
-            <button
-              onClick={handleCopySha}
-              className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold"
-            >
-              {copiedSha ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-              <span>{copiedSha ? "Copied!" : "Copy Hash"}</span>
-            </button>
-          </div>
-          <p className="font-mono text-[11px] text-slate-300 break-all bg-[#0C1317] p-2 rounded border border-[#222E35]">
-            {sha256}
-          </p>
-        </div>
       </div>
 
       {/* Frequently Asked Questions */}

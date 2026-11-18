@@ -11,14 +11,14 @@
   "pricing": {
     "amount": "₹99",
     "period": "month",
-    "trialDays": 3,
-    "description": "3-day free trial on first launch, then ₹99/month. Cancel anytime."
+    "trialDays": 14,
+    "description": "14-day free trial on first launch, then ₹99/month. Cancel anytime."
   },
   "features": [
     "Instant SMS auto-reply for missed business calls",
     "Dual-SIM Android smart routing (SIM 1 / SIM 2 selection)",
     "2s, 5s, 10s anti-awkward delay countdown with auto-cancel on call back",
-    "In-app Razorpay ₹99/mo subscription with 3-day free trial",
-    "Offline mode: 3-day cached entitlement fallback"
+    "In-app Razorpay ₹99/mo subscription with 14-day free trial",
+    "Offline mode: 14-day cached entitlement fallback"
   ]
 }

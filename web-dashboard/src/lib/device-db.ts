@@ -51,7 +51,7 @@ loadFromFile();
 
 export class DeviceRepository {
   /**
-   * Retrieves a device record or registers a new device with a 3-day free trial.
+   * Retrieves a device record or registers a new device with a 14-day free trial.
    */
   static async registerOrGetDevice(deviceId: string): Promise<DeviceRecord> {
     const cleanId = (deviceId || '').trim();
@@ -63,8 +63,8 @@ export class DeviceRepository {
     let record = memoryStore.get(cleanId);
 
     if (!record) {
-      // Create new device with 3-day free trial
-      const trialDuration = 3 * 24 * 60 * 60 * 1000; // 3 days in ms
+      // Create new device with 14-day free trial
+      const trialDuration = 14 * 24 * 60 * 60 * 1000; // 14 days in ms
       record = {
         deviceId: cleanId,
         status: 'trial',

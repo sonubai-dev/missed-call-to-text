@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Register or retrieve device with 3-day trial tracking
+    // Register or retrieve device with 14-day trial tracking
     const record = await DeviceRepository.registerOrGetDevice(deviceId);
     const { status, daysRemaining } = DeviceRepository.computeStatus(record);
 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       plan: '₹99/month',
       message:
         status === 'trial'
-          ? `3-Day Free Trial active (${daysRemaining} days remaining)`
+          ? `14-Day Free Trial active (${daysRemaining} days remaining)`
           : status === 'active'
           ? 'Pro Subscription active'
           : 'Subscription expired. Please subscribe for ₹99/mo.',

@@ -23,9 +23,9 @@ import java.util.concurrent.Executors;
 /**
  * Robust Client for Anonymous Device Subscription & Entitlement.
  * Features:
- * - 3-day server-tracked free trial on first launch
+ * - 14-day server-tracked free trial on first launch
  * - Razorpay ₹99/mo subscription creation and HMAC verification
- * - 3-day local cache fallback for offline missed-call SMS execution
+ * - 14-day local cache fallback for offline missed-call SMS execution
  * - Specific user-facing error reporting with retry handling
  */
 public class SubscriptionClient {
@@ -196,7 +196,7 @@ public class SubscriptionClient {
     }
 
     /**
-     * Authenticates anonymous device and initializes 3-day trial on first launch.
+     * Authenticates anonymous device and initializes 14-day trial on first launch.
      */
     public static void authenticateDevice(final Context context, final SubscriptionCallback callback) {
         final String deviceId = getOrCreateDeviceId(context);

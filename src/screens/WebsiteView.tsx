@@ -174,7 +174,7 @@ export function WebsiteView({
           </div>
 
           <div className="text-[11px] text-slate-400 font-medium">
-            Release {version} • {size} • Android 8.0 to 14 Supported • 3-Day Free Trial
+            Release {version} • {size} • Android 8.0 to 14 Supported • 14-Day Free Trial
           </div>
         </div>
 
@@ -341,7 +341,7 @@ export function WebsiteView({
               </div>
               <h3 className="font-extrabold text-slate-900 text-base">₹99/Month Fair Pricing</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                3-Day free trial on install. Afterward, pay a simple ₹99/month subscription via Razorpay with instant server-verified activation.
+                14-Day free trial on install. Afterward, pay a simple ₹99/month subscription via Razorpay with instant server-verified activation.
               </p>
             </div>
 
@@ -393,7 +393,7 @@ export function WebsiteView({
             </div>
             <h3 className="font-black text-slate-900 text-base">Automate Follow-Ups</h3>
             <p className="text-slate-600 text-xs leading-relaxed">
-              Start your 3-day free trial or activate the ₹99/mo subscription. When a customer calls and you miss it, they get your SMS automatically!
+              Start your 14-day free trial or activate the ₹99/mo subscription. When a customer calls and you miss it, they get your SMS automatically!
             </p>
           </div>
         </div>
@@ -415,7 +415,7 @@ export function WebsiteView({
                 <p className="text-xs text-slate-500 font-medium">Full business telephony automation</p>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-50 text-[#3B28CC]">
-                3-Day Trial Included
+                14-Day Trial Included
               </span>
             </div>
 
@@ -439,7 +439,7 @@ export function WebsiteView({
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>3-day offline local cache fallback</span>
+                <span>14-day offline local cache fallback</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -451,7 +451,7 @@ export function WebsiteView({
               onClick={handleDownload}
               className="w-full py-4 rounded-2xl bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-200 transition-all text-center block"
             >
-              Get Started with 3-Day Free Trial
+              Get Started with 14-Day Free Trial
             </button>
             <p className="text-[11px] text-slate-400 text-center font-medium">
               Standard carrier SMS rates apply according to your existing SIM plan.
@@ -546,6 +546,23 @@ export function WebsiteView({
                   If Google Play Protect appears, tap <strong>"More details" ➔ "Install anyway"</strong>. <em>(Do not tap "OK", as OK cancels installation).</em>
                 </p>
               </div>
+            </div>
+
+            {/* Android 13 & 14 Restricted Setting Fix (App was denied access) */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border-2 border-amber-300 space-y-2.5">
+              <div className="flex items-center gap-2 font-black text-amber-950 text-xs">
+                <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>Important: If phone says "App was denied access" or "Restricted setting" on SMS:</span>
+              </div>
+              <p className="text-[11px] text-amber-900 leading-relaxed">
+                Android 13/14 automatically locks SMS for sideloaded APKs until unlocked once in App Info:
+              </p>
+              <ol className="list-decimal list-inside space-y-1 text-[11px] text-amber-950 font-medium">
+                <li>Long-press the <strong>MissCall Assistant</strong> app icon on your home screen and tap <strong>App Info (ⓘ)</strong>.</li>
+                <li>Tap the <strong>3 vertical dots (⋮)</strong> in the top-right corner of the App Info screen.</li>
+                <li>Select <strong>"Allow restricted settings"</strong> (प्रतिबंधित सेटिंग्स की अनुमति दें) and confirm with Fingerprint/PIN.</li>
+                <li>Now tap <strong>Permissions ➔ SMS ➔ Allow</strong>! The automated follow-up system is now ready.</li>
+              </ol>
             </div>
 
             {/* Brand-Specific 24x7 Background Reliability Tabs */}
@@ -654,8 +671,8 @@ export function WebsiteView({
                 a: 'MissCall Assistant strictly uses your phone’s native Android carrier SMS. This guarantees immediate delivery without requiring WhatsApp Business API setups or third-party message bans.',
               },
               {
-                q: 'What happens after the 3-day free trial?',
-                a: 'After 3 days, you can subscribe for just ₹99/month via our secure Razorpay integration. Your subscription activates instantly and you can cancel anytime.',
+                q: 'What happens after the 14-day free trial?',
+                a: 'After 14 days, you can subscribe for just ₹99/month via our secure Razorpay integration. Your subscription activates instantly and you can cancel anytime.',
               },
               {
                 q: 'Are my customer phone numbers uploaded to your servers?',

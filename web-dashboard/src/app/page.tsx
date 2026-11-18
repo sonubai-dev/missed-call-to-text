@@ -16,7 +16,7 @@ import {
 export const metadata = {
   title: 'MissCall Assistant - Missed call? Customer ko turant SMS jaaye.',
   description:
-    'Download MissCall Assistant Android APK. Automated missed call SMS follow-up, dual-SIM support, 2s/5s/10s delay countdown safeguard, and ₹99/mo subscription with 3-day free trial.',
+    'Download MissCall Assistant Android APK. Automated missed call SMS follow-up, dual-SIM support, 2s/5s/10s delay countdown safeguard, and ₹99/mo subscription with 14-day free trial.',
   openGraph: {
     title: 'MissCall Assistant - Missed call? Customer ko turant SMS jaaye.',
     description: 'Instant SMS auto-reply for missed business calls on Android with dual-SIM routing.',
@@ -71,7 +71,7 @@ export default function HomePage() {
         <div className="text-center max-w-3xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>3-Day Free Trial • No Credit Card Required</span>
+            <span>14-Day Free Trial • No Credit Card Required</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
@@ -99,14 +99,6 @@ export default function HomePage() {
               <span>Updated: <strong className="text-white">{lastUpdated}</strong></span>
               <span>•</span>
               <span>Android 8.0+</span>
-            </div>
-
-            {/* Checksum Box */}
-            <div className="pt-2 border-t border-[#222E35]">
-              <div className="p-2.5 rounded-xl bg-[#0C1317] border border-[#222E35]/60 text-[11px] font-mono text-slate-400 break-all text-center">
-                <span className="text-emerald-400 font-bold mr-1">SHA-256:</span>
-                <span>{sha256}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -223,14 +215,14 @@ export default function HomePage() {
           <div className="space-y-2">
             <h3 className="text-2xl sm:text-3xl font-black text-white">₹99 / Month Flat</h3>
             <p className="text-xs text-slate-400">
-              Includes unlimited missed call detections, dual-SIM SMS routing, and 3 days free trial on first launch.
+              Includes unlimited missed call detections, dual-SIM SMS routing, and 14 days free trial on first launch.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto text-left text-xs">
             <div className="flex items-center gap-2 text-slate-300">
               <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>3-Day Free Trial</span>
+              <span>14-Day Free Trial</span>
             </div>
             <div className="flex items-center gap-2 text-slate-300">
               <Check className="w-4 h-4 text-emerald-400 shrink-0" />

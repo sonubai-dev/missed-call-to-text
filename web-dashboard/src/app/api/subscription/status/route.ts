@@ -27,7 +27,7 @@ export async function GET(req: Request) {
         trialDaysRemaining: 0,
         isTrial: false,
         plan: '₹99/month',
-        message: 'Device not registered. Call /api/auth/device to start 3-day free trial.',
+        message: 'Device not registered. Call /api/auth/device to start 14-day free trial.',
       });
     }
 
@@ -46,7 +46,7 @@ export async function GET(req: Request) {
         status === 'active'
           ? `Subscription active until ${new Date(device.validUntil).toLocaleDateString()}`
           : status === 'trial'
-          ? `3-Day Free Trial active (${daysRemaining} days remaining)`
+          ? `14-Day Free Trial active (${daysRemaining} days remaining)`
           : 'Subscription expired. Please renew for ₹99/mo.',
     });
   } catch (err: any) {

@@ -249,7 +249,7 @@ export function AdminDashboardView({
       case 'trial':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-            <Clock className="w-3 h-3 text-blue-600" /> 3-Day Trial
+            <Clock className="w-3 h-3 text-blue-600" /> 14-Day Trial
           </span>
         );
       case 'registered_unpaid':
@@ -601,7 +601,7 @@ export function AdminDashboardView({
                       <Clock className="w-3.5 h-3.5" />
                     </div>
                     <div>
-                      <div className="font-bold text-slate-800">3-Day Free Trial Logic</div>
+                      <div className="font-bold text-slate-800">14-Day Free Trial Logic</div>
                       <div className="text-[11px] text-slate-500">Server verified on first registration</div>
                     </div>
                   </div>

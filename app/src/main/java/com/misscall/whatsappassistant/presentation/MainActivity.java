@@ -56,8 +56,8 @@ import java.util.Locale;
  * - 4-Tab navigation: Dashboard, Activity, Settings, Subscription.
  * - Configurable 2s, 5s, 10s delay safeguard (aborts SMS if user calls back first).
  * - Dual-SIM slot management.
- * - ₹99/mo Razorpay subscription flow with 3-day server-tracked free trial.
- * - 3-day offline cache fallback for continuous operation.
+ * - ₹99/mo Razorpay subscription flow with 14-day server-tracked free trial.
+ * - 14-day offline cache fallback for continuous operation.
  */
 public class MainActivity extends Activity implements PaymentResultWithDataListener {
     private static final int PERMISSION_REQ_CODE = 2026;
@@ -889,14 +889,14 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         cardGrace.setBackground(graceBg);
 
         TextView tvGraceT = new TextView(this);
-        tvGraceT.setText("3-Day Offline Grace Fallback");
+        tvGraceT.setText("14-Day Offline Grace Fallback");
         tvGraceT.setTextSize(12);
         tvGraceT.setTypeface(null, Typeface.BOLD);
         tvGraceT.setTextColor(COLOR_PRIMARY);
         cardGrace.addView(tvGraceT);
 
         TextView tvGraceB = new TextView(this);
-        tvGraceB.setText("If you lose internet connectivity, MissCall Assistant continues sending SMS for up to 3 days using local device cache.");
+        tvGraceB.setText("If you lose internet connectivity, MissCall Assistant continues sending SMS for up to 14 days using local device cache.");
         tvGraceB.setTextSize(11);
         tvGraceB.setTextColor(COLOR_TEXT_SECONDARY);
         tvGraceB.setPadding(0, 4, 0, 0);
@@ -1268,18 +1268,31 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
 
         if (btnGrantPermissions != null) {
             btnGrantPermissions.setVisibility(allGranted ? View.GONE : View.VISIBLE);
+            if (!hasSms && hasCallLog) {
+                btnGrantPermissions.setText("⚠️ Unlock SMS in App Info (3 Dots)");
+            } else {
+                btnGrantPermissions.setText("Grant Missing Permissions");
+            }
         }
     }
 
     private void requestPermissionsOrSettings() {
+        boolean hasCallLog = checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+        boolean hasSms = checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+
+        if (!hasSms && hasCallLog) {
+            showRestrictedSmsGuidanceDialog();
+            return;
+        }
+
         List<String> missing = new ArrayList<>();
-        if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+        if (!hasCallLog) {
             missing.add(Manifest.permission.READ_CALL_LOG);
         }
         if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             missing.add(Manifest.permission.READ_PHONE_STATE);
         }
-        if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        if (!hasSms) {
             missing.add(Manifest.permission.SEND_SMS);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -1295,12 +1308,50 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         }
     }
 
+    private void showRestrictedSmsGuidanceDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle("Unlock Android 13/14 SMS Permission")
+            .setMessage("Android restricts SMS access on sideloaded APKs for safety until enabled once:\n\n"
+                + "1. Tap 'Open App Settings' below.\n"
+                + "2. Tap the 3 dots (⋮) in the top-right corner.\n"
+                + "3. Tap 'Allow restricted settings' and confirm with Fingerprint/PIN.\n"
+                + "4. Go to Permissions ➔ SMS ➔ tap 'Allow'.\n\n"
+                + "Without SMS permission, automated missed-call replies cannot be sent.")
+            .setPositiveButton("Open App Settings", (d, w) -> {
+                try {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.fromParts("package", getPackageName(), null));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Please open Settings > Apps > MissCall Assistant > Permissions.", Toast.LENGTH_LONG).show();
+                }
+            })
+            .setNegativeButton("Request Directly", (d, w) -> {
+                requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQ_CODE);
+            })
+            .setNeutralButton("Cancel", null)
+            .show();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         updateDiagnosticsUI();
         updateStatusHeader();
         loadSimSlots();
+
+        boolean smsDenied = false;
+        if (permissions != null && grantResults != null) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (Manifest.permission.SEND_SMS.equals(permissions[i]) && grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    smsDenied = true;
+                    break;
+                }
+            }
+        }
+        if (smsDenied) {
+            showRestrictedSmsGuidanceDialog();
+        }
     }
 
     // Improvement #1: Interactive Test Missed Call Simulator with Cancel Action
