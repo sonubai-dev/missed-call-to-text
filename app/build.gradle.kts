@@ -30,9 +30,9 @@ android {
         if (releaseKeystore.exists()) {
             create("release") {
                 storeFile = releaseKeystore
-                storePassword = "misscallpassword"
-                keyAlias = "misscall"
-                keyPassword = "misscallpassword"
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "misscallpassword"
+                keyAlias = System.getenv("KEY_ALIAS") ?: "misscall"
+                keyPassword = System.getenv("KEY_PASSWORD") ?: "misscallpassword"
                 enableV1Signing = true
                 enableV2Signing = true
                 enableV3Signing = true

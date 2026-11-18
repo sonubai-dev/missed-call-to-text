@@ -244,8 +244,8 @@ public class SubscriptionClient {
                     JSONObject res = new JSONObject(responseBody);
                     String token = res.optString("token", "");
                     String status = res.optString("status", "trial");
-                    long validUntil = res.optLong("validUntil", System.currentTimeMillis() + 3 * 86400000L);
-                    int trialDays = res.optInt("trialDaysRemaining", 3);
+                    long validUntil = res.optLong("validUntil", System.currentTimeMillis() + 14 * 86400000L);
+                    int trialDays = res.optInt("trialDaysRemaining", 14);
 
                     SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
                     editor.putString(KEY_AUTH_TOKEN, token);

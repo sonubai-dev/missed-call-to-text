@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.misscall.whatsappassistant.data.SubscriptionClient;
@@ -82,36 +83,55 @@ public class PendingSmsScheduler {
 
         Log.i(TAG, "Scheduling SMS to " + cleanNumber + " with delay: " + delaySeconds + "s");
 
+        // Keep CPU active during delay countdown if screen is turned off
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = null;
+        if (pm != null) {
+            try {
+                wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "misscall:sms_delay_lock");
+                wakeLock.acquire((delaySeconds + 8) * 1000L);
+            } catch (Exception ignored) {}
+        }
+        final PowerManager.WakeLock activeLock = wakeLock;
+
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                scheduledTasks.remove(cleanNumber);
+                try {
+                    scheduledTasks.remove(cleanNumber);
 
-                // Re-verify automation & subscription immediately before dispatch
-                boolean stillEnabled = prefs.getBoolean("auto_reply_enabled", true);
-                if (!stillEnabled) {
-                    Log.i(TAG, "Automation disabled during delay window. Cancelled send to " + cleanNumber);
-                    return;
+                    // Re-verify automation & subscription immediately before dispatch
+                    boolean stillEnabled = prefs.getBoolean("auto_reply_enabled", true);
+                    if (!stillEnabled) {
+                        Log.i(TAG, "Automation disabled during delay window. Cancelled send to " + cleanNumber);
+                        return;
+                    }
+                    if (!SubscriptionClient.isEntitled(context)) {
+                        Log.w(TAG, "Subscription became inactive during delay window. Cancelled send to " + cleanNumber);
+                        return;
+                    }
+
+                    String businessName = prefs.getString("business_name", "My Store");
+                    String template = prefs.getString(
+                        "sms_template",
+                        "Hello! Sorry we missed your call from " + businessName + ". How can we help you today?"
+                    );
+
+                    // Replace dynamic token placeholders if present
+                    String finalMessage = template.replace("{{business_name}}", businessName);
+
+                    int simSlot = prefs.getInt("selected_sim_slot", 0);
+
+                    Log.i(TAG, "Executing native SMS dispatch to " + cleanNumber + " via SIM slot " + (simSlot + 1));
+                    SmsManagerHelper.sendSms(context, cleanNumber, finalMessage, simSlot);
+                    lastProcessedTimestamps.put(cleanNumber, System.currentTimeMillis());
+                } finally {
+                    if (activeLock != null && activeLock.isHeld()) {
+                        try {
+                            activeLock.release();
+                        } catch (Exception ignored) {}
+                    }
                 }
-                if (!SubscriptionClient.isEntitled(context)) {
-                    Log.w(TAG, "Subscription became inactive during delay window. Cancelled send to " + cleanNumber);
-                    return;
-                }
-
-                String businessName = prefs.getString("business_name", "My Store");
-                String template = prefs.getString(
-                    "sms_template",
-                    "Hello! Sorry we missed your call from " + businessName + ". How can we help you today?"
-                );
-
-                // Replace dynamic token placeholders if present
-                String finalMessage = template.replace("{{business_name}}", businessName);
-
-                int simSlot = prefs.getInt("selected_sim_slot", 0);
-
-                Log.i(TAG, "Executing native SMS dispatch to " + cleanNumber + " via SIM slot " + (simSlot + 1));
-                SmsManagerHelper.sendSms(context, cleanNumber, finalMessage, simSlot);
-                lastProcessedTimestamps.put(cleanNumber, System.currentTimeMillis());
             }
         };
 

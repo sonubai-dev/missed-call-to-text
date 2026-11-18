@@ -40,8 +40,9 @@ public final class AndroidSecurityManager {
     private static final Pattern E164_PATTERN = Pattern.compile("^\\+?[1-9]\\d{6,14}$");
 
     // Known Premium-Rate and Toll-Fraud Number Prefixes (India & International)
+    // Note: bare "900" is excluded because standard Indian mobile numbers (Airtel/BSNL) allocate the 900xxxxxxx series.
     private static final String[] BLOCKED_PREFIXES = {
-        "1900", "900", "1860", "0900", "140", "100", "101", "102", "108", "112", "911", "999"
+        "1900", "1860", "0900", "140"
     };
 
     // Rate Limiting Constants
@@ -86,13 +87,20 @@ public final class AndroidSecurityManager {
             return null;
         }
 
-        // 4. Extract digits for prefix analysis
-        String digitsOnly = cleaned.startsWith("+") ? cleaned.substring(1) : cleaned;
-        if (digitsOnly.startsWith("0")) {
-            digitsOnly = digitsOnly.replaceFirst("^0+", "");
+        // 4. Normalize national formats: strip leading trunk zero (e.g., 09876543210 -> 9876543210)
+        if (cleaned.startsWith("0")) {
+            cleaned = cleaned.replaceFirst("^0+", "");
         }
 
-        // 5. Block Premium-Rate and Toll Fraud Prefixes
+        // Auto-normalize standard 10-digit Indian numbers to full E.164 (+91)
+        if (cleaned.length() == 10 && cleaned.matches("^[6-9]\\d{9}$")) {
+            cleaned = "+91" + cleaned;
+        } else if (cleaned.length() == 12 && cleaned.startsWith("91") && cleaned.matches("^91[6-9]\\d{9}$")) {
+            cleaned = "+" + cleaned;
+        }
+
+        // 5. Extract digits for prefix analysis & block toll-fraud destinations
+        String digitsOnly = cleaned.startsWith("+") ? cleaned.substring(1) : cleaned;
         for (String prefix : BLOCKED_PREFIXES) {
             if (digitsOnly.startsWith(prefix) || cleaned.startsWith(prefix)) {
                 Log.w(TAG, "SEC-07: Rejected blocked toll-fraud prefix: " + prefix);
