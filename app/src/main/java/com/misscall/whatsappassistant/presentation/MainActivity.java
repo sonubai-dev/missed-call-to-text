@@ -802,6 +802,24 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         card.addView(btnSave);
 
         tab.addView(card);
+        addSpacing(tab, 16);
+
+        // --- GOOGLE PLAY COMPLIANCE & PRIVACY POLICY CARD ---
+        LinearLayout legalCard = createCard();
+        legalCard.addView(createSectionTitle("Privacy Policy & Google Compliance"));
+
+        TextView tvLegalDesc = new TextView(this);
+        tvLegalDesc.setText("MissCall Assistant operates under Google Play User Data policies. All call detection and SMS dispatches occur 100% locally on your device with zero remote exfiltration.");
+        tvLegalDesc.setTextSize(12);
+        tvLegalDesc.setTextColor(COLOR_TEXT_SECONDARY);
+        tvLegalDesc.setPadding(0, 4, 0, 12);
+        legalCard.addView(tvLegalDesc);
+
+        Button btnViewLegal = createButton("View Prominent Disclosure & Privacy Policy", Color.parseColor("#F1F5F9"), COLOR_TEXT_PRIMARY);
+        btnViewLegal.setOnClickListener(v -> showGoogleProminentDisclosureDialog(null));
+        legalCard.addView(btnViewLegal);
+
+        tab.addView(legalCard);
         return tab;
     }
 
@@ -1285,14 +1303,25 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
             return;
         }
 
+        // Google Play Policy: Prominent In-App Disclosure & Explicit Consent must precede sensitive permission requests
+        boolean disclosureAccepted = prefs.getBoolean("prominent_disclosure_accepted", false);
+        if (!disclosureAccepted) {
+            showGoogleProminentDisclosureDialog(this::executeDirectPermissionRequest);
+            return;
+        }
+
+        executeDirectPermissionRequest();
+    }
+
+    private void executeDirectPermissionRequest() {
         List<String> missing = new ArrayList<>();
-        if (!hasCallLog) {
+        if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             missing.add(Manifest.permission.READ_CALL_LOG);
         }
         if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             missing.add(Manifest.permission.READ_PHONE_STATE);
         }
-        if (!hasSms) {
+        if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             missing.add(Manifest.permission.SEND_SMS);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -1306,6 +1335,48 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         } else {
             Toast.makeText(this, "All permissions are active!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Mandatory Google Play In-App Prominent Disclosure & Consent Dialog.
+     * Complies with Google Play User Data & Sensitive Permissions Policy.
+     */
+    private void showGoogleProminentDisclosureDialog(final Runnable onAccepted) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle("🔒 Permission Disclosure & Privacy")
+            .setMessage("MissCall Assistant requires access to Call Logs and SMS to provide automated telephony follow-ups:\n\n"
+                + "• READ_CALL_LOG & READ_PHONE_STATE:\n"
+                + "Monitors incoming calls in real time to detect when a customer call is missed.\n\n"
+                + "• SEND_SMS:\n"
+                + "Dispatches your pre-configured business follow-up text reply to missed callers using your SIM card.\n\n"
+                + "🛡️ 100% On-Device Privacy Guarantee:\n"
+                + "All call logs and contact numbers are processed purely on this phone. Your customer records are NEVER uploaded to cloud servers, never sold, and never shared with advertisers.")
+            .setPositiveButton("Accept & Continue", (d, w) -> {
+                prefs.edit().putBoolean("prominent_disclosure_accepted", true).apply();
+                if (onAccepted != null) {
+                    onAccepted.run();
+                } else {
+                    Toast.makeText(MainActivity.this, "Disclosure accepted. Permissions can now be managed.", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNeutralButton("Privacy Policy", (d, w) -> {
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://missed-call-to-text.vercel.app/"));
+                    startActivity(browserIntent);
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Visit https://missed-call-to-text.vercel.app for our full policy.", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        if (onAccepted != null) {
+            builder.setNegativeButton("Decline", (d, w) -> {
+                Toast.makeText(MainActivity.this, "Permissions declined. Automated missed-call replies will be disabled.", Toast.LENGTH_LONG).show();
+            });
+        } else {
+            builder.setNegativeButton("Close", null);
+        }
+
+        builder.show();
     }
 
     private void showRestrictedSmsGuidanceDialog() {

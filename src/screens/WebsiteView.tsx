@@ -28,6 +28,9 @@ import {
   MapPin,
   Mail,
   Phone,
+  X,
+  FileText,
+  ShieldAlert,
 } from 'lucide-react';
 
 interface WebsiteViewProps {
@@ -43,7 +46,7 @@ export function WebsiteView({
 }: WebsiteViewProps) {
   const [activeBrandTab, setActiveBrandTab] = useState<'poco' | 'oppo' | 'vivo' | 'samsung'>('poco');
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [activeLegalModal, setActiveLegalModal] = useState<'privacy' | 'terms' | null>(null);
+  const [activeLegalModal, setActiveLegalModal] = useState<'privacy' | 'terms' | 'google-play' | null>(null);
 
   const version = '1.0.2';
   const size = '20.5 MB';
@@ -843,19 +846,228 @@ export function WebsiteView({
             <span>• © 2026 All rights reserved.</span>
           </div>
 
-          <div className="flex items-center gap-6">
-            <a href="#contact" className="hover:text-slate-900">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2">
+            <button
+              onClick={() => setActiveLegalModal('privacy')}
+              className="text-slate-600 hover:text-[#3B28CC] transition-colors cursor-pointer font-semibold"
+            >
+              Privacy Policy
+            </button>
+            <button
+              onClick={() => setActiveLegalModal('terms')}
+              className="text-slate-600 hover:text-[#3B28CC] transition-colors cursor-pointer font-semibold"
+            >
+              Terms & Compliance
+            </button>
+            <button
+              onClick={() => setActiveLegalModal('google-play')}
+              className="text-slate-600 hover:text-[#3B28CC] transition-colors cursor-pointer font-semibold"
+            >
+              Google Play Policies
+            </button>
+            <a href="#contact" className="hover:text-slate-900 transition-colors">
               Contact
             </a>
-            <button onClick={() => onNavigateTab('admin-login')} className="hover:text-slate-900">
+            <button onClick={() => onNavigateTab('admin-login')} className="hover:text-slate-900 transition-colors cursor-pointer">
               Admin Portal
             </button>
-            <button onClick={handleDownload} className="text-[#3B28CC] font-bold hover:underline">
+            <button onClick={handleDownload} className="text-[#3B28CC] font-bold hover:underline cursor-pointer">
               Download APK
             </button>
           </div>
         </div>
       </footer>
+
+      {/* --- LEGAL MODAL: PRIVACY POLICY / TERMS / GOOGLE PLAY --- */}
+      {activeLegalModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/60">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center font-bold">
+                  {activeLegalModal === 'privacy' && <ShieldCheck className="w-5 h-5 text-emerald-600" />}
+                  {activeLegalModal === 'terms' && <FileText className="w-5 h-5 text-indigo-600" />}
+                  {activeLegalModal === 'google-play' && <ShieldAlert className="w-5 h-5 text-amber-600" />}
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg leading-tight">
+                    {activeLegalModal === 'privacy' && 'Privacy Policy & Data Protection'}
+                    {activeLegalModal === 'terms' && 'Terms of Service & Anti-Spam Policy'}
+                    {activeLegalModal === 'google-play' && 'Google Play Store Policy & Declarations'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    Published by Solita Solutions • Effective October 2026 • Compliant with DPDP Act & Google Policy
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveLegalModal(null)}
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Scrollable Content */}
+            <div className="p-6 overflow-y-auto space-y-5 text-xs text-slate-600 leading-relaxed">
+              {/* PRIVACY POLICY CONTENT */}
+              {activeLegalModal === 'privacy' && (
+                <>
+                  <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-[11px] font-medium space-y-1">
+                    <div className="font-bold text-emerald-950 flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>100% On-Device Privacy Guarantee</span>
+                    </div>
+                    <p>
+                      MissCall Assistant strictly processes call logs and SMS on your local smartphone. Your customers' phone numbers, contact names, and call histories are <strong>NEVER</strong> uploaded, sold, or shared with remote servers or third-party advertisers.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">1. Sensitive Android Permissions & Justification</h4>
+                    <p>Under Google Play User Data policies, we disclose our exact use of sensitive permissions:</p>
+                    <ul className="list-disc list-inside space-y-1 pl-1">
+                      <li><strong>READ_CALL_LOG & READ_PHONE_STATE:</strong> Used in real-time solely to detect when an incoming business call is missed so the automated text follow-up can be triggered.</li>
+                      <li><strong>SEND_SMS:</strong> Used solely to dispatch your pre-configured business follow-up message to the missed caller using your phone's SIM card.</li>
+                      <li><strong>POST_NOTIFICATIONS:</strong> Displays active background service indicators and missed-call follow-up confirmations.</li>
+                      <li><strong>WAKE_LOCK:</strong> Ensures the device CPU remains active for the 2–10 second delay countdown buffer when the screen is locked.</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">2. Zero Remote Exfiltration of Customer Data</h4>
+                    <p>
+                      Unlike cloud CRM services, MissCall Assistant has no remote database storing your customers' private phone numbers. Incoming call numbers are stored solely in your device's private SQLite database (accessible only by MissCall Assistant).
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">3. Subscription & Payment Data</h4>
+                    <p>
+                      Subscription payments (₹99/month) are handled securely via <strong>Razorpay Checkout SDK</strong>. We never view, collect, or store your credit card numbers, debit card details, or UPI PINs. Only anonymous device IDs and subscription validity dates are synchronized with our verification server.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">4. Data Deletion & Retention</h4>
+                    <p>
+                      You retain full ownership of your data. Uninstalling the application or clearing App Data in your Android Settings permanently wipes all locally cached call logs and templates from your device.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">5. Regulatory Compliance</h4>
+                    <p>
+                      This policy complies with India’s <strong>Digital Personal Data Protection Act (DPDP Act 2023)</strong>, the <strong>EU General Data Protection Regulation (GDPR)</strong>, and <strong>Google Play Developer Program Policies</strong>.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] space-y-0.5">
+                    <div className="font-bold text-slate-800">Grievance Officer & Data Controller:</div>
+                    <div>Solita Solutions, Gaya, Bihar 824232, India</div>
+                    <div>Email: <a href="mailto:help.solita@gmail.com" className="text-[#3B28CC] font-bold">help.solita@gmail.com</a> • WhatsApp: +91 9341718066</div>
+                  </div>
+                </>
+              )}
+
+              {/* TERMS & COMPLIANCE CONTENT */}
+              {activeLegalModal === 'terms' && (
+                <>
+                  <div className="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-medium space-y-1">
+                    <div className="font-bold text-indigo-950 flex items-center gap-1.5">
+                      <FileText className="w-4 h-4 text-[#3B28CC] shrink-0" />
+                      <span>Legitimate Business Use & Anti-Spam Terms</span>
+                    </div>
+                    <p>
+                      MissCall Assistant is designed strictly for replying to customers who have voluntarily called your business phone. It must never be used for bulk unsolicited marketing or SMS spam.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">1. TRAI & DND Registry Compliance (India)</h4>
+                    <p>
+                      Users operating in India must strictly adhere to the <strong>Telecom Commercial Communications Customer Preference Regulations (TCCCPR)</strong> established by TRAI. You agree not to send promotional messages to numbers registered on the National Do Not Call (NDNC) registry without prior customer consent.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">2. Carrier SMS Tariffs & Daily Limits</h4>
+                    <p>
+                      Automated SMS messages are dispatched directly through your selected SIM card (e.g. Jio, Airtel, Vi, BSNL). Standard carrier SMS rates apply according to your active SIM plan. You acknowledge that Indian telecom operators enforce a regulatory cap of 100 SMS per SIM per day on standard prepaid/postpaid plans.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">3. Safeguard Delay Buffer</h4>
+                    <p>
+                      The app provides a configurable 2s, 5s, or 10s callback delay safeguard. If you return a missed call within this window, the outgoing call is detected and the automated SMS is automatically aborted.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">4. 14-Day Free Trial & ₹99/Month Subscription</h4>
+                    <p>
+                      Every new installation includes a 14-Day full-featured free trial. Following the trial period, continuous automated SMS operations require an active ₹99/month subscription via Razorpay. Subscriptions can be cancelled at any time without cancellation fees.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* GOOGLE PLAY POLICIES & DECLARATION */}
+              {activeLegalModal === 'google-play' && (
+                <>
+                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-medium space-y-1">
+                    <div className="font-bold text-amber-950 flex items-center gap-1.5">
+                      <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>Google Play Developer Program Policy Declarations</span>
+                    </div>
+                    <p>
+                      Official documentation regarding Google Play Store Sensitive Permissions, Prominent Disclosures, and Direct Distribution policies.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">1. Google Play SMS & Call Log Policy Exemption</h4>
+                    <p>
+                      Google Play strictly limits <code>SEND_SMS</code> and <code>READ_CALL_LOG</code> to apps selected as the user's <strong>Default SMS Handler</strong> or <strong>Default Phone/Dialer Handler</strong>.
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      • <strong>For Direct Distribution (Website APK):</strong> Sideloaded APKs operate under Android OS permissions without requiring the Google Play Store Default Handler exemption. Users grant standard Android runtime permissions and unlock Android 13/14 Restricted Settings via App Info.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">2. Google Mandated Prominent In-App Disclosure</h4>
+                    <p>
+                      Per Google Play Policy Section <em>"Prominent Disclosure & Consent"</em>, the app presents an in-app disclosure dialog before requesting permissions, confirming that telephony data is processed solely on-device.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-slate-900 text-sm">3. Google Play Protect Compliance</h4>
+                    <p>
+                      MissCall Assistant contains zero malware, zero third-party ads, zero remote command-and-control backdoors, and zero cryptocurrency miners. The APK is cryptographically signed and safe for production usage.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
+              <span className="text-[11px] text-slate-400 font-medium">Solita Solutions • MissCall Assistant v{version}</span>
+              <button
+                onClick={() => setActiveLegalModal(null)}
+                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
+              >
+                Understood & Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
