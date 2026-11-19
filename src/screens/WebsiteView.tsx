@@ -66,7 +66,7 @@ export function WebsiteView({
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col selection:bg-indigo-600 selection:text-white relative">
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col selection:bg-indigo-600 selection:text-white relative w-full max-w-full overflow-x-hidden">
       {/* Subtle Dot Grid Background (Reference 3 Quso Style) */}
       <div className="absolute inset-0 bg-[radial-gradient(#E2E8F0_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none -z-10" />
 
@@ -184,7 +184,7 @@ export function WebsiteView({
         {/* 3. INTERACTIVE FLOATING MOCKUP CAROUSEL (REFERENCE 3 STYLE) */}
         <div className="max-w-5xl mx-auto mt-12 sm:mt-16 relative px-2 sm:px-0">
           {/* Floating Card Left: Sent SMS Notification */}
-          <div className="hidden lg:block absolute -left-10 top-16 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left animate-bounce duration-1000">
+          <div className="hidden xl:block absolute -left-6 top-16 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left animate-bounce duration-1000">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
                 <Send className="w-3.5 h-3.5" />
@@ -200,7 +200,7 @@ export function WebsiteView({
           </div>
 
           {/* Floating Card Right: Delay Safeguard Pill */}
-          <div className="hidden lg:block absolute -right-8 top-28 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left">
+          <div className="hidden xl:block absolute -right-6 top-28 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left">
             <div className="flex items-center gap-2 mb-1.5">
               <div className="w-7 h-7 rounded-xl bg-indigo-100 text-[#3B28CC] flex items-center justify-center">
                 <Clock className="w-3.5 h-3.5" />
@@ -403,15 +403,15 @@ export function WebsiteView({
       </section>
 
       {/* 6. TRANSPARENT PRICING */}
-      <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-3xl mx-auto text-center space-y-6 sm:space-y-8">
+      <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200 w-full overflow-hidden">
+        <div className="max-w-2xl mx-auto text-center space-y-6 sm:space-y-8">
           <div className="space-y-2 sm:space-y-3">
             <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Simple SaaS Plan</span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">One Transparent Plan for All Businesses</h2>
             <p className="text-slate-600 text-xs sm:text-sm">No setup fees. No hidden markups. Pure native Android utility.</p>
           </div>
 
-          <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border-2 border-indigo-200 shadow-xl space-y-5 sm:space-y-6 text-left max-w-xl mx-auto">
+          <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border-2 border-indigo-200 shadow-xl space-y-5 sm:space-y-6 text-left w-full mx-auto">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg sm:text-xl font-black text-slate-900">MissCall Assistant Pro</h3>
@@ -464,7 +464,7 @@ export function WebsiteView({
       </section>
 
       {/* 7. APK DOWNLOAD & SETUP GUIDE */}
-      <section id="download" className="py-12 sm:py-20 px-4 sm:px-6 max-w-4xl mx-auto space-y-8 sm:space-y-10">
+      <section id="download" className="py-12 sm:py-20 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 sm:space-y-8 w-full overflow-hidden">
         <div className="text-center space-y-2 sm:space-y-3">
           <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Production Release</span>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Download Verified Android APK</h2>
@@ -473,7 +473,7 @@ export function WebsiteView({
           </p>
         </div>
 
-        <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-md space-y-5 sm:space-y-6 w-full">
+        <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-200 shadow-xl space-y-5 sm:space-y-6 text-left w-full mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 sm:pb-6 border-b border-slate-100">
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
