@@ -37,26 +37,26 @@ export default function HomePage() {
       {/* Header */}
       <header className="border-b border-[#222E35] bg-[#111B21]/95 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-950/40">
-              <Smartphone className="w-5 h-5" />
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-950/40 shrink-0">
+              <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <div className="text-base font-black text-white tracking-tight flex items-center gap-1.5">
+              <div className="text-sm sm:text-base font-black text-white tracking-tight flex items-center gap-1.5">
                 <span>MissCall Assistant</span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono">
                   v{version}
                 </span>
               </div>
-              <div className="text-[11px] text-[#8696A0]">Smart Android Telephony Automation</div>
+              <div className="text-[10px] sm:text-[11px] text-[#8696A0] truncate max-w-[140px] sm:max-w-none">Smart Android Telephony Automation</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <a
               href="/downloads/misscall-assistant.apk"
               download="Missed-Call-Assistant.apk"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-950/50"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-950/50 shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download APK</span>
@@ -66,34 +66,34 @@ export default function HomePage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-16">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-16 space-y-12 sm:space-y-16">
         {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>14-Day Free Trial • No Credit Card Required</span>
+        <div className="text-center max-w-3xl mx-auto space-y-5 sm:space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] sm:text-xs font-bold tracking-wide max-w-full text-center">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate sm:whitespace-normal">14-Day Free Trial • No Credit Card Required</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
             Missed call? Customer ko turant SMS jaaye.
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto px-1 sm:px-0">
             Lightweight Android application designed for Indian business owners. Automatically sends polite SMS follow-ups from your SIM card with smart 2s/5s/10s delay countdown safeguards and dual-SIM support.
           </p>
 
           {/* Download Card */}
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-[#182229] to-[#111B21] border border-[#222E35] shadow-2xl space-y-4 max-w-xl mx-auto">
+          <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#182229] to-[#111B21] border border-[#222E35] shadow-2xl space-y-3 sm:space-y-4 max-w-xl mx-auto w-full">
             <a
               href="/downloads/misscall-assistant.apk"
               download="Missed-Call-Assistant.apk"
-              className="w-full inline-flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-base shadow-lg shadow-emerald-950/60 transition-transform active:scale-[0.98]"
+              className="w-full inline-flex items-center justify-center gap-2.5 py-3.5 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-emerald-950/60 transition-transform active:scale-[0.98]"
             >
               <Download className="w-5 h-5" />
               <span>Download APK Now ({size})</span>
             </a>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-slate-400 font-medium">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-1 text-[11px] sm:text-xs text-slate-400 font-medium">
               <span>Version: <strong className="text-white">v{version}</strong></span>
               <span>•</span>
               <span>Updated: <strong className="text-white">{lastUpdated}</strong></span>

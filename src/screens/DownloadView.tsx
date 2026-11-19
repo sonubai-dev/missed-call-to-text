@@ -228,11 +228,11 @@ export function DownloadView({ onBackToDashboard }: DownloadViewProps) {
 
             {/* Download Buttons & Micro-copy */}
             <div className="space-y-3 pt-2">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
                 <button
                   onClick={handleTriggerDownload}
                   disabled={downloadState === "downloading"}
-                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-base transition-all shadow-xl shadow-emerald-500/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-80"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-sm sm:text-base transition-all shadow-xl shadow-emerald-500/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-80 cursor-pointer"
                 >
                   <Download className={`w-5 h-5 stroke-[2.5] ${downloadState === "downloading" ? "animate-bounce" : ""}`} />
                   <span>
@@ -246,7 +246,7 @@ export function DownloadView({ onBackToDashboard }: DownloadViewProps) {
 
                 <a
                   href="#qr-section"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[#202C33] hover:bg-[#2A3942] border border-[#222E35] text-white font-semibold text-sm transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-[#202C33] hover:bg-[#2A3942] border border-[#222E35] text-white font-semibold text-xs sm:text-sm transition-all text-center"
                 >
                   <QrCode className="w-4 h-4 text-emerald-400" />
                   <span>Scan to Install on Mobile</span>
