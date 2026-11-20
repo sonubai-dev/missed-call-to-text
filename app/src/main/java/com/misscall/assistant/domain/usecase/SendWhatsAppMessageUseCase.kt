@@ -1,17 +1,17 @@
-package com.misscall.whatsappassistant.domain.usecase
+package com.misscall.assistant.domain.usecase
 
-import com.misscall.whatsappassistant.domain.model.DeliveryMethod
-import com.misscall.whatsappassistant.domain.model.FollowUpSuggestionStatus
-import com.misscall.whatsappassistant.domain.model.MessageDeliveryStatus
-import com.misscall.whatsappassistant.domain.model.MessageLog
-import com.misscall.whatsappassistant.domain.model.WhatsAppFollowUpStatus
-import com.misscall.whatsappassistant.domain.repository.CallEventRepository
-import com.misscall.whatsappassistant.domain.repository.CustomerRepository
-import com.misscall.whatsappassistant.domain.repository.FollowUpSuggestionRepository
-import com.misscall.whatsappassistant.domain.repository.MessageLogRepository
-import com.misscall.whatsappassistant.domain.repository.TemplateRepository
-import com.misscall.whatsappassistant.whatsapp.provider.WhatsAppProviderManager
-import com.misscall.whatsappassistant.whatsapp.provider.WhatsAppSendingMode
+import com.misscall.assistant.domain.model.DeliveryMethod
+import com.misscall.assistant.domain.model.FollowUpSuggestionStatus
+import com.misscall.assistant.domain.model.MessageDeliveryStatus
+import com.misscall.assistant.domain.model.MessageLog
+import com.misscall.assistant.domain.model.WhatsAppFollowUpStatus
+import com.misscall.assistant.domain.repository.CallEventRepository
+import com.misscall.assistant.domain.repository.CustomerRepository
+import com.misscall.assistant.domain.repository.FollowUpSuggestionRepository
+import com.misscall.assistant.domain.repository.MessageLogRepository
+import com.misscall.assistant.domain.repository.TemplateRepository
+import com.misscall.assistant.whatsapp.provider.WhatsAppProviderManager
+import com.misscall.assistant.whatsapp.provider.WhatsAppSendingMode
 import javax.inject.Inject
 
 class SendWhatsAppMessageUseCase @Inject constructor(

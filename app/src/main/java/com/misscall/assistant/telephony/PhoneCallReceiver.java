@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.telephony;
+package com.misscall.assistant.telephony;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

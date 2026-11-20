@@ -189,7 +189,7 @@ def main():
         # Add telephony screening rules asset
         rules_json = json.dumps({
             "version": "1.0.0",
-            "packageName": "com.misscall.whatsappassistant",
+            "packageName": "com.misscall.assistant",
             "telephony": {
                 "screeningEngine": "telecom",
                 "rules": ["vip_contacts", "call_screening", "dual_sim_carrier_dispatch"]
@@ -251,7 +251,7 @@ def main():
     release_info = {
         "version": "1.0.0",
         "versionCode": 1,
-        "applicationId": "com.misscall.whatsappassistant",
+        "applicationId": "com.misscall.assistant",
         "appName": "MissCall Assistant",
         "releaseDate": "October 2026",
         "minSdk": "Android 8.0 (API 26)",

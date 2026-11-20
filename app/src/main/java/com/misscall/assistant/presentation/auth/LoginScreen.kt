@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.presentation.auth
+package com.misscall.assistant.presentation.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,7 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.misscall.whatsappassistant.data.repository.AuthRepository
+import com.misscall.assistant.data.repository.AuthRepository
 import kotlinx.coroutines.launch
 
 @Composable

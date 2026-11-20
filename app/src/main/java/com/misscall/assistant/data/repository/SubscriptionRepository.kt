@@ -1,10 +1,10 @@
-package com.misscall.whatsappassistant.data.repository
+package com.misscall.assistant.data.repository
 
-import com.misscall.whatsappassistant.data.api.NetworkClient
-import com.misscall.whatsappassistant.data.model.CreateSubscriptionResponse
-import com.misscall.whatsappassistant.data.model.SubscriptionStatusResponse
-import com.misscall.whatsappassistant.data.model.VerifySubscriptionRequest
-import com.misscall.whatsappassistant.data.session.SessionManager
+import com.misscall.assistant.data.api.NetworkClient
+import com.misscall.assistant.data.model.CreateSubscriptionResponse
+import com.misscall.assistant.data.model.SubscriptionStatusResponse
+import com.misscall.assistant.data.model.VerifySubscriptionRequest
+import com.misscall.assistant.data.session.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException

@@ -1,11 +1,11 @@
-package com.misscall.whatsappassistant.data.api
+package com.misscall.assistant.data.api
 
-import com.misscall.whatsappassistant.data.model.AuthResponse
-import com.misscall.whatsappassistant.data.model.CreateSubscriptionResponse
-import com.misscall.whatsappassistant.data.model.LoginRequest
-import com.misscall.whatsappassistant.data.model.RegisterRequest
-import com.misscall.whatsappassistant.data.model.SubscriptionStatusResponse
-import com.misscall.whatsappassistant.data.model.VerifySubscriptionRequest
+import com.misscall.assistant.data.model.AuthResponse
+import com.misscall.assistant.data.model.CreateSubscriptionResponse
+import com.misscall.assistant.data.model.LoginRequest
+import com.misscall.assistant.data.model.RegisterRequest
+import com.misscall.assistant.data.model.SubscriptionStatusResponse
+import com.misscall.assistant.data.model.VerifySubscriptionRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

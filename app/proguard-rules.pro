@@ -1,8 +1,8 @@
 # Keep app entry points
--keep class com.misscall.whatsappassistant.** { *; }
--keep class com.misscall.whatsappassistant.presentation.MainActivity { *; }
--keep class com.misscall.whatsappassistant.MissCallApplication { *; }
--keep class com.misscall.whatsappassistant.telephony.** { *; }
+-keep class com.misscall.assistant.** { *; }
+-keep class com.misscall.assistant.presentation.MainActivity { *; }
+-keep class com.misscall.assistant.MissCallApplication { *; }
+-keep class com.misscall.assistant.telephony.** { *; }
 
 # Keep Hilt generated classes
 -keep class * extends com.google.dagger.hilt.android.lifecycle.HiltViewModel { *; }
@@ -37,7 +37,7 @@
 # =========================================================================
 
 # Keep Security Enforcement Suite
--keep class com.misscall.whatsappassistant.security.** { *; }
+-keep class com.misscall.assistant.security.** { *; }
 
 # Razorpay SDK security rules
 -keep class com.razorpay.** { *; }

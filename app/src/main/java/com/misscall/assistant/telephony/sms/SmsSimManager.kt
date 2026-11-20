@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.telephony.sms
+package com.misscall.assistant.telephony.sms
 
 import android.annotation.SuppressLint
 import android.content.Context

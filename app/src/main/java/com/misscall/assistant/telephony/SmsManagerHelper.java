@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.telephony;
+package com.misscall.assistant.telephony;
 
 import android.content.Context;
 import android.os.Build;
@@ -7,7 +7,7 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
 
-import com.misscall.whatsappassistant.security.AndroidSecurityManager;
+import com.misscall.assistant.security.AndroidSecurityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class SmsManagerHelper {
     private static final String TAG = "SmsManagerHelper";
 
     public static void sendSms(Context context, String destinationAddress, String message, int preferredSimSlot) {
-        if (!com.misscall.whatsappassistant.data.SubscriptionClient.isEntitled(context)) {
+        if (!com.misscall.assistant.data.SubscriptionClient.isEntitled(context)) {
             Log.w(TAG, "SMS dispatch blocked: Active subscription or 14-day trial is required.");
             return;
         }

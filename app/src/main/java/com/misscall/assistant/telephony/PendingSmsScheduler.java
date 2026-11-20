@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.telephony;
+package com.misscall.assistant.telephony;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,8 +7,8 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 
-import com.misscall.whatsappassistant.data.SubscriptionClient;
-import com.misscall.whatsappassistant.security.AndroidSecurityManager;
+import com.misscall.assistant.data.SubscriptionClient;
+import com.misscall.assistant.security.AndroidSecurityManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

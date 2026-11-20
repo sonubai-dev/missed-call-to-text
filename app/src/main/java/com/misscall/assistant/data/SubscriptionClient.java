@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.data;
+package com.misscall.assistant.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;

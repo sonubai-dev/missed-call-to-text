@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.presentation.whatsapp
+package com.misscall.assistant.presentation.whatsapp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,16 +73,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.misscall.whatsappassistant.core.util.NumberNormalizer
-import com.misscall.whatsappassistant.domain.model.MessageTemplate
-import com.misscall.whatsappassistant.presentation.components.PlaceholderTagsRow
-import com.misscall.whatsappassistant.presentation.theme.AccentGreen
-import com.misscall.whatsappassistant.presentation.theme.PrimaryGreen
-import com.misscall.whatsappassistant.presentation.theme.StatusFailed
-import com.misscall.whatsappassistant.presentation.theme.StatusPending
-import com.misscall.whatsappassistant.presentation.theme.StatusSent
-import com.misscall.whatsappassistant.whatsapp.provider.ProviderConnectionState
-import com.misscall.whatsappassistant.whatsapp.provider.WhatsAppSendingMode
+import com.misscall.assistant.core.util.NumberNormalizer
+import com.misscall.assistant.domain.model.MessageTemplate
+import com.misscall.assistant.presentation.components.PlaceholderTagsRow
+import com.misscall.assistant.presentation.theme.AccentGreen
+import com.misscall.assistant.presentation.theme.PrimaryGreen
+import com.misscall.assistant.presentation.theme.StatusFailed
+import com.misscall.assistant.presentation.theme.StatusPending
+import com.misscall.assistant.presentation.theme.StatusSent
+import com.misscall.assistant.whatsapp.provider.ProviderConnectionState
+import com.misscall.assistant.whatsapp.provider.WhatsAppSendingMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.misscall.whatsappassistant.presentation;
+package com.misscall.assistant.presentation;
 
 import android.Manifest;
 import android.app.Activity;
@@ -32,10 +32,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.misscall.whatsappassistant.data.SubscriptionClient;
-import com.misscall.whatsappassistant.data.SubscriptionSyncWorker;
-import com.misscall.whatsappassistant.security.AndroidSecurityManager;
-import com.misscall.whatsappassistant.telephony.PendingSmsScheduler;
+import com.misscall.assistant.data.SubscriptionClient;
+import com.misscall.assistant.data.SubscriptionSyncWorker;
+import com.misscall.assistant.security.AndroidSecurityManager;
+import com.misscall.assistant.telephony.PendingSmsScheduler;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
@@ -1755,14 +1755,27 @@ public class MainActivity extends Activity implements PaymentResultWithDataListe
         layout.addView(priceBox);
         addSpacing(layout, 20);
 
-        Button btnPay = createButton("Subscribe Now • ₹99 / mo", COLOR_PRIMARY, Color.WHITE);
-        btnPay.setOnClickListener(v -> initiateSubscriptionFlow());
+        Button btnPay = createButton("Manage Plan on Web Portal", COLOR_PRIMARY, Color.WHITE);
+        btnPay.setOnClickListener(v -> {
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://missed-call-to-text.vercel.app"));
+                startActivity(browserIntent);
+            } catch (Exception e) {
+                initiateSubscriptionFlow();
+            }
+        });
         layout.addView(btnPay);
+
+        addSpacing(layout, 10);
+
+        Button btnCheckStatus = createButton("Check Subscription Status", COLOR_SECONDARY, Color.WHITE);
+        btnCheckStatus.setOnClickListener(v -> refreshSubscriptionStatus());
+        layout.addView(btnCheckStatus);
 
         addSpacing(layout, 12);
 
         TextView tvTrust = new TextView(this);
-        tvTrust.setText("Accepted: Google Pay • PhonePe • Paytm • BHIM UPI • Cards");
+        tvTrust.setText("Official Web Portal: missed-call-to-text.vercel.app • Cancel Anytime");
         tvTrust.setTextSize(10);
         tvTrust.setTextColor(COLOR_TEXT_MUTED);
         tvTrust.setGravity(Gravity.CENTER);

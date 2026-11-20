@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.misscall.whatsappassistant"
+    namespace = "com.misscall.assistant"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.misscall.whatsappassistant"
+        applicationId = "com.misscall.assistant"
         minSdk = 26
         targetSdk = 34
         versionCode = 3

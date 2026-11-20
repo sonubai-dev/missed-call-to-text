@@ -13,11 +13,11 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MANIFEST_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "AndroidManifest.xml")
 NET_SEC_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "res", "xml", "network_security_config.xml")
 PROGUARD_PATH = os.path.join(ROOT_DIR, "app", "proguard-rules.pro")
-SEC_MANAGER_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "whatsappassistant", "security", "AndroidSecurityManager.java")
-MAIN_ACTIVITY_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "whatsappassistant", "presentation", "MainActivity.java")
-SCHEDULER_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "whatsappassistant", "telephony", "PendingSmsScheduler.java")
-SMS_HELPER_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "whatsappassistant", "telephony", "SmsManagerHelper.java")
-SUB_CLIENT_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "whatsappassistant", "data", "SubscriptionClient.java")
+SEC_MANAGER_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "assistant", "security", "AndroidSecurityManager.java")
+MAIN_ACTIVITY_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "assistant", "presentation", "MainActivity.java")
+SCHEDULER_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "assistant", "telephony", "PendingSmsScheduler.java")
+SMS_HELPER_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "assistant", "telephony", "SmsManagerHelper.java")
+SUB_CLIENT_PATH = os.path.join(ROOT_DIR, "app", "src", "main", "java", "com", "misscall", "assistant", "data", "SubscriptionClient.java")
 
 def print_test_header(num, title):
     print("\n" + "=" * 70)
@@ -197,7 +197,7 @@ def test_rule_9_proguard_r8():
         pg_content = f.read()
 
     has_log_strip = "-assumenosideeffects class android.util.Log" in pg_content
-    has_sec_keep = "com.misscall.whatsappassistant.security" in pg_content
+    has_sec_keep = "com.misscall.assistant.security" in pg_content
     has_razorpay_keep = "com.razorpay" in pg_content
 
     print(f"  • Release log stripping (-assumenosideeffects android.util.Log) ... {'Configured' if has_log_strip else 'Missing'}")
