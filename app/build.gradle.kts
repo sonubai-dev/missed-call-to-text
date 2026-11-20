@@ -22,7 +22,7 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "BACKEND_BASE_URL", "\"https://web-dashboard-eight-mu.vercel.app/\"")
+        buildConfigField("String", "BACKEND_BASE_URL", "\"https://missed-call-to-text.vercel.app/\"")
     }
 
     signingConfigs {

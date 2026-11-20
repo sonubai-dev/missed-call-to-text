@@ -48,7 +48,7 @@ public class SubscriptionClient {
     public static final long TRIAL_DURATION_MS = 14L * 24 * 60 * 60 * 1000L;
 
     // Primary Vercel production server URL with local fallback
-    private static final String DEFAULT_BASE_URL = "https://web-dashboard-eight-mu.vercel.app";
+    private static final String DEFAULT_BASE_URL = "https://missed-call-to-text.vercel.app";
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -262,13 +262,36 @@ public class SubscriptionClient {
 
                     postSuccess(callback, state);
                 } else {
-                    postError(callback, "Server responded with status " + code + ". Please retry.", "SERVER_ERROR_" + code);
+                    Log.w(TAG, "Server responded with status code: SERVER_ERROR_" + code);
+                    handleOfflineTrialFallback(context, callback);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Device authentication error", e);
-                postError(callback, "Cannot connect to server. Check your internet connection.", "NO_INTERNET");
+                Log.w(TAG, "Device authentication network issue, using 14-day local trial fallback", e);
+                handleOfflineTrialFallback(context, callback);
             }
         });
+    }
+
+    /**
+     * Handles local offline 14-day trial initialization and fallback
+     * when backend servers are unreachable or offline.
+     */
+    public static void handleOfflineTrialFallback(Context context, SubscriptionCallback callback) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if (prefs.getLong(KEY_TRIAL_START_TIME, 0) == 0) {
+            start14DayTrial(context, "Business Owner", "My Store", "India");
+        }
+        boolean entitled = isEntitled(context);
+        int daysLeft = getTrialDaysRemaining(context);
+        String status = prefs.getString(KEY_SUBSCRIPTION_STATUS, entitled ? "trial" : "expired");
+        SubscriptionState state = new SubscriptionState(
+            entitled,
+            status,
+            entitled ? "14-Day Free Trial active (" + daysLeft + " days remaining)" : "14-Day Trial expired"
+        );
+        state.validUntil = prefs.getLong(KEY_VALID_UNTIL, System.currentTimeMillis() + TRIAL_DURATION_MS);
+        state.trialDaysRemaining = daysLeft;
+        postSuccess(callback, state);
     }
 
     /**
@@ -399,11 +422,12 @@ public class SubscriptionClient {
 
                     postSuccess(callback, state);
                 } else {
-                    postError(callback, "Subscription status check returned code " + code, "STATUS_CHECK_FAILED");
+                    Log.w(TAG, "Server responded with status code: SERVER_ERROR_" + code);
+                    handleOfflineTrialFallback(context, callback);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Subscription status check error", e);
-                postError(callback, "Could not check subscription status. Check network connection.", "NETWORK_UNAVAILABLE");
+                Log.w(TAG, "Subscription status check network issue, falling back to local entitlement", e);
+                handleOfflineTrialFallback(context, callback);
             }
         });
     }
@@ -412,11 +436,6 @@ public class SubscriptionClient {
      * Prepares subscription and returns subscription_id + key_id for Razorpay Checkout.
      */
     public static void createSubscription(final Context context, final SubscriptionCallback callback) {
-        if (!isNetworkAvailable(context)) {
-            postError(callback, "No internet connection: Please connect to Wi-Fi or mobile data to subscribe.", "NO_INTERNET");
-            return;
-        }
-
         executor.execute(() -> {
             try {
                 SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -452,8 +471,8 @@ public class SubscriptionClient {
                 if (token != null && !token.isEmpty()) {
                     conn.setRequestProperty("Authorization", "Bearer " + token);
                 }
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
                 conn.setDoOutput(true);
 
                 try (OutputStream os = conn.getOutputStream()) {
@@ -477,11 +496,16 @@ public class SubscriptionClient {
                     prefs.edit().putString(KEY_SUB_ID, subId).apply();
                     postSuccess(callback, state);
                 } else {
-                    postError(callback, "Subscription creation failed (" + code + "). Server is busy, please retry.", "CREATE_FAILED_" + code);
+                    // Fallback to direct Razorpay Checkout Page
+                    SubscriptionState state = new SubscriptionState(false, "PAYMENT_PENDING", "Direct Razorpay Checkout");
+                    state.shortUrl = "https://rzp.io/rzp/DCET6eO8";
+                    postSuccess(callback, state);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Create subscription error", e);
-                postError(callback, "Could not reach payment gateway: " + e.getMessage(), "GATEWAY_TIMEOUT");
+                Log.w(TAG, "Create subscription network error, opening direct Razorpay link", e);
+                SubscriptionState state = new SubscriptionState(false, "PAYMENT_PENDING", "Direct Razorpay Checkout");
+                state.shortUrl = "https://rzp.io/rzp/DCET6eO8";
+                postSuccess(callback, state);
             }
         });
     }
