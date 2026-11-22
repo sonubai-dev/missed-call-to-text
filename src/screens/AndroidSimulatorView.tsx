@@ -95,14 +95,9 @@ export function AndroidSimulatorView({
   const [editLocation, setEditLocation] = useState<string>(userLocation);
   const [profileSavedFeedback, setProfileSavedFeedback] = useState<boolean>(false);
 
-  // --- 14-DAY FREE TRIAL & SUBSCRIPTION STATE ---
-  // Default to 14 days full access
-  const [trialDaysRemaining, setTrialDaysRemaining] = useState<number>(14);
-  const [isSubscriptionActive, setIsSubscriptionActive] = useState<boolean>(false);
-  const [paymentSuccessNotification, setPaymentSuccessNotification] = useState<boolean>(false);
-
-  // Derived: Is the app locked due to expired 14-day trial without active payment?
-  const isTrialExpired = trialDaysRemaining <= 0 && !isSubscriptionActive;
+  // --- 100% FREE LIFETIME EDITION STATE ---
+  const isSubscriptionActive = true;
+  const isTrialExpired = false;
 
   // Mobile App Internal Controls
   const [isServiceActive, setIsServiceActive] = useState<boolean>(true);
@@ -289,16 +284,16 @@ export function AndroidSimulatorView({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#111B21] p-6 rounded-3xl border border-[#222E35]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
-              Clean & Minimal Material 3
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              100% Free Lifetime Edition
             </span>
-            <span className="text-xs text-slate-400">14-Day Free Trial Lifecycle • Hard Paywall Guard</span>
+            <span className="text-xs text-slate-400">Zero Sign-in • No Subscription Required</span>
           </div>
           <h1 className="text-2xl font-black text-white mt-1">
-            MissCall Assistant — Aesthetic Mobile App
+            MissCall Assistant — Interactive App Simulator
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Minimal, non-complicated design: clean active switch, delay buffer, automated message preview, and automatic 14-day trial expiry lock.
+            Modern Electric Blue 3-Tab design: Home controls, Anti-Awkward delay safeguard, live template preview, and local activity logging.
           </p>
         </div>
 
@@ -521,25 +516,10 @@ export function AndroidSimulatorView({
                       </div>
                     </div>
 
-                    {/* Minimal 14-Day Trial / Pro Status Pill */}
-                    <button
-                      onClick={() => setAppTab('settings')}
-                      className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border transition-all cursor-pointer flex items-center gap-1 ${
-                        isSubscriptionActive
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : isTrialExpired
-                          ? 'bg-rose-50 text-rose-700 border-rose-200'
-                          : 'bg-blue-50 text-blue-700 border-blue-200'
-                      }`}
-                    >
-                      {isSubscriptionActive ? (
-                        <span>• Pro Active</span>
-                      ) : isTrialExpired ? (
-                        <span>🔒 Trial Expired</span>
-                      ) : (
-                        <span>Trial: {trialDaysRemaining}d left</span>
-                      )}
-                    </button>
+                    {/* 100% Free Lifetime Status Pill */}
+                    <div className="text-[10px] font-extrabold px-2.5 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1">
+                      <span>● Active • Free</span>
+                    </div>
                   </div>
 
                   {/* Clean 3-Tab Bottom/Top Navigation Bar */}
@@ -688,69 +668,25 @@ export function AndroidSimulatorView({
                     {appTab === 'settings' && (
                       <div className="space-y-3.5 animate-fade-in">
                         
-                        {/* 14-DAY TRIAL & SUBSCRIPTION CARD */}
-                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+                        {/* 100% FREE LIFETIME LICENSE CARD */}
+                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                              Plan & Access
+                              Edition & License
                             </span>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                              isSubscriptionActive
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : isTrialExpired
-                                ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                                : 'bg-blue-50 text-blue-700 border border-blue-200'
-                            }`}>
-                              {isSubscriptionActive
-                                ? 'Pro Plan Active'
-                                : isTrialExpired
-                                ? 'Trial Expired'
-                                : `${trialDaysRemaining} Days Left`}
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              ● 100% Free Lifetime
                             </span>
                           </div>
 
                           <div>
                             <h4 className="text-sm font-black text-slate-900">
-                              {isSubscriptionActive ? 'MissCall Pro Subscription' : '14-Day Free Trial'}
+                              MissCall Assistant Lifetime
                             </h4>
                             <p className="text-[11px] text-slate-500 mt-0.5">
-                              {isSubscriptionActive
-                                ? 'Active at ₹99/month. Continuous automated SMS delivery.'
-                                : `You have ${trialDaysRemaining} days left in your full-featured free trial.`}
+                              No subscription required. All missed-call SMS features run natively on your device forever.
                             </p>
                           </div>
-
-                          {/* Trial Progress Bar */}
-                          {!isSubscriptionActive && (
-                            <div className="space-y-1">
-                              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                                <div
-                                  className={`h-full transition-all duration-500 ${
-                                    isTrialExpired ? 'bg-rose-500' : 'bg-blue-600'
-                                  }`}
-                                  style={{
-                                    width: `${Math.max(0, Math.min(100, (trialDaysRemaining / 14) * 100))}%`,
-                                  }}
-                                />
-                              </div>
-                              <div className="flex justify-between text-[9px] text-slate-400 font-medium">
-                                <span>Day 1</span>
-                                <span>{trialDaysRemaining} / 14 Days Remaining</span>
-                                <span>Day 14</span>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Upgrade / Subscription Action */}
-                          {!isSubscriptionActive && (
-                            <button
-                              onClick={handleActivateSubscription}
-                              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
-                            >
-                              <CreditCard className="w-3.5 h-3.5" />
-                              <span>Activate Pro Plan • ₹99 / month</span>
-                            </button>
-                          )}
                         </div>
 
                         {/* EDIT PROFILE SECTION */}
@@ -896,68 +832,7 @@ export function AndroidSimulatorView({
                     )}
                   </div>
 
-                  {/* ======================================================== */}
-                  {/* HARD PAYWALL OVERLAY (LOCKED ONCE 14 DAYS COMPLETE)      */}
-                  {/* ======================================================== */}
-                  {isTrialExpired && (
-                    <div className="absolute inset-0 z-50 bg-slate-900/95 backdrop-blur-md flex flex-col justify-between p-6 animate-fade-in text-white text-center">
-                      <div className="space-y-4 pt-6">
-                        <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center mx-auto shadow-xl ring-8 ring-amber-500/20">
-                          <Lock className="w-8 h-8" />
-                        </div>
 
-                        <div>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
-                            14-Day Free Trial Finished
-                          </span>
-                          <h3 className="text-xl font-black text-white mt-2 leading-tight">
-                            Subscription Required
-                          </h3>
-                          <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                            Your 14-day free trial has completed. Automated SMS replies for missed calls are paused until you activate your subscription.
-                          </p>
-                        </div>
-
-                        {/* Pricing Box */}
-                        <div className="p-4 rounded-2xl bg-white/10 border border-white/10 space-y-1">
-                          <div className="text-2xl font-black text-white">
-                            ₹99 <span className="text-xs font-normal text-slate-400">/ month</span>
-                          </div>
-                          <p className="text-[10px] text-blue-200">
-                            Unlimited missed-call automated SMS replies via carrier SIM
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Payment Action & Trust Badges */}
-                      <div className="space-y-3 pb-4">
-                        <button
-                          onClick={handleActivateSubscription}
-                          className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-black text-sm shadow-xl shadow-blue-500/30 transition-all cursor-pointer flex items-center justify-center gap-2"
-                        >
-                          <CreditCard className="w-4 h-4" />
-                          <span>Subscribe Now • ₹99 / mo</span>
-                        </button>
-
-                        <div className="space-y-1">
-                          <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
-                            Instant UPI & Card Activation
-                          </span>
-                          <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                            {['Google Pay', 'PhonePe', 'Paytm', 'BHIM UPI'].map((brand) => (
-                              <span key={brand} className="px-2 py-0.5 rounded-md bg-white/10 text-[9px] font-extrabold text-slate-200 border border-white/10">
-                                {brand}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <p className="text-[9px] text-slate-400">
-                          Non-dismissible security lock • Resumes instant auto-SMS immediately
-                        </p>
-                      </div>
-                    </div>
-                  )}
 
                   {/* BOTTOM SHEET MODAL FOR QUICK TEMPLATE EDITING */}
                   {isTemplateModalOpen && (
@@ -1155,109 +1030,75 @@ export function AndroidSimulatorView({
             </button>
           </div>
 
-          {/* 14-DAY TRIAL LIFECYCLE & PAYWALL TESTING RIG */}
+          {/* TELEPHONY QA TESTING RIG */}
           <div className="bg-[#111B21] p-6 rounded-3xl border border-[#222E35] shadow-lg space-y-4">
             <div className="flex items-center justify-between border-b border-[#222E35] pb-3">
               <h4 className="font-black text-white text-xs flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4 text-amber-400" />
-                <span>14-Day Free Trial & Paywall Testing Rig</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>100% Free Lifetime Telephony Rig</span>
               </h4>
               <span className="text-[10px] text-slate-400">Interactive QA Tools</span>
             </div>
 
             <p className="text-xs text-slate-400">
-              Test how the mobile application behaves at different stages of the 14-day trial, and verify the hard paywall locking behavior once 14 days finish.
+              Test how the mobile application handles incoming missed calls, delays, and immediate outgoing callback auto-cancellations.
             </p>
 
-            {/* Fast-Forward Trial Controls */}
+            {/* Delay Quick Switcher */}
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-slate-300">
-                Simulate Trial Day:
+                Test Delay Safeguard:
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button
-                  onClick={() => {
-                    setTrialDaysRemaining(14);
-                    setIsSubscriptionActive(false);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    trialDaysRemaining === 14 && !isSubscriptionActive
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : 'bg-[#0C1317] border-[#222E35] text-slate-300 hover:text-white'
-                  }`}
-                >
-                  Day 1 (14d left)
-                </button>
-
-                <button
-                  onClick={() => {
-                    setTrialDaysRemaining(7);
-                    setIsSubscriptionActive(false);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    trialDaysRemaining === 7 && !isSubscriptionActive
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : 'bg-[#0C1317] border-[#222E35] text-slate-300 hover:text-white'
-                  }`}
-                >
-                  Day 7 (7d left)
-                </button>
-
-                <button
-                  onClick={() => {
-                    setTrialDaysRemaining(1);
-                    setIsSubscriptionActive(false);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    trialDaysRemaining === 1 && !isSubscriptionActive
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : 'bg-[#0C1317] border-[#222E35] text-slate-300 hover:text-white'
-                  }`}
-                >
-                  Day 14 (1d left)
-                </button>
-
-                <button
-                  onClick={() => {
-                    setTrialDaysRemaining(0);
-                    setIsSubscriptionActive(false);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    isTrialExpired
-                      ? 'bg-rose-600 border-rose-500 text-white shadow-md shadow-rose-900/30'
-                      : 'bg-[#0C1317] border-rose-500/40 text-rose-400 hover:bg-rose-500/10'
-                  }`}
-                >
-                  🔒 Expired (Lock App)
-                </button>
+              <div className="grid grid-cols-3 gap-2">
+                {[2, 5, 10].map((sec) => (
+                  <button
+                    key={sec}
+                    onClick={() => setSmsDelay(sec)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      smsDelay === sec
+                        ? 'bg-blue-600 border-blue-500 text-white'
+                        : 'bg-[#0C1317] border-[#222E35] text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    {sec}s Delay
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Quick Actions: Reset Onboarding or Activate Pro */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {/* Dual SIM Switcher */}
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-slate-300">
+                Test Dispatch SIM Slot:
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {(['SIM 1 (Jio 5G)', 'SIM 2 (Airtel 4G)'] as const).map((sim) => (
+                  <button
+                    key={sim}
+                    onClick={() => setSelectedSim(sim)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      selectedSim === sim
+                        ? 'bg-blue-600 border-blue-500 text-white'
+                        : 'bg-[#0C1317] border-[#222E35] text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    {sim}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="pt-2">
               <button
                 onClick={() => {
-                  setIsOnboarded(false);
-                  setOnboardingStep(1);
-                  setTrialDaysRemaining(14);
-                  setIsSubscriptionActive(false);
+                  setLocalCalls(initialCalls);
+                  setIsServiceActive(true);
                 }}
-                className="py-2.5 px-4 rounded-xl bg-[#202C33] hover:bg-[#2A3942] text-xs font-bold text-slate-200 border border-[#222E35] flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full py-2.5 px-4 rounded-xl bg-[#202C33] hover:bg-[#2A3942] text-xs font-bold text-slate-200 border border-[#222E35] flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5 text-blue-400" />
-                <span>Test 1st Launch Onboarding</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setIsSubscriptionActive(true);
-                  setPaymentSuccessNotification(true);
-                  setTimeout(() => setPaymentSuccessNotification(false), 3000);
-                }}
-                className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white flex items-center justify-center gap-2 shadow-md shadow-emerald-900/30 cursor-pointer transition-colors"
-              >
-                <CreditCard className="w-3.5 h-3.5 text-white" />
-                <span>Simulate Pro Activation (₹99)</span>
+                <span>Reset Demo Activity State</span>
               </button>
             </div>
           </div>
