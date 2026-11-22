@@ -108,6 +108,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         }
 
         Log.i(TAG, "Genuine missed call identified from: " + clean + ". Submitting to scheduler.");
+        com.misscall.assistant.data.ActivityLogger.log(context, "MISSED_CALL", clean, "Missed call recorded from caller");
         PendingSmsScheduler.getInstance().schedule(context, clean);
     }
 

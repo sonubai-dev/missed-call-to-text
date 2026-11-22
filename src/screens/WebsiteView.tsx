@@ -177,7 +177,7 @@ export function WebsiteView({
           </div>
 
           <div className="text-[11px] sm:text-xs text-slate-500 font-medium px-2 text-center">
-            Release {version} • {size} • Android 8.0 to 14 Supported • 14-Day Free Trial
+            Release {version} • {size} • Android 8.0 to 14 Supported • 100% Free Lifetime Edition
           </div>
         </div>
 
@@ -227,7 +227,7 @@ export function WebsiteView({
                   </div>
                 </div>
                 <span className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active • ₹99/mo
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Active • Free Forever
                 </span>
               </div>
 
@@ -339,12 +339,12 @@ export function WebsiteView({
             </div>
 
             <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
                 <CreditCard className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-base">₹99/Month Fair Pricing</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">100% Free Lifetime Edition</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                14-Day free trial on install. Afterward, pay a simple ₹99/month subscription via Razorpay with instant server-verified activation.
+                No subscription, no credit card, and zero hidden costs. All missed call detection and automated SMS responses run free forever on your device.
               </p>
             </div>
 
@@ -402,29 +402,29 @@ export function WebsiteView({
         </div>
       </section>
 
-      {/* 6. TRANSPARENT PRICING */}
+      {/* 6. 100% FREE FOREVER */}
       <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200 w-full overflow-hidden">
         <div className="max-w-2xl mx-auto text-center space-y-6 sm:space-y-8">
           <div className="space-y-2 sm:space-y-3">
-            <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Simple SaaS Plan</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">One Transparent Plan for All Businesses</h2>
-            <p className="text-slate-600 text-xs sm:text-sm">No setup fees. No hidden markups. Pure native Android utility.</p>
+            <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Free Forever</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">100% Free for All Businesses</h2>
+            <p className="text-slate-600 text-xs sm:text-sm">No credit card. No login or sign-up. Pure native Android utility.</p>
           </div>
 
-          <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border-2 border-indigo-200 shadow-xl space-y-5 sm:space-y-6 text-left w-full mx-auto">
+          <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border-2 border-blue-200 shadow-xl space-y-5 sm:space-y-6 text-left w-full mx-auto">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-900">MissCall Assistant Pro</h3>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900">MissCall Assistant Lifetime</h3>
                 <p className="text-xs text-slate-500 font-medium">Full business telephony automation</p>
               </div>
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-50 text-[#3B28CC]">
-                14-Day Trial Included
+              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700">
+                100% Free Lifetime
               </span>
             </div>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl sm:text-5xl font-black text-slate-900">₹99</span>
-              <span className="text-slate-500 font-bold text-sm">/ month</span>
+              <span className="text-4xl sm:text-5xl font-black text-slate-900">₹0</span>
+              <span className="text-slate-500 font-bold text-sm">/ Lifetime Free</span>
             </div>
 
             <ul className="space-y-3 text-xs font-semibold text-slate-700">
@@ -438,23 +438,23 @@ export function WebsiteView({
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Dual-SIM card selection & management</span>
+                <span>Dual-SIM card smart routing (SIM 1 / SIM 2)</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>14-day offline local cache fallback</span>
+                <span>100% on-device private processing (No cloud leak)</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Razorpay secure payment & autopay integration</span>
+                <span>No sign-in, login, or registration required</span>
               </li>
             </ul>
 
             <button
               onClick={handleDownload}
-              className="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-200 transition-all text-center block cursor-pointer"
+              className="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold text-sm shadow-lg shadow-blue-200 transition-all text-center block cursor-pointer"
             >
-              Get Started with 14-Day Free Trial
+              Download Free Android APK
             </button>
             <p className="text-[11px] text-slate-400 text-center font-medium">
               Standard carrier SMS rates apply according to your existing SIM plan.

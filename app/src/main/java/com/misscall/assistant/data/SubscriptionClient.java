@@ -132,32 +132,10 @@ public class SubscriptionClient {
 
     /**
      * Checks if device is entitled to run missed-call SMS automation.
-     * Enforces the 14-day trial hard cutoff: after 14 days, blocks automation
-     * unless paid subscription is active.
+     * In the 100% Lifetime Free Edition, this ALWAYS returns true.
      */
     public static boolean isEntitled(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        boolean isPaid = prefs.getBoolean(KEY_IS_PAID, false);
-        String status = prefs.getString(KEY_SUBSCRIPTION_STATUS, "none");
-        long validUntil = prefs.getLong(KEY_VALID_UNTIL, 0);
-        long now = System.currentTimeMillis();
-
-        if (isPaid || ("active".equalsIgnoreCase(status) && validUntil > now)) {
-            return true;
-        }
-
-        if ("trial".equalsIgnoreCase(status) || status.equals("none")) {
-            int daysLeft = getTrialDaysRemaining(context);
-            if (daysLeft > 0) {
-                return true;
-            } else {
-                // 14 days completed: lock out automation
-                prefs.edit().putString(KEY_SUBSCRIPTION_STATUS, "expired").apply();
-                return false;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -273,24 +251,18 @@ public class SubscriptionClient {
     }
 
     /**
-     * Handles local offline 14-day trial initialization and fallback
+     * Handles local offline lifetime free entitlement fallback
      * when backend servers are unreachable or offline.
      */
     public static void handleOfflineTrialFallback(Context context, SubscriptionCallback callback) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        if (prefs.getLong(KEY_TRIAL_START_TIME, 0) == 0) {
-            start14DayTrial(context, "Business Owner", "My Store", "India");
-        }
-        boolean entitled = isEntitled(context);
-        int daysLeft = getTrialDaysRemaining(context);
-        String status = prefs.getString(KEY_SUBSCRIPTION_STATUS, entitled ? "trial" : "expired");
         SubscriptionState state = new SubscriptionState(
-            entitled,
-            status,
-            entitled ? "14-Day Free Trial active (" + daysLeft + " days remaining)" : "14-Day Trial expired"
+            true,
+            "free_lifetime",
+            "100% Free Lifetime Edition Active"
         );
-        state.validUntil = prefs.getLong(KEY_VALID_UNTIL, System.currentTimeMillis() + TRIAL_DURATION_MS);
-        state.trialDaysRemaining = daysLeft;
+        state.validUntil = Long.MAX_VALUE;
+        state.trialDaysRemaining = 999;
         postSuccess(callback, state);
     }
 

@@ -1,24 +1,27 @@
 {
   "version": "1.0.2",
   "versionCode": 3,
+  "package": "com.misscall.assistant",
   "fileName": "Missed-Call-Assistant.apk",
   "fileSize": "20.5 MB",
   "bytes": 21498310,
   "sha256": "ee202575afb0848d0de43e36f010cc75f7308335ac9a35588d10ca7c682bc26e",
-  "lastUpdated": "October 2026",
+  "lastUpdated": "November 2026",
   "minAndroid": "Android 8.0 (API 26) or higher",
+  "targetAndroid": "Android 14 (API 34)",
   "downloadUrl": "/downloads/misscall-assistant.apk",
+  "playStoreBundle": "/downloads/misscall-assistant.aab",
   "pricing": {
-    "amount": "₹99",
-    "period": "month",
-    "trialDays": 14,
-    "description": "14-day free trial on first launch, then ₹99/month. Cancel anytime."
+    "amount": "₹0",
+    "period": "lifetime",
+    "trialDays": 0,
+    "description": "100% Free Lifetime Edition. No subscription, no credit card required."
   },
   "features": [
     "Instant SMS auto-reply for missed business calls",
     "Dual-SIM Android smart routing (SIM 1 / SIM 2 selection)",
     "2s, 5s, 10s anti-awkward delay countdown with auto-cancel on call back",
-    "In-app Razorpay ₹99/mo subscription with 14-day free trial",
-    "Offline mode: 14-day cached entitlement fallback"
+    "100% Free Lifetime Edition with zero login required",
+    "100% offline on-device processing"
   ]
 }

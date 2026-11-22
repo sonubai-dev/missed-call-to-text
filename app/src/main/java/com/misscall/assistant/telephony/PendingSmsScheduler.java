@@ -25,6 +25,7 @@ public class PendingSmsScheduler {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Map<String, Runnable> scheduledTasks = new ConcurrentHashMap<>();
     private final Map<String, Long> lastProcessedTimestamps = new ConcurrentHashMap<>();
+    private Context appContext;
 
     private PendingSmsScheduler() {}
 
@@ -36,6 +37,9 @@ public class PendingSmsScheduler {
      * Schedule a delayed SMS follow-up for a genuine missed call.
      */
     public synchronized void schedule(final Context context, final String rawNumber) {
+        if (context != null && this.appContext == null) {
+            this.appContext = context.getApplicationContext();
+        }
         // Rule 7 (SEC-07-E164-SANITIZER): Strict E.164 phone sanitization & toll-fraud prevention
         final String cleanNumber = AndroidSecurityManager.sanitizeAndValidatePhoneNumber(rawNumber);
         if (cleanNumber == null) {
@@ -124,6 +128,7 @@ public class PendingSmsScheduler {
 
                     Log.i(TAG, "Executing native SMS dispatch to " + cleanNumber + " via SIM slot " + (simSlot + 1));
                     SmsManagerHelper.sendSms(context, cleanNumber, finalMessage, simSlot);
+                    com.misscall.assistant.data.ActivityLogger.log(context, "SMS_SENT", cleanNumber, "Auto-reply sent via SIM " + (simSlot + 1));
                     lastProcessedTimestamps.put(cleanNumber, System.currentTimeMillis());
                 } finally {
                     if (activeLock != null && activeLock.isHeld()) {
@@ -149,6 +154,9 @@ public class PendingSmsScheduler {
         if (task != null) {
             handler.removeCallbacks(task);
             Log.i(TAG, "Cancelled pending SMS for: " + cleanNumber + " (user initiated callback or manual cancel)");
+            if (appContext != null) {
+                com.misscall.assistant.data.ActivityLogger.log(appContext, "SMS_CANCELLED", cleanNumber, "Cancelled: User returned call promptly");
+            }
         }
     }
 
