@@ -11,20 +11,20 @@ export default function TermsPage() {
     <div className="bg-white min-h-screen py-16 sm:py-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-slate-700">
         <div className="border-b border-slate-200 pb-6 space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
             <span>TRAI & Anti-Spam Compliance Guidelines</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             Terms of Service & Anti-Spam Agreement
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            Published by <strong>Solita Solutions</strong> • Effective October 2026
+            Published by <strong>Solita Solutions</strong> • Effective November 2026 • 100% Free Lifetime Edition
           </p>
         </div>
 
         {/* Core Notice */}
-        <div className="p-5 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-950 space-y-2 text-xs">
-          <h3 className="font-extrabold text-sm text-indigo-900">
+        <div className="p-5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 space-y-2 text-xs">
+          <h3 className="font-extrabold text-sm text-blue-900">
             📢 Permitted Use: 1-to-1 Inbound Caller Follow-Up Only
           </h3>
           <p className="leading-relaxed">
@@ -47,9 +47,9 @@ export default function TermsPage() {
         </div>
 
         <div className="space-y-3 text-xs sm:text-sm leading-relaxed">
-          <h2 className="text-lg font-bold text-slate-900">3. 14-Day Free Trial & Subscription Policy</h2>
+          <h2 className="text-lg font-bold text-slate-900">3. 100% Free Lifetime License</h2>
           <p>
-            New users receive a <strong>14-Day Free Trial</strong> upon first registration. Following trial expiration, automated follow-up SMS triggers require an active subscription at <strong>₹99/month</strong> billed through Razorpay. You may cancel your subscription at any time with immediate effect.
+            MissCall Assistant is distributed as a 100% free lifetime utility for legitimate business and customer service follow-ups. No fees, recurring charges, or subscriptions apply.
           </p>
         </div>
 
@@ -68,11 +68,11 @@ export default function TermsPage() {
           <h3 className="font-extrabold text-sm text-slate-900">Support & Compliance Contact</h3>
           <p><strong>Company:</strong> Solita Solutions</p>
           <p><strong>Address:</strong> Gaya, Bihar 824232, India</p>
-          <p><strong>Email:</strong> <a href="mailto:help.solita@gmail.com" className="text-[#3B28CC] font-bold underline">help.solita@gmail.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:help.solita@gmail.com" className="text-[#2563EB] font-bold underline">help.solita@gmail.com</a></p>
         </div>
 
         <div className="pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-semibold">
-          <Link href="/" className="text-[#3B28CC] hover:underline">← Back to MissCall Assistant</Link>
+          <Link href="/" className="text-[#2563EB] hover:underline">← Back to MissCall Assistant</Link>
           <span className="text-slate-400">© 2026 Solita Solutions</span>
         </div>
       </div>

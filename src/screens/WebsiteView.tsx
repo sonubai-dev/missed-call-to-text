@@ -2,27 +2,16 @@ import React, { useState } from 'react';
 import {
   Smartphone,
   Download,
-  Copy,
-  Check,
   ShieldCheck,
   Clock,
   Zap,
-  PhoneCall,
-  HelpCircle,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp,
-  AlertTriangle,
-  BatteryCharging,
   Sliders,
   MessageSquare,
   ArrowRight,
   Sparkles,
   CheckCircle2,
   Lock,
-  Layers,
   Star,
-  RefreshCw,
   Send,
   CreditCard,
   MapPin,
@@ -31,16 +20,17 @@ import {
   X,
   FileText,
   ShieldAlert,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 interface WebsiteViewProps {
-  onOpenDashboard: () => void;
+  onOpenDashboard?: () => void;
   onOpenSimulator: () => void;
   onNavigateTab: (tab: any) => void;
 }
 
 export function WebsiteView({
-  onOpenDashboard,
   onOpenSimulator,
   onNavigateTab,
 }: WebsiteViewProps) {
@@ -50,7 +40,7 @@ export function WebsiteView({
 
   const version = '1.0.2';
   const size = '20.5 MB';
-  const lastUpdated = 'October 2026';
+  const lastUpdated = 'November 2026';
 
   const handleDownload = () => {
     const link = document.createElement('a');
@@ -66,79 +56,81 @@ export function WebsiteView({
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col selection:bg-indigo-600 selection:text-white relative w-full max-w-full overflow-x-hidden">
-      {/* Subtle Dot Grid Background (Reference 3 Quso Style) */}
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col selection:bg-blue-600 selection:text-white relative w-full max-w-full overflow-x-hidden">
+      {/* Subtle Dot Grid Background */}
       <div className="absolute inset-0 bg-[radial-gradient(#E2E8F0_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none -z-10" />
 
       {/* 1. TOP NAVBAR */}
       <header className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-6 py-3 sm:py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
+          {/* Logo & Branding */}
           <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#3B28CC] text-white flex items-center justify-center font-black text-lg sm:text-xl shadow-md shadow-indigo-200 shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#2563EB] text-white flex items-center justify-center font-black text-lg sm:text-xl shadow-md shadow-blue-200 shrink-0">
               M
             </div>
             <div>
-              <div className="text-sm sm:text-base font-black tracking-tight text-slate-900 leading-tight">
+              <div className="text-sm sm:text-base font-black tracking-tight text-slate-900 leading-tight flex items-center gap-1.5">
                 <span>MissCall Assistant</span>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Free Lifetime
+                </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate max-w-[130px] sm:max-w-none">Smart Telephony Follow-Up</p>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate max-w-[130px] sm:max-w-none">
+                Smart Native Telephony Follow-Up
+              </p>
             </div>
           </div>
 
+          {/* Nav links */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-xs font-bold text-slate-600">
-            <a href="#features" className="hover:text-[#3B28CC] transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-[#3B28CC] transition-colors">How It Works</a>
-            <a href="#pricing" className="hover:text-[#3B28CC] transition-colors">Pricing</a>
-            <a href="#download" className="hover:text-[#3B28CC] transition-colors">Download APK</a>
-            <a href="#faq" className="hover:text-[#3B28CC] transition-colors">FAQ</a>
-            <a href="#contact" className="hover:text-[#3B28CC] transition-colors">Contact</a>
+            <a href="#features" className="hover:text-[#2563EB] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#2563EB] transition-colors">How It Works</a>
+            <a href="#free-forever" className="hover:text-[#2563EB] transition-colors">100% Free Forever</a>
+            <a href="#download" className="hover:text-[#2563EB] transition-colors">Download APK</a>
+            <a href="#faq" className="hover:text-[#2563EB] transition-colors">FAQ</a>
+            <a href="#contact" className="hover:text-[#2563EB] transition-colors">Contact</a>
           </nav>
 
+          {/* Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={onOpenSimulator}
-              className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#3B28CC] bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-all border border-indigo-200 cursor-pointer shrink-0"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#2563EB] bg-blue-50 hover:bg-blue-100 rounded-xl transition-all border border-blue-200 cursor-pointer shrink-0"
             >
               <Smartphone className="w-3.5 h-3.5" />
               <span>Test Simulator</span>
             </button>
             <button
-              onClick={() => onNavigateTab('admin-login')}
-              className="hidden sm:inline-flex px-3.5 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all shrink-0 cursor-pointer"
-            >
-              Admin Portal
-            </button>
-            <button
               onClick={handleDownload}
-              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#3B28CC] hover:bg-indigo-700 text-white rounded-xl sm:rounded-2xl text-xs font-extrabold transition-all shadow-md shadow-indigo-300 shrink-0 cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl sm:rounded-2xl text-xs font-extrabold transition-all shadow-md shadow-blue-300 shrink-0 cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Download APK</span>
+              <span>Download Free APK</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* 2. HERO SECTION (REFERENCE 3 QUSO STYLE WITH FLOATING CARDS) */}
+      {/* 2. HERO SECTION */}
       <section className="relative pt-10 sm:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-5xl mx-auto text-center space-y-5 sm:space-y-6">
           {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-indigo-50 text-[#3B28CC] text-[11px] sm:text-xs font-extrabold border border-indigo-100 shadow-sm max-w-full text-center">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-            <span className="truncate sm:whitespace-normal">Smart Missed Call Native SMS Follow-Up Automation</span>
+          <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-blue-50 text-[#2563EB] text-[11px] sm:text-xs font-extrabold border border-blue-200 shadow-sm max-w-full text-center">
+            <Sparkles className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+            <span className="truncate sm:whitespace-normal">100% Free Forever • Zero API Keys • No Login/Sign-up • Dual-SIM SMS</span>
           </div>
 
           {/* Master Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] max-w-4xl mx-auto">
             Never Miss a Customer <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3B28CC] via-indigo-600 to-sky-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] via-blue-600 to-sky-500">
               Follow-Up.
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed px-1 sm:px-0">
-            Automatically send an SMS reply when you miss a customer call. Configure your business, choose your delay and keep your follow-ups running with MissCall Assistant.
+            Automatically send polite SMS follow-ups when you miss a customer call. Runs directly on your phone using your carrier SIM card. Zero API keys, zero subscriptions, zero logins required.
           </p>
 
           {/* Social Proof Star Pill */}
@@ -148,23 +140,23 @@ export function WebsiteView({
                 <Star key={i} className="w-4 h-4 fill-current" />
               ))}
             </div>
-            <span className="text-xs font-bold text-slate-700">4.9/5 rated by retail shops & service businesses</span>
+            <span className="text-xs font-bold text-slate-700">4.9/5 rated by shopkeepers, clinics & service businesses across India</span>
           </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-3 sm:pt-4 w-full max-w-md sm:max-w-none mx-auto">
             <button
               onClick={handleDownload}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 sm:py-4 bg-[#3B28CC] hover:bg-indigo-700 text-white rounded-xl sm:rounded-2xl text-sm font-extrabold shadow-lg shadow-indigo-300 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 sm:py-4 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl sm:rounded-2xl text-sm font-extrabold shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <Download className="w-5 h-5" />
-              <span>Download for Android (APK)</span>
+              <span>Download Free Android APK</span>
             </button>
             <button
               onClick={onOpenSimulator}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 rounded-xl sm:rounded-2xl text-sm font-extrabold transition-all shadow-sm cursor-pointer"
             >
-              <Smartphone className="w-4 h-4 text-[#3B28CC]" />
+              <Smartphone className="w-4 h-4 text-[#2563EB]" />
               <span>Test App Simulator in Browser</span>
             </button>
             <a
@@ -181,7 +173,7 @@ export function WebsiteView({
           </div>
         </div>
 
-        {/* 3. INTERACTIVE FLOATING MOCKUP CAROUSEL (REFERENCE 3 STYLE) */}
+        {/* 3. INTERACTIVE FLOATING MOCKUP CAROUSEL */}
         <div className="max-w-5xl mx-auto mt-12 sm:mt-16 relative px-2 sm:px-0">
           {/* Floating Card Left: Sent SMS Notification */}
           <div className="hidden xl:block absolute -left-6 top-16 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left animate-bounce duration-1000">
@@ -202,7 +194,7 @@ export function WebsiteView({
           {/* Floating Card Right: Delay Safeguard Pill */}
           <div className="hidden xl:block absolute -right-6 top-28 z-20 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 w-64 text-left">
             <div className="flex items-center gap-2 mb-1.5">
-              <div className="w-7 h-7 rounded-xl bg-indigo-100 text-[#3B28CC] flex items-center justify-center">
+              <div className="w-7 h-7 rounded-xl bg-blue-100 text-[#2563EB] flex items-center justify-center">
                 <Clock className="w-3.5 h-3.5" />
               </div>
               <span className="text-xs font-bold text-slate-800">Delay Safeguard Active</span>
@@ -212,13 +204,13 @@ export function WebsiteView({
             </p>
           </div>
 
-          {/* Center Card: Android Redesigned Interface Showcase (Reference 2 Layout) */}
+          {/* Center Card: Android Redesigned Interface Showcase */}
           <div className="mx-auto w-full max-w-[340px] sm:max-w-sm md:max-w-md bg-white rounded-[28px] sm:rounded-[40px] shadow-2xl border-4 sm:border-8 border-slate-900 overflow-hidden text-left relative">
-            {/* Phone Screen Header (Light Blue & White Gradient - Reference 2) */}
+            {/* Phone Screen Header */}
             <div className="bg-gradient-to-b from-[#E0F2FE] via-[#EFF6FF] to-white p-4 sm:p-6 pb-3 sm:pb-4 border-b border-sky-100">
               <div className="flex items-center justify-between mb-3 sm:mb-4">
                 <div className="flex items-center gap-2.5 sm:gap-3">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-[#3B28CC] to-sky-400 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-md shrink-0">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-[#2563EB] to-sky-400 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-md shrink-0">
                     MB
                   </div>
                   <div>
@@ -235,9 +227,9 @@ export function WebsiteView({
               <div className="bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-sm border border-sky-100 flex items-center justify-between">
                 <div>
                   <span className="text-xs font-extrabold text-slate-800 block">Automate Missed Call SMS</span>
-                  <span className="text-[10px] sm:text-[11px] text-slate-500">SIM 1 • AirTel Telecom</span>
+                  <span className="text-[10px] sm:text-[11px] text-slate-500">SIM 1 • AirTel / Jio Telecom</span>
                 </div>
-                <div className="w-10 sm:w-11 h-5 sm:h-6 bg-[#3B28CC] rounded-full flex items-center justify-end px-1 shrink-0">
+                <div className="w-10 sm:w-11 h-5 sm:h-6 bg-[#2563EB] rounded-full flex items-center justify-end px-1 shrink-0">
                   <div className="w-3.5 sm:w-4 h-3.5 sm:h-4 bg-white rounded-full shadow-md" />
                 </div>
               </div>
@@ -254,7 +246,7 @@ export function WebsiteView({
                   <div className="py-2 text-center rounded-xl bg-slate-50 text-slate-500 font-bold border border-slate-200 text-xs">
                     2 Sec
                   </div>
-                  <div className="py-2 text-center rounded-xl bg-[#3B28CC] text-white font-extrabold shadow-sm text-xs">
+                  <div className="py-2 text-center rounded-xl bg-[#2563EB] text-white font-extrabold shadow-sm text-xs">
                     5 Sec
                   </div>
                   <div className="py-2 text-center rounded-xl bg-slate-50 text-slate-500 font-bold border border-slate-200 text-xs">
@@ -290,21 +282,21 @@ export function WebsiteView({
       <section id="features" className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200">
         <div className="max-w-6xl mx-auto space-y-8 sm:space-y-12">
           <div className="text-center space-y-2 sm:space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Reliable Architecture</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Built Exclusively for Android Native SMS</h2>
+            <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Zero API Keys Required</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Pure On-Device Native SMS Utility</h2>
             <p className="text-slate-600 text-xs sm:text-sm">
-              No third-party messaging delays, no cloud reliance. Everything executes right on your phone through your carrier SIM card.
+              No Twilio, No Meta WhatsApp API, No cloud accounts. Everything runs locally on your Android device using your carrier SIM card.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#2563EB] flex items-center justify-center">
                 <Zap className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-base">Instant Native SMS</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">Instant Native SIM SMS</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                Dispatches native carrier SMS immediately when a missed call is detected, using standard Android telephony APIs.
+                Dispatches carrier SMS immediately when a missed call is detected using Android's native Telephony APIs. Zero cloud dependency.
               </p>
             </div>
 
@@ -314,7 +306,7 @@ export function WebsiteView({
               </div>
               <h3 className="font-extrabold text-slate-900 text-base">2s, 5s, 10s Delay Safeguard</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                Configurable delay allows you time to call the customer back immediately. If you call first, the scheduled SMS is automatically canceled.
+                Configurable countdown buffer gives you time to call the customer back. If you dial first, the scheduled SMS is instantly canceled.
               </p>
             </div>
 
@@ -322,9 +314,9 @@ export function WebsiteView({
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <Sliders className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-base">Dual-SIM Support</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">Dual-SIM Smart Routing</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                Explicitly choose which SIM slot dispatches your automated SMS response, preserving personal and business number separation.
+                Choose explicitly whether to dispatch via SIM 1 (e.g. Jio) or SIM 2 (e.g. Airtel), preserving personal and business phone separation.
               </p>
             </div>
 
@@ -334,7 +326,7 @@ export function WebsiteView({
               </div>
               <h3 className="font-extrabold text-slate-900 text-base">100% On-Device Privacy</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                Customer phone numbers and call logs never leave your phone. The app operates locally without selling or harvesting contacts.
+                Customer phone numbers and call logs never leave your phone. The app operates 100% offline without uploading contacts to any remote server.
               </p>
             </div>
 
@@ -344,17 +336,17 @@ export function WebsiteView({
               </div>
               <h3 className="font-extrabold text-slate-900 text-base">100% Free Lifetime Edition</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                No subscription, no credit card, and zero hidden costs. All missed call detection and automated SMS responses run free forever on your device.
+                No subscription, no credit card, no sign-in or registration. Missed call detection and automated SMS responses run free forever.
               </p>
             </div>
 
             <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
-                <BatteryCharging className="w-6 h-6" />
+                <ShieldCheck className="w-6 h-6" />
               </div>
               <h3 className="font-extrabold text-slate-900 text-base">24/7 Background Reliability</h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                Clear in-app guidance for disabling battery optimization ensures your missed-call listener stays active even when the screen is locked.
+                Built-in guidance for Xiaomi, Samsung, Vivo, and OPPO ensures autostart and battery optimizations stay active when the screen is locked.
               </p>
             </div>
           </div>
@@ -364,14 +356,14 @@ export function WebsiteView({
       {/* 5. HOW IT WORKS (3 SIMPLE STEPS) */}
       <section id="how-it-works" className="py-12 sm:py-20 px-4 sm:px-6 max-w-5xl mx-auto space-y-8 sm:space-y-12 text-center">
         <div className="space-y-2 sm:space-y-3 max-w-xl mx-auto">
-          <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Fast Onboarding</span>
+          <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Fast Onboarding</span>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">How It Works in 3 Steps</h2>
-          <p className="text-slate-600 text-xs sm:text-sm">Get up and running in under two minutes.</p>
+          <p className="text-slate-600 text-xs sm:text-sm">Get up and running in under two minutes with zero configuration hassle.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
           <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3 sm:space-y-4 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] font-black text-lg flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#2563EB] font-black text-lg flex items-center justify-center mx-auto">
               1
             </div>
             <h3 className="font-black text-slate-900 text-base">Download & Install</h3>
@@ -381,29 +373,29 @@ export function WebsiteView({
           </div>
 
           <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3 sm:space-y-4 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] font-black text-lg flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#2563EB] font-black text-lg flex items-center justify-center mx-auto">
               2
             </div>
-            <h3 className="font-black text-slate-900 text-base">Customize Your Reply</h3>
+            <h3 className="font-black text-slate-900 text-base">Customize Reply & Delay</h3>
             <p className="text-slate-600 text-xs leading-relaxed">
               Enter your store or business name, customize the SMS message, and choose your safeguard delay (2s, 5s, or 10s).
             </p>
           </div>
 
           <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3 sm:space-y-4 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#3B28CC] font-black text-lg flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#2563EB] font-black text-lg flex items-center justify-center mx-auto">
               3
             </div>
             <h3 className="font-black text-slate-900 text-base">Automate Follow-Ups</h3>
             <p className="text-slate-600 text-xs leading-relaxed">
-              Start your 14-day free trial or activate the ₹99/mo subscription. When a customer calls and you miss it, they get your SMS automatically!
+              When a customer calls and you miss it, your phone automatically dispatches your reply SMS via your carrier SIM. 100% Free Lifetime.
             </p>
           </div>
         </div>
       </section>
 
       {/* 6. 100% FREE FOREVER */}
-      <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200 w-full overflow-hidden">
+      <section id="free-forever" className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200 w-full overflow-hidden">
         <div className="max-w-2xl mx-auto text-center space-y-6 sm:space-y-8">
           <div className="space-y-2 sm:space-y-3">
             <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Free Forever</span>
@@ -417,20 +409,24 @@ export function WebsiteView({
                 <h3 className="text-lg sm:text-xl font-black text-slate-900">MissCall Assistant Lifetime</h3>
                 <p className="text-xs text-slate-500 font-medium">Full business telephony automation</p>
               </div>
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700">
+              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 100% Free Lifetime
               </span>
             </div>
 
             <div className="flex items-baseline gap-2">
               <span className="text-4xl sm:text-5xl font-black text-slate-900">₹0</span>
-              <span className="text-slate-500 font-bold text-sm">/ Lifetime Free</span>
+              <span className="text-slate-500 font-bold text-sm">/ Lifetime Free Forever</span>
             </div>
 
             <ul className="space-y-3 text-xs font-semibold text-slate-700">
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Unlimited automated missed-call SMS replies</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Zero API keys or developer accounts required</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -466,7 +462,7 @@ export function WebsiteView({
       {/* 7. APK DOWNLOAD & SETUP GUIDE */}
       <section id="download" className="py-12 sm:py-20 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 sm:space-y-8 w-full overflow-hidden">
         <div className="text-center space-y-2 sm:space-y-3">
-          <span className="text-xs font-extrabold text-[#3B28CC] uppercase tracking-wider">Production Release</span>
+          <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Production Release</span>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Download Verified Android APK</h2>
           <p className="text-slate-600 text-xs sm:text-sm max-w-xl mx-auto">
             Install MissCall Assistant directly onto your device. Play Protect compliance verified.
@@ -477,7 +473,7 @@ export function WebsiteView({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 sm:pb-6 border-b border-slate-100">
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center font-black text-xs shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center font-black text-xs shrink-0">
                   APK
                 </div>
                 <h4 className="font-extrabold text-slate-900 text-base sm:text-lg break-all">misscall-assistant.apk</h4>
@@ -492,7 +488,7 @@ export function WebsiteView({
 
             <button
               onClick={handleDownload}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md shadow-indigo-200 transition-all shrink-0 cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md shadow-blue-200 transition-all shrink-0 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>Download APK</span>
@@ -515,7 +511,7 @@ export function WebsiteView({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
               <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#3B28CC] flex items-center justify-center text-[11px] shrink-0 font-extrabold">1</span>
+                  <span className="w-5 h-5 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center text-[11px] shrink-0 font-extrabold">1</span>
                   <span>Download APK</span>
                 </div>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
@@ -525,27 +521,27 @@ export function WebsiteView({
 
               <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#3B28CC] flex items-center justify-center text-[11px] shrink-0 font-extrabold">2</span>
+                  <span className="w-5 h-5 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center text-[11px] shrink-0 font-extrabold">2</span>
                   <span>Open via File Manager</span>
                 </div>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
-                  Open your phone’s <strong>File Manager ➔ Downloads</strong> folder and tap <code className="text-indigo-600 font-mono text-[10px]">misscall-assistant.apk</code>.
+                  Open your phone’s <strong>File Manager ➔ Downloads</strong> folder and tap <code className="text-blue-600 font-mono text-[10px]">misscall-assistant.apk</code>.
                 </p>
               </div>
 
               <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#3B28CC] flex items-center justify-center text-[11px] shrink-0 font-extrabold">3</span>
+                  <span className="w-5 h-5 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center text-[11px] shrink-0 font-extrabold">3</span>
                   <span>Allow Unknown Apps</span>
                 </div>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
-                  When prompted, tap <strong>Settings</strong> and toggle <strong>"Allow from this source"</strong> ON. (On POCO/Xiaomi, check the risk box and tap OK after 10s).
+                  When prompted, tap <strong>Settings</strong> and toggle <strong>"Allow from this source"</strong> ON. (On Xiaomi/POCO, check the risk box and tap OK after 10s).
                 </p>
               </div>
 
-              <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-1.5">
-                <div className="flex items-center gap-2 font-bold text-[#3B28CC] text-xs">
-                  <span className="w-5 h-5 rounded-full bg-[#3B28CC] text-white flex items-center justify-center text-[11px] shrink-0 font-extrabold">4</span>
+              <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-blue-50/60 border border-blue-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-[#2563EB] text-xs">
+                  <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-[11px] shrink-0 font-extrabold">4</span>
                   <span>Play Protect: "Install Anyway"</span>
                 </div>
                 <p className="text-[11px] text-slate-700 leading-relaxed">
@@ -554,7 +550,7 @@ export function WebsiteView({
               </div>
             </div>
 
-            {/* Android 13 & 14 Restricted Setting Fix (App was denied access) */}
+            {/* Android 13 & 14 Restricted Setting Fix */}
             <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-amber-50/80 border-2 border-amber-300 space-y-2">
               <div className="flex items-center gap-2 font-black text-amber-950 text-xs sm:text-sm">
                 <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 shrink-0" />
@@ -575,7 +571,7 @@ export function WebsiteView({
             <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
               <div>
                 <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
-                  <BatteryCharging className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>24×7 Background Reliability Settings (Keep App Active)</span>
                 </h4>
                 <p className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">
@@ -597,7 +593,7 @@ export function WebsiteView({
                     onClick={() => setActiveBrandTab(b.id as any)}
                     className={`px-3 py-1.5 rounded-lg sm:rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                       activeBrandTab === b.id
-                        ? 'bg-[#3B28CC] text-white shadow-sm'
+                        ? 'bg-[#2563EB] text-white shadow-sm'
                         : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
@@ -667,24 +663,28 @@ export function WebsiteView({
           <div className="space-y-2.5 sm:space-y-3">
             {[
               {
+                q: 'Is MissCall Assistant completely free for lifetime?',
+                a: 'Yes, 100% Free Lifetime Edition. There are no subscription fees, no credit card requirements, no trials, and no hidden costs. Missed call detection and automated SMS replies run entirely free forever.',
+              },
+              {
+                q: 'Do I need any API keys or developer accounts?',
+                a: 'No! You do not need any API keys (no Twilio, no Fast2SMS, no MSG91, no Meta WhatsApp Cloud API). MissCall Assistant uses your phone\'s physical carrier SIM card directly through Android native telephony APIs.',
+              },
+              {
+                q: 'Do I need to sign up or create an account?',
+                a: 'No login, sign-up, or registration is required. You can start using the application immediately upon installation with zero personal credentials.',
+              },
+              {
                 q: 'How does the automated delay safeguard work?',
-                a: 'When someone misses your call, MissCall Assistant waits your chosen delay (2, 5, or 10 seconds) before sending an SMS. If you call the customer back within that window, the scheduled SMS is automatically aborted so you never send an unnecessary text.',
+                a: 'When a missed call occurs, MissCall Assistant waits for your chosen delay (2, 5, or 10 seconds) before sending the SMS. If you call the customer back within that window, the scheduled SMS is automatically aborted.',
               },
               {
-                q: 'Does this use WhatsApp or native SMS?',
-                a: 'MissCall Assistant strictly uses your phone’s native Android carrier SMS. This guarantees immediate delivery without requiring WhatsApp Business API setups or third-party message bans.',
-              },
-              {
-                q: 'What happens after the 14-day free trial?',
-                a: 'After 14 days, you can subscribe for just ₹99/month via our secure Razorpay integration. Your subscription activates instantly and you can cancel anytime.',
-              },
-              {
-                q: 'Are my customer phone numbers uploaded to your servers?',
-                a: 'No. MissCall Assistant processes calls and dispatches SMS directly on your phone. Your contacts, customer phone numbers, and call logs remain 100% private on your device.',
+                q: 'Are my customer phone numbers uploaded to remote servers?',
+                a: 'No. MissCall Assistant processes all calls and dispatches SMS entirely on your device. Your contacts, customer phone numbers, and call logs remain 100% private in local storage.',
               },
               {
                 q: 'Which Android versions are supported?',
-                a: 'The application supports Android 8.0 up through Android 14 (SDK 26 to 34). We use native CallScreeningService for modern Android compatibility.',
+                a: 'The application supports Android 8.0 up through Android 14 (API 26 to 34). Dual-SIM carrier routing is fully supported across all major phone brands.',
               },
             ].map((faq, idx) => (
               <div
@@ -695,7 +695,7 @@ export function WebsiteView({
                 <div className="flex items-center justify-between font-bold text-xs sm:text-sm text-slate-800 gap-3">
                   <span>{faq.q}</span>
                   {activeFaq === idx ? (
-                    <ChevronUp className="w-4 h-4 text-[#3B28CC] shrink-0" />
+                    <ChevronUp className="w-4 h-4 text-[#2563EB] shrink-0" />
                   ) : (
                     <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
                   )}
@@ -715,14 +715,14 @@ export function WebsiteView({
       <section className="py-12 sm:py-16 px-4 sm:px-6 bg-slate-50 border-t border-slate-200" id="contact">
         <div className="max-w-5xl mx-auto">
           <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#3B28CC] bg-[#3B28CC]/10 px-3 py-1 rounded-full">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#2563EB] bg-[#2563EB]/10 px-3 py-1 rounded-full">
               Author & Support
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2.5 sm:mt-3 tracking-tight">
               Solita Solutions
             </h2>
             <p className="text-slate-600 text-xs sm:text-sm mt-1.5 sm:mt-2 flex items-center justify-center gap-1.5">
-              <MapPin className="w-4 h-4 text-[#3B28CC] shrink-0" />
+              <MapPin className="w-4 h-4 text-[#2563EB] shrink-0" />
               <span>Gaya, Bihar - 824232, India</span>
             </p>
           </div>
@@ -736,8 +736,8 @@ export function WebsiteView({
                     <MessageSquare className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">Customer & Sales Support</h3>
-                    <p className="text-slate-500 text-[11px] sm:text-xs">Assistance with setup, licensing & inquiries</p>
+                    <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">Customer & User Support</h3>
+                    <p className="text-slate-500 text-[11px] sm:text-xs">Assistance with device permissions & setup</p>
                   </div>
                 </div>
                 
@@ -745,7 +745,7 @@ export function WebsiteView({
                   <div className="flex items-center gap-2.5 sm:gap-3 text-slate-700 flex-wrap">
                     <Mail className="w-4 h-4 text-slate-400 shrink-0" />
                     <span>Email:</span>
-                    <a href="mailto:help.solita@gmail.com" className="font-semibold text-[#3B28CC] hover:underline break-all">
+                    <a href="mailto:help.solita@gmail.com" className="font-semibold text-[#2563EB] hover:underline break-all">
                       help.solita@gmail.com
                     </a>
                   </div>
@@ -783,12 +783,12 @@ export function WebsiteView({
             <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center font-bold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center font-bold shrink-0">
                     <Zap className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">Developer Contact</h3>
-                    <p className="text-slate-500 text-[11px] sm:text-xs">Direct technical contact, bug reports & API</p>
+                    <p className="text-slate-500 text-[11px] sm:text-xs">Direct technical contact & bug reports</p>
                   </div>
                 </div>
 
@@ -796,7 +796,7 @@ export function WebsiteView({
                   <div className="flex items-center gap-2.5 sm:gap-3 text-slate-700 flex-wrap">
                     <Mail className="w-4 h-4 text-slate-400 shrink-0" />
                     <span>Email:</span>
-                    <a href="mailto:contact.dev.sonu@gmail.com" className="font-semibold text-[#3B28CC] hover:underline break-all">
+                    <a href="mailto:contact.dev.sonu@gmail.com" className="font-semibold text-[#2563EB] hover:underline break-all">
                       contact.dev.sonu@gmail.com
                     </a>
                   </div>
@@ -838,7 +838,7 @@ export function WebsiteView({
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 text-xs text-slate-500 font-medium text-center md:text-left">
           <div className="flex flex-col sm:flex-row items-center gap-2">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-xl bg-[#3B28CC] text-white flex items-center justify-center font-bold text-sm">
+              <div className="w-7 h-7 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-bold text-sm">
                 M
               </div>
               <span className="font-bold text-slate-900">MissCall Assistant</span>
@@ -850,30 +850,27 @@ export function WebsiteView({
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-4 sm:gap-x-6 gap-y-2">
             <button
               onClick={() => setActiveLegalModal('privacy')}
-              className="text-slate-600 hover:text-[#3B28CC] transition-colors cursor-pointer font-semibold"
+              className="text-slate-600 hover:text-[#2563EB] transition-colors cursor-pointer font-semibold"
             >
               Privacy Policy
             </button>
             <button
               onClick={() => setActiveLegalModal('terms')}
-              className="text-slate-600 hover:text-[#3B28CC] transition-colors cursor-pointer font-semibold"
+              className="text-slate-600 hover:text-[#2563EB] transition-colors cursor-pointer font-semibold"
             >
               Terms & Compliance
             </button>
             <button
               onClick={() => setActiveLegalModal('google-play')}
-              className="text-slate-600 hover:text-[#3B28CC] transition-colors cursor-pointer font-semibold"
+              className="text-slate-600 hover:text-[#2563EB] transition-colors cursor-pointer font-semibold"
             >
               Google Play Policies
             </button>
             <a href="#contact" className="hover:text-slate-900 transition-colors">
               Contact
             </a>
-            <button onClick={() => onNavigateTab('admin-login')} className="hover:text-slate-900 transition-colors cursor-pointer">
-              Admin Portal
-            </button>
-            <button onClick={handleDownload} className="text-[#3B28CC] font-bold hover:underline cursor-pointer">
-              Download APK
+            <button onClick={handleDownload} className="text-[#2563EB] font-bold hover:underline cursor-pointer">
+              Download Free APK
             </button>
           </div>
         </div>
@@ -886,9 +883,9 @@ export function WebsiteView({
             {/* Modal Header */}
             <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/60">
               <div className="flex items-center gap-2.5 sm:gap-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center font-bold shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-50 text-[#2563EB] flex items-center justify-center font-bold shrink-0">
                   {activeLegalModal === 'privacy' && <ShieldCheck className="w-5 h-5 text-emerald-600" />}
-                  {activeLegalModal === 'terms' && <FileText className="w-5 h-5 text-indigo-600" />}
+                  {activeLegalModal === 'terms' && <FileText className="w-5 h-5 text-blue-600" />}
                   {activeLegalModal === 'google-play' && <ShieldAlert className="w-5 h-5 text-amber-600" />}
                 </div>
                 <div>
@@ -898,7 +895,7 @@ export function WebsiteView({
                     {activeLegalModal === 'google-play' && 'Google Play Store Policy & Declarations'}
                   </h3>
                   <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium">
-                    Published by Solita Solutions • Effective October 2026 • Compliant with DPDP Act & Google Policy
+                    Published by Solita Solutions • Effective November 2026 • 100% Free Lifetime Edition
                   </p>
                 </div>
               </div>
@@ -945,9 +942,9 @@ export function WebsiteView({
                   </div>
 
                   <div className="space-y-1.5">
-                    <h4 className="font-bold text-slate-900 text-sm">3. Subscription & Payment Data</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">3. 100% Free Lifetime Model & Zero Payment Data</h4>
                     <p>
-                      Subscription payments (₹99/month) are handled securely via <strong>Razorpay Checkout SDK</strong>. We never view, collect, or store your credit card numbers, debit card details, or UPI PINs. Only anonymous device IDs and subscription validity dates are synchronized with our verification server.
+                      MissCall Assistant is 100% free of charge for lifetime use. There are no in-app purchases, subscriptions, or credit card charges. No financial or payment data is ever requested, stored, or processed.
                     </p>
                   </div>
 
@@ -968,7 +965,7 @@ export function WebsiteView({
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] space-y-0.5">
                     <div className="font-bold text-slate-800">Grievance Officer & Data Controller:</div>
                     <div>Solita Solutions, Gaya, Bihar 824232, India</div>
-                    <div>Email: <a href="mailto:help.solita@gmail.com" className="text-[#3B28CC] font-bold">help.solita@gmail.com</a> • WhatsApp: +91 9341718066</div>
+                    <div>Email: <a href="mailto:help.solita@gmail.com" className="text-[#2563EB] font-bold">help.solita@gmail.com</a> • WhatsApp: +91 9341718066</div>
                   </div>
                 </>
               )}
@@ -976,9 +973,9 @@ export function WebsiteView({
               {/* TERMS & COMPLIANCE CONTENT */}
               {activeLegalModal === 'terms' && (
                 <>
-                  <div className="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-medium space-y-1">
-                    <div className="font-bold text-indigo-950 flex items-center gap-1.5">
-                      <FileText className="w-4 h-4 text-[#3B28CC] shrink-0" />
+                  <div className="p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-medium space-y-1">
+                    <div className="font-bold text-blue-950 flex items-center gap-1.5">
+                      <FileText className="w-4 h-4 text-[#2563EB] shrink-0" />
                       <span>Legitimate Business Use & Anti-Spam Terms</span>
                     </div>
                     <p>
@@ -1008,9 +1005,9 @@ export function WebsiteView({
                   </div>
 
                   <div className="space-y-1.5">
-                    <h4 className="font-bold text-slate-900 text-sm">4. 14-Day Free Trial & ₹99/Month Subscription</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">4. 100% Free Lifetime License</h4>
                     <p>
-                      Every new installation includes a 14-Day full-featured free trial. Following the trial period, continuous automated SMS operations require an active ₹99/month subscription via Razorpay. Subscriptions can be cancelled at any time without cancellation fees.
+                      MissCall Assistant is distributed as a 100% free lifetime utility for legitimate business and customer service follow-ups. No fees, recurring charges, or subscriptions apply.
                     </p>
                   </div>
                 </>

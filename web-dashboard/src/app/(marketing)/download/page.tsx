@@ -3,15 +3,15 @@ import { Metadata } from 'next';
 import { Download, ShieldCheck, Smartphone, Info } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Download Missed Call to WhatsApp - APK for Android',
-  description: 'Download the official MissCall Assistant APK for Android. Automate your customer follow-ups today.',
+  title: 'Download MissCall Assistant - 100% Free Lifetime APK for Android',
+  description: 'Download the official MissCall Assistant APK for Android. 100% Free Lifetime Edition with Zero API Keys.',
 };
 
 export default function DownloadPage() {
-  const version = "1.0.0";
+  const version = "1.0.2";
   const size = "20.5 MB";
   const sha256 = "4EA4DADE497925A6430525DBADE99C964DC1F71E01261029A89736C7C75BCEEA";
-  const date = "October 2026";
+  const date = "November 2026";
   const minSdk = "Android 8.0 (Oreo, API 26) and above";
 
   return (

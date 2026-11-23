@@ -97,7 +97,6 @@ export function AndroidSimulatorView({
 
   // --- 100% FREE LIFETIME EDITION STATE ---
   const isSubscriptionActive = true;
-  const isTrialExpired = false;
 
   // Mobile App Internal Controls
   const [isServiceActive, setIsServiceActive] = useState<boolean>(true);
@@ -150,11 +149,6 @@ export function AndroidSimulatorView({
 
   // Trigger simulated inbound missed call
   const handleTriggerMissedCall = () => {
-    if (isTrialExpired) {
-      alert('⚠️ 14-Day Free Trial has expired! Missed-call SMS is paused. Please subscribe to continue.');
-      return;
-    }
-
     if (!isServiceActive) {
       alert('Service is paused! Please turn ON the auto-reply switch on the home screen.');
       return;
@@ -343,12 +337,12 @@ export function AndroidSimulatorView({
                         </span>
                       </div>
                       <h2 className="text-xl font-black text-slate-900 leading-tight">
-                        {onboardingStep === 1 ? 'Welcome! Set Up Your Profile' : 'Activate 14-Day Free Trial'}
+                        {onboardingStep === 1 ? 'Welcome! Set Up Your Profile' : '100% Free Lifetime Activation'}
                       </h2>
                       <p className="text-xs text-slate-500 mt-1">
                         {onboardingStep === 1
                           ? 'Enter your name and store location to personalize automatic replies.'
-                          : 'Try all features free for 14 days. ₹0 today, ₹99/mo after trial.'}
+                          : 'Full lifetime access included. ₹0 forever, zero API keys, no subscription.'}
                       </p>
                     </div>
 
@@ -405,20 +399,20 @@ export function AndroidSimulatorView({
                         </div>
                       </div>
                     ) : (
-                      /* Step 2: 14-Day Free Trial Confirmation */
+                      /* Step 2: 100% Free Lifetime Confirmation */
                       <div className="space-y-3 pt-2">
-                        <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg space-y-3">
+                        <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-600 text-white shadow-lg space-y-3">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full">
                               Instant Activation
                             </span>
-                            <span className="text-xs font-black text-amber-300">100% Free</span>
+                            <span className="text-xs font-black text-amber-300">Lifetime Free</span>
                           </div>
 
                           <div>
-                            <div className="text-2xl font-black">14-Day Free Trial</div>
+                            <div className="text-2xl font-black">100% Free Edition</div>
                             <div className="text-xs text-blue-100 mt-0.5">
-                              Then ₹99 / month • Cancel anytime
+                              ₹0 Forever • Zero API Keys • No Subscription
                             </div>
                           </div>
 
@@ -440,10 +434,10 @@ export function AndroidSimulatorView({
 
                         <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center space-y-1">
                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                            Payment Details
+                            Zero Cost Guarantee
                           </span>
                           <p className="text-[11px] text-slate-700 font-semibold">
-                            No charge today. Full access granted for 14 days.
+                            Free forever on your device. No sign-up, no payment details.
                           </p>
                         </div>
                       </div>
@@ -457,17 +451,17 @@ export function AndroidSimulatorView({
                         onClick={() => setOnboardingStep(2)}
                         className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all shadow-md shadow-blue-600/30 flex items-center justify-center gap-2 cursor-pointer"
                       >
-                        <span>Continue to Plan & Trial</span>
+                        <span>Continue to Free Activation</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
                     ) : (
                       <div className="space-y-2">
                         <button
                           onClick={handleCompleteOnboarding}
-                          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs transition-all shadow-md shadow-blue-600/30 flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-black text-xs transition-all shadow-md shadow-blue-600/30 flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <Sparkles className="w-4 h-4 text-amber-300" />
-                          <span>Start 14-Day Free Trial & Go to Home</span>
+                          <span>Activate 100% Free Lifetime Assistant</span>
                         </button>
                         <button
                           onClick={() => setOnboardingStep(1)}
@@ -488,7 +482,7 @@ export function AndroidSimulatorView({
                   {/* Clean Aesthetic App Header */}
                   <div className="bg-white px-5 py-3 border-b border-slate-100 flex items-center justify-between shadow-xs">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-sky-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
                         {businessName.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
@@ -648,7 +642,7 @@ export function AndroidSimulatorView({
                     )}
 
                     {/* ==================================================== */}
-                    {/* 2. SETTINGS SCREEN: PROFILE EDIT & 14-DAY TRIAL      */}
+                    {/* 2. SETTINGS SCREEN: PROFILE EDIT & APP CONFIG      */}
                     {/* ==================================================== */}
                     {appTab === 'settings' && (
                       <div className="space-y-3.5 animate-fade-in">
@@ -1008,7 +1002,7 @@ export function AndroidSimulatorView({
             <button
               onClick={handleTriggerMissedCall}
               disabled={isRinging || isDispatching}
-              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm transition-all shadow-lg shadow-blue-900/40 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-black text-sm transition-all shadow-lg shadow-blue-900/40 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               <PhoneIncoming className="w-5 h-5 fill-current" />
               <span>Simulate Customer Missed Call</span>

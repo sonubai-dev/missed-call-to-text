@@ -2,11 +2,19 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'FAQ - Missed Call to WhatsApp',
-  description: 'Frequently asked questions about MissCall Assistant.',
+  title: 'FAQ - MissCall Assistant',
+  description: 'Frequently asked questions about MissCall Assistant 100% Free Lifetime Edition.',
 };
 
 const faqs = [
+  {
+    q: "Is MissCall Assistant completely free for lifetime?",
+    a: "Yes, 100% Free Lifetime Edition. There are no subscriptions, no credit card requirements, no trials, and no hidden charges. It operates permanently as a free utility."
+  },
+  {
+    q: "Do I need any API keys or developer accounts?",
+    a: "No! You do not need any API keys (no Twilio, Fast2SMS, MSG91, or Meta API keys). The app uses your phone's physical SIM card directly through Android native telephony."
+  },
   {
     q: "What is MissCall Assistant?",
     a: "It's an Android application that automatically detects missed calls on your business phone and sends a personalized follow-up message via native SMS or WhatsApp to ensure you never lose a potential customer."

@@ -18,7 +18,7 @@ export default function PrivacyPage() {
             Privacy Policy & User Data Protection
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            Published by <strong>Solita Solutions</strong> • Effective October 2026 • Last Reviewed: November 2026
+            Published by <strong>Solita Solutions</strong> • Effective November 2026 • 100% Free Lifetime Edition
           </p>
         </div>
 
@@ -64,9 +64,9 @@ export default function PrivacyPage() {
 
         {/* Section 3 */}
         <div className="space-y-3 text-xs sm:text-sm leading-relaxed">
-          <h2 className="text-lg font-bold text-slate-900">3. Subscription & Billing Privacy</h2>
+          <h2 className="text-lg font-bold text-slate-900">3. 100% Free Lifetime Model & Zero Payment Data</h2>
           <p>
-            The service offers a <strong>14-Day Full Free Trial</strong> followed by an optional <strong>₹99/month</strong> subscription. Payment processing is handled by <strong>Razorpay</strong> via PCI-DSS compliant checkout. Solita Solutions does not store or process your bank account details, card numbers, or UPI PINs.
+            MissCall Assistant is 100% free of charge for lifetime use. There are no in-app purchases, subscriptions, or credit card charges. No financial or payment data is ever requested, stored, or processed.
           </p>
         </div>
 
@@ -95,12 +95,12 @@ export default function PrivacyPage() {
           <h3 className="font-extrabold text-sm text-slate-900">Grievance Officer & Publisher Information</h3>
           <p><strong>Entity:</strong> Solita Solutions</p>
           <p><strong>Address:</strong> Gaya, Bihar 824232, India</p>
-          <p><strong>Email:</strong> <a href="mailto:help.solita@gmail.com" className="text-[#3B28CC] font-bold underline">help.solita@gmail.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:help.solita@gmail.com" className="text-[#2563EB] font-bold underline">help.solita@gmail.com</a></p>
           <p><strong>WhatsApp Support:</strong> <a href="https://wa.me/919341718066" className="text-emerald-700 font-bold underline">+91 9341718066</a></p>
         </div>
 
         <div className="pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-semibold">
-          <Link href="/" className="text-[#3B28CC] hover:underline">← Back to MissCall Assistant</Link>
+          <Link href="/" className="text-[#2563EB] hover:underline">← Back to MissCall Assistant</Link>
           <span className="text-slate-400">© 2026 Solita Solutions</span>
         </div>
       </div>

@@ -277,16 +277,16 @@ export function AdminDashboardView({
   return (
     <div className="min-h-screen bg-[#F4F5F9] text-[#1E293B] font-sans flex antialiased">
       {/* 1. PERSISTENT PURPLE SIDEBAR (REFERENCE 1 STYLE) */}
-      <aside className="w-64 bg-[#3B28CC] text-white flex-shrink-0 flex flex-col justify-between py-6 px-4 shadow-xl z-20">
+      <aside className="w-64 bg-[#2563EB] text-white flex-shrink-0 flex flex-col justify-between py-6 px-4 shadow-xl z-20">
         <div className="space-y-6">
           {/* Logo & Brand */}
           <div className="flex items-center gap-3 px-3">
-            <div className="w-10 h-10 rounded-2xl bg-white text-[#3B28CC] flex items-center justify-center font-black text-xl shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-white text-[#2563EB] flex items-center justify-center font-black text-xl shadow-md">
               M
             </div>
             <div>
               <h2 className="text-lg font-black tracking-tight leading-tight">MissCall</h2>
-              <span className="text-[11px] font-semibold text-indigo-200 tracking-wide uppercase">Admin Portal</span>
+              <span className="text-[11px] font-semibold text-blue-200 tracking-wide uppercase">Admin Portal</span>
             </div>
           </div>
 
@@ -296,8 +296,8 @@ export function AdminDashboardView({
               onClick={() => setActiveTab('dashboard')}
               className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                 activeTab === 'dashboard'
-                  ? 'bg-white text-[#3B28CC] shadow-md font-extrabold translate-x-1'
-                  : 'text-indigo-100 hover:bg-white/10 hover:text-white'
+                  ? 'bg-white text-[#2563EB] shadow-md font-extrabold translate-x-1'
+                  : 'text-blue-100 hover:bg-white/10 hover:text-white'
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
@@ -308,15 +308,15 @@ export function AdminDashboardView({
               onClick={() => setActiveTab('businesses')}
               className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                 activeTab === 'businesses'
-                  ? 'bg-white text-[#3B28CC] shadow-md font-extrabold translate-x-1'
-                  : 'text-indigo-100 hover:bg-white/10 hover:text-white'
+                  ? 'bg-white text-[#2563EB] shadow-md font-extrabold translate-x-1'
+                  : 'text-blue-100 hover:bg-white/10 hover:text-white'
               }`}
             >
               <Building2 className="w-4 h-4" />
               <span>Businesses</span>
               {stats.totalBusinesses > 0 && (
                 <span className={`ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                  activeTab === 'businesses' ? 'bg-[#3B28CC] text-white' : 'bg-white/20 text-white'
+                  activeTab === 'businesses' ? 'bg-[#2563EB] text-white' : 'bg-white/20 text-white'
                 }`}>
                   {stats.totalBusinesses}
                 </span>
@@ -330,15 +330,15 @@ export function AdminDashboardView({
               }}
               className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                 activeTab === 'subscriptions'
-                  ? 'bg-white text-[#3B28CC] shadow-md font-extrabold translate-x-1'
-                  : 'text-indigo-100 hover:bg-white/10 hover:text-white'
+                  ? 'bg-white text-[#2563EB] shadow-md font-extrabold translate-x-1'
+                  : 'text-blue-100 hover:bg-white/10 hover:text-white'
               }`}
             >
               <Receipt className="w-4 h-4" />
               <span>Subscriptions</span>
               {stats.activeSubscribers > 0 && (
                 <span className={`ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                  activeTab === 'subscriptions' ? 'bg-[#3B28CC] text-white' : 'bg-white/20 text-white'
+                  activeTab === 'subscriptions' ? 'bg-[#2563EB] text-white' : 'bg-white/20 text-white'
                 }`}>
                   {stats.activeSubscribers}
                 </span>
@@ -350,24 +350,24 @@ export function AdminDashboardView({
                 selectAllUnpaid();
                 setShowNotifyModal(true);
               }}
-              className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-bold text-indigo-100 hover:bg-white/10 hover:text-white transition-all text-left"
+              className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-bold text-blue-100 hover:bg-white/10 hover:text-white transition-all text-left"
             >
               <Radio className="w-4 h-4 text-amber-300" />
               <span>Broadcast Push</span>
             </button>
 
-            <div className="pt-4 border-t border-indigo-400/20 my-2 space-y-1">
+            <div className="pt-4 border-t border-blue-400/20 my-2 space-y-1">
               <span className="px-4 text-[10px] uppercase tracking-wider text-indigo-300 font-bold">External</span>
               <button
                 onClick={onOpenWebsite}
-                className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-xs font-medium text-indigo-200 hover:bg-white/10 hover:text-white transition-all"
+                className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-xs font-medium text-blue-200 hover:bg-white/10 hover:text-white transition-all"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>Landing Page</span>
               </button>
               <button
                 onClick={onOpenDashboard}
-                className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-xs font-medium text-indigo-200 hover:bg-white/10 hover:text-white transition-all"
+                className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-xs font-medium text-blue-200 hover:bg-white/10 hover:text-white transition-all"
               >
                 <Smartphone className="w-4 h-4" />
                 <span>User Dashboard</span>
@@ -377,17 +377,17 @@ export function AdminDashboardView({
         </div>
 
         {/* Sidebar Footer Info */}
-        <div className="pt-4 border-t border-indigo-400/20 px-2 space-y-3">
+        <div className="pt-4 border-t border-blue-400/20 px-2 space-y-3">
           <div className="p-3 bg-white/10 rounded-2xl">
             <div className="flex items-center gap-2 text-[11px] font-bold text-white">
               <ShieldCheck className="w-4 h-4 text-emerald-300" />
               <span>Railway Verified</span>
             </div>
-            <p className="text-[10px] text-indigo-200 mt-1">₹99/mo Razorpay HMAC Webhook Security Active</p>
+            <p className="text-[10px] text-blue-200 mt-1">₹99/mo Razorpay HMAC Webhook Security Active</p>
           </div>
           <button
             onClick={onLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold rounded-xl bg-white/15 hover:bg-rose-600 hover:text-white text-indigo-100 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold rounded-xl bg-white/15 hover:bg-rose-600 hover:text-white text-blue-100 transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -401,7 +401,7 @@ export function AdminDashboardView({
         <header className="bg-white border-b border-slate-200 sticky top-0 z-10 px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-black text-slate-800 tracking-tight">Dashboard Overview</h1>
-            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-[#3B28CC] border border-indigo-100">
+            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#2563EB] border border-blue-100">
               Live Production
             </span>
           </div>
@@ -415,7 +415,7 @@ export function AdminDashboardView({
                 placeholder="Search business, phone, device..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-800 placeholder-slate-400 outline-none focus:bg-white focus:border-[#3B28CC] transition-all"
+                className="w-full pl-9 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-800 placeholder-slate-400 outline-none focus:bg-white focus:border-[#2563EB] transition-all"
               />
             </form>
 
@@ -448,7 +448,7 @@ export function AdminDashboardView({
 
             {/* Admin Profile Pill */}
             <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B28CC] to-indigo-400 text-white font-black text-sm flex items-center justify-center shadow-sm">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#2563EB] to-blue-400 text-white font-black text-sm flex items-center justify-center shadow-sm">
                 {adminEmail.charAt(0).toUpperCase()}
               </div>
               <div className="hidden sm:block text-left">
@@ -466,14 +466,14 @@ export function AdminDashboardView({
             {/* Card 1: Purple Card */}
             <div className="bg-[#4338CA] text-white p-6 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between h-36">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wide uppercase text-indigo-200">Registered Devices</span>
+                <span className="text-xs font-bold tracking-wide uppercase text-blue-200">Registered Devices</span>
                 <div className="w-10 h-10 rounded-2xl bg-white/15 flex items-center justify-center">
                   <Calendar className="w-5 h-5 text-white" />
                 </div>
               </div>
               <div>
                 <div className="text-3xl font-black">{stats.totalBusinesses}</div>
-                <div className="text-[11px] text-indigo-200 font-medium mt-1">Total app installations</div>
+                <div className="text-[11px] text-blue-200 font-medium mt-1">Total app installations</div>
               </div>
             </div>
 
@@ -533,7 +533,7 @@ export function AdminDashboardView({
                       cx="48"
                       cy="48"
                       r="40"
-                      stroke="#3B28CC"
+                      stroke="#2563EB"
                       strokeWidth="6"
                       strokeDasharray="251.2"
                       strokeDashoffset="60"
@@ -542,7 +542,7 @@ export function AdminDashboardView({
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-indigo-50 text-[#3B28CC] font-black text-2xl flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-blue-50 text-[#2563EB] font-black text-2xl flex items-center justify-center">
                       ⚡
                     </div>
                   </div>
@@ -554,7 +554,7 @@ export function AdminDashboardView({
                 {/* 3 Donut Mini-Gauges (Reference 1 style) */}
                 <div className="grid grid-cols-3 gap-2 w-full mt-6 pt-6 border-t border-slate-100">
                   <div className="text-center">
-                    <div className="text-base font-extrabold text-[#3B28CC]">99.9%</div>
+                    <div className="text-base font-extrabold text-[#2563EB]">99.9%</div>
                     <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">Uptime</div>
                   </div>
                   <div className="text-center border-x border-slate-100">
@@ -572,12 +572,12 @@ export function AdminDashboardView({
               <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="font-bold text-slate-800 text-sm">Recent System Events</h4>
-                  <span className="text-[10px] font-bold text-[#3B28CC] bg-indigo-50 px-2 py-0.5 rounded-full">Live</span>
+                  <span className="text-[10px] font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded-full">Live</span>
                 </div>
 
                 <div className="space-y-3.5 text-xs">
                   <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-xl bg-indigo-100 text-[#3B28CC] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-xl bg-blue-100 text-[#2563EB] flex items-center justify-center shrink-0 mt-0.5">
                       <Receipt className="w-3.5 h-3.5" />
                     </div>
                     <div>
@@ -621,8 +621,8 @@ export function AdminDashboardView({
 
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-3 text-xs font-bold mr-2">
-                      <span className="flex items-center gap-1.5 text-[#3B28CC]">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#3B28CC]"></span> Active
+                      <span className="flex items-center gap-1.5 text-[#2563EB]">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#2563EB]"></span> Active
                       </span>
                       <span className="flex items-center gap-1.5 text-emerald-600">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Trials
@@ -648,8 +648,8 @@ export function AdminDashboardView({
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 500 160" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="purpleGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#3B28CC" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#3B28CC" stopOpacity="0.0" />
+                        <stop offset="0%" stopColor="#2563EB" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
                       </linearGradient>
                       <linearGradient id="greenGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#10B981" stopOpacity="0.2" />
@@ -683,17 +683,17 @@ export function AdminDashboardView({
                     <path
                       d="M 0 135 C 70 140, 120 90, 180 85 C 240 80, 280 40, 360 45 C 420 50, 460 30, 500 35"
                       fill="none"
-                      stroke="#3B28CC"
+                      stroke="#2563EB"
                       strokeWidth="3"
                     />
 
                     {/* Interactive Marker Pin (Reference 1 tooltip) */}
-                    <circle cx="360" cy="45" r="5" fill="#3B28CC" stroke="#FFFFFF" strokeWidth="2.5" />
+                    <circle cx="360" cy="45" r="5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2.5" />
                   </svg>
 
                   {/* Floating Metric Bubble (Reference 1 style) */}
                   <div className="absolute top-2 right-24 bg-white px-3 py-1.5 rounded-xl shadow-md border border-slate-200 text-[11px] font-bold text-slate-800">
-                    <span className="text-[#3B28CC] font-extrabold">{stats.activeSubscribers}</span> Active • <span className="text-emerald-600 font-extrabold">₹{stats.estimatedMonthlyRevenue}</span> MRR
+                    <span className="text-[#2563EB] font-extrabold">{stats.activeSubscribers}</span> Active • <span className="text-emerald-600 font-extrabold">₹{stats.estimatedMonthlyRevenue}</span> MRR
                   </div>
 
                   {/* X Axis Labels */}
@@ -721,10 +721,10 @@ export function AdminDashboardView({
                     className="p-5 rounded-3xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-[#3B28CC] flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#2563EB] flex items-center justify-center group-hover:scale-105 transition-transform">
                         <Bell className="w-5 h-5" />
                       </div>
-                      <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#3B28CC] transition-colors" />
+                      <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#2563EB] transition-colors" />
                     </div>
                     <div>
                       <h5 className="font-bold text-slate-800 text-xs">Notify Unpaid Users</h5>
@@ -786,7 +786,7 @@ export function AdminDashboardView({
                     onClick={() => setSelectedStatus(st)}
                     className={`px-3.5 py-1.5 rounded-xl font-bold capitalize transition-all ${
                       selectedStatus === st
-                        ? 'bg-white text-[#3B28CC] shadow-sm'
+                        ? 'bg-white text-[#2563EB] shadow-sm'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -812,7 +812,7 @@ export function AdminDashboardView({
                           }
                         }}
                         checked={businesses.length > 0 && selectedIds.length === businesses.length}
-                        className="rounded accent-[#3B28CC]"
+                        className="rounded accent-[#2563EB]"
                       />
                     </th>
                     <th className="py-3 px-4 font-bold">Business Name</th>
@@ -835,7 +835,7 @@ export function AdminDashboardView({
                     businesses.map((b) => (
                       <tr
                         key={b.id}
-                        className="hover:bg-indigo-50/40 transition-colors cursor-pointer group"
+                        className="hover:bg-blue-50/40 transition-colors cursor-pointer group"
                         onClick={() => openBusinessDetails(b)}
                       >
                         <td
@@ -849,10 +849,10 @@ export function AdminDashboardView({
                             type="checkbox"
                             checked={selectedIds.includes(b.id)}
                             onChange={() => {}}
-                            className="rounded accent-[#3B28CC]"
+                            className="rounded accent-[#2563EB]"
                           />
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-slate-800 group-hover:text-[#3B28CC] transition-colors">
+                        <td className="py-3.5 px-4 font-bold text-slate-800 group-hover:text-[#2563EB] transition-colors">
                           {b.business_name || 'My Business'}
                         </td>
                         <td className="py-3.5 px-4 font-mono font-medium text-slate-700">{b.phone}</td>
@@ -862,7 +862,7 @@ export function AdminDashboardView({
                         <td className="py-3.5 px-4">{getStatusBadge(b.status)}</td>
                         <td className="py-3.5 px-4 font-mono text-[11px] text-slate-500">
                           {b.razorpay_subscription_id ? (
-                            <span className="text-[#3B28CC] font-semibold">{b.razorpay_subscription_id}</span>
+                            <span className="text-[#2563EB] font-semibold">{b.razorpay_subscription_id}</span>
                           ) : (
                             <span className="text-slate-400">None</span>
                           )}
@@ -876,7 +876,7 @@ export function AdminDashboardView({
                               e.stopPropagation();
                               openBusinessDetails(b);
                             }}
-                            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-[#3B28CC] hover:text-white text-slate-700 font-bold text-[11px] transition-colors"
+                            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-[#2563EB] hover:text-white text-slate-700 font-bold text-[11px] transition-colors"
                           >
                             Inspect
                           </button>
@@ -898,7 +898,7 @@ export function AdminDashboardView({
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h3 className="font-black text-slate-800 text-lg">{selectedBusiness.business_name}</h3>
-                <p className="text-xs font-mono text-[#3B28CC] font-semibold">{selectedBusiness.phone}</p>
+                <p className="text-xs font-mono text-[#2563EB] font-semibold">{selectedBusiness.phone}</p>
               </div>
               <button
                 onClick={() => setSelectedBusiness(null)}
@@ -920,7 +920,7 @@ export function AdminDashboardView({
               </div>
               <div>
                 <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider">Razorpay Subscription</span>
-                <p className="font-mono text-[#3B28CC] text-[11px] mt-0.5 font-bold">
+                <p className="font-mono text-[#2563EB] text-[11px] mt-0.5 font-bold">
                   {selectedBusiness.razorpay_subscription_id || 'Not Subscribed'}
                 </p>
               </div>
@@ -937,7 +937,7 @@ export function AdminDashboardView({
             {/* Payment & Webhook Events Log */}
             <div className="space-y-3">
               <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-[#3B28CC]" />
+                <CreditCard className="w-4 h-4 text-[#2563EB]" />
                 <span>Recorded Webhook & Payment Events ({paymentEvents.length})</span>
               </h4>
 
@@ -953,7 +953,7 @@ export function AdminDashboardView({
                       className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 font-mono text-[11px]"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[#3B28CC] font-bold">{ev.event_type}</span>
+                        <span className="text-[#2563EB] font-bold">{ev.event_type}</span>
                         <span className="text-slate-400 text-[10px]">
                           {new Date(ev.created_at).toLocaleString()}
                         </span>
@@ -970,7 +970,7 @@ export function AdminDashboardView({
             <div className="border-t border-slate-100 pt-4 flex items-center justify-end">
               <button
                 onClick={() => setSelectedBusiness(null)}
-                className="px-6 py-2.5 rounded-2xl bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors"
+                className="px-6 py-2.5 rounded-2xl bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-colors"
               >
                 Close Details
               </button>
@@ -985,7 +985,7 @@ export function AdminDashboardView({
           <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 text-xs text-slate-700 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-[#3B28CC]" />
+                <Bell className="w-5 h-5 text-[#2563EB]" />
                 <h3 className="font-extrabold text-slate-800 text-base">Broadcast Push Notification</h3>
               </div>
               <button
@@ -1018,7 +1018,7 @@ export function AdminDashboardView({
                   required
                   value={notifyTitle}
                   onChange={(e) => setNotifyTitle(e.target.value)}
-                  className="mt-1 w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 outline-none focus:bg-white focus:border-[#3B28CC] transition-colors"
+                  className="mt-1 w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 outline-none focus:bg-white focus:border-[#2563EB] transition-colors"
                 />
               </div>
 
@@ -1029,7 +1029,7 @@ export function AdminDashboardView({
                   required
                   value={notifyBody}
                   onChange={(e) => setNotifyBody(e.target.value)}
-                  className="mt-1 w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 outline-none focus:bg-white focus:border-[#3B28CC] transition-colors"
+                  className="mt-1 w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 outline-none focus:bg-white focus:border-[#2563EB] transition-colors"
                 />
               </div>
 
@@ -1044,7 +1044,7 @@ export function AdminDashboardView({
                 <button
                   type="submit"
                   disabled={isSendingPush || selectedIds.length === 0}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-[#3B28CC] hover:bg-indigo-700 text-white font-extrabold transition-all disabled:opacity-50 shadow-md"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold transition-all disabled:opacity-50 shadow-md"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isSendingPush ? 'Sending...' : 'Dispatch Notification'}</span>
