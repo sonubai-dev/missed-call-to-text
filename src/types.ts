@@ -64,9 +64,10 @@ export interface MessageTemplate {
   id: string;
   name: string;
   content: string;
-  isDefault: boolean;
+  isDefault?: boolean;
   language: string;
   category?: string;
+  tag?: string;
 }
 
 export interface DispatchRule {
@@ -82,21 +83,25 @@ export interface DispatchRule {
 
 export interface BusinessSettings {
   businessName: string;
-  ownerName: string;
-  defaultCountryCode: string;
-  isAutoReplyEnabled: boolean;
-  autoReplyDelayMinutes: number;
-  workingHoursEnabled: boolean;
-  workingHoursStart: string;
-  workingHoursEnd: string;
-  whatsAppSendingMode: 'MANUAL' | 'WHATSAPP_WEB' | 'CLOUD_API';
-  defaultSmsSim: string;
+  ownerName?: string;
+  defaultCountryCode?: string;
+  isAutoReplyEnabled?: boolean;
+  autoReplyDelayMinutes?: number;
+  workingHoursEnabled?: boolean;
+  workingHoursStart?: string;
+  workingHoursEnd?: string;
+  whatsAppSendingMode?: 'MANUAL' | 'WHATSAPP_WEB' | 'CLOUD_API';
+  defaultSmsSim?: string;
   whatsAppWebConnectedNumber?: string;
   metaAccessToken?: string;
   metaPhoneNumberId?: string;
   webhookUrl?: string;
   webhookSecret?: string;
   isWebhookEnabled?: boolean;
+  businessPhone?: string;
+  smsDelay?: number;
+  selectedSim?: string;
+  isServiceActive?: boolean;
 }
 
 export interface WebhookEventLog {

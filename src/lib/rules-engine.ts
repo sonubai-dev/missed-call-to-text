@@ -33,8 +33,8 @@ export function evaluateCallRules(
   if (settings.workingHoursEnabled) {
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    const [startH, startM] = settings.workingHoursStart.split(":").map(Number);
-    const [endH, endM] = settings.workingHoursEnd.split(":").map(Number);
+    const [startH, startM] = (settings.workingHoursStart || '09:00').split(":").map(Number);
+    const [endH, endM] = (settings.workingHoursEnd || '18:00').split(":").map(Number);
     const startMinutes = (startH || 9) * 60 + (startM || 0);
     const endMinutes = (endH || 18) * 60 + (endM || 0);
 
@@ -84,7 +84,7 @@ export function evaluateCallRules(
 
       return {
         matchedRule: rule,
-        shouldDispatch: settings.isAutoReplyEnabled,
+        shouldDispatch: Boolean(settings.isAutoReplyEnabled),
         cooldownActive: false,
         isBlacklisted: false,
         isOutsideWorkingHours: isOutside,
@@ -95,7 +95,7 @@ export function evaluateCallRules(
 
   return {
     matchedRule: null,
-    shouldDispatch: settings.isAutoReplyEnabled,
+    shouldDispatch: Boolean(settings.isAutoReplyEnabled),
     cooldownActive: false,
     isBlacklisted: false,
     isOutsideWorkingHours: isOutside,

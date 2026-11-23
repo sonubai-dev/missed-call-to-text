@@ -231,7 +231,7 @@ export function AndroidSimulatorView({
       whatsapp_status: 'SENT',
       suggested_message: formattedMessage,
       notes: `Dispatched via ${selectedSim}`,
-    }).then(() => {}).catch(() => {});
+    }).then(() => {}, () => {});
 
     supabase.from('messages').insert({
       device_id: 'default_device',
@@ -240,7 +240,7 @@ export function AndroidSimulatorView({
       content: formattedMessage,
       status: 'SENT',
       mode: 'MANUAL',
-    }).then(() => {}).catch(() => {});
+    }).then(() => {}, () => {});
   };
 
   // Handle first launch onboarding finish
@@ -256,8 +256,6 @@ export function AndroidSimulatorView({
     setEditBusinessName(finalBiz);
     setEditLocation(finalLoc);
 
-    setTrialDaysRemaining(14);
-    setIsSubscriptionActive(false);
     setIsOnboarded(true);
     setAppTab('home');
   };
@@ -269,13 +267,6 @@ export function AndroidSimulatorView({
     setUserLocation(editLocation.trim() || 'India');
     setProfileSavedFeedback(true);
     setTimeout(() => setProfileSavedFeedback(false), 2500);
-  };
-
-  // Activate Pro Plan Subscription
-  const handleActivateSubscription = () => {
-    setIsSubscriptionActive(true);
-    setPaymentSuccessNotification(true);
-    setTimeout(() => setPaymentSuccessNotification(false), 3500);
   };
 
   return (
@@ -333,13 +324,7 @@ export function AndroidSimulatorView({
                 </div>
               </div>
 
-              {/* SUCCESS NOTICE TOAST */}
-              {paymentSuccessNotification && (
-                <div className="absolute top-12 inset-x-4 z-50 bg-emerald-600 text-white p-3 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold animate-bounce-subtle">
-                  <CheckCircle className="w-4 h-4 shrink-0 text-white" />
-                  <span>Pro Plan Active! 14-day limit removed. Enjoy unlimited auto-SMS!</span>
-                </div>
-              )}
+
 
               {/* ======================================================== */}
               {/* FLOW 1: ONBOARDING / SIGN UP (FIRST LAUNCH FLOW) */}
